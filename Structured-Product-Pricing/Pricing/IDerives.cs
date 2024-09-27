@@ -10,6 +10,6 @@ namespace Pricing
     {
         double Payoff(double spot);
 
-        void Afficher();
+        string Afficher();
     }
 }

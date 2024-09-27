@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Pricing.Options;
 
-namespace Pricing
+namespace Pricing.OptionStrategies
 {
     public abstract class OptionStrategy : IDerives
     {
@@ -23,17 +24,17 @@ namespace Pricing
         {
             if (options.ContainsKey(option))
             {
-           
-                this.Options[option] += quantity;
-                
-                if (this.Options[option] == 0)
+
+                Options[option] += quantity;
+
+                if (Options[option] == 0)
                 {
                     Options.Remove(option);
                 }
             }
             else
             {
-                
+
                 Options.Add(option, quantity);
             }
         }
@@ -41,14 +42,14 @@ namespace Pricing
         public double Payoff(double spot)
         {
             double total = 0;
-            foreach(var option in Options)
+            foreach (var option in Options)
             {
                 total += option.Key.Payoff(spot) * option.Value;
             }
             return total;
         }
 
-        public void Afficher()
+        public string Afficher()
         {
             int callAchat = 0;
             int callVente = 0;
@@ -63,7 +64,8 @@ namespace Pricing
                 switch (option)
                 {
                     case CallOption _:
-                        if (quantity > 0){
+                        if (quantity > 0)
+                        {
                             callAchat += quantity;
                         }
                         else
@@ -103,7 +105,7 @@ namespace Pricing
             }
 
             // Affichage sur la même ligne
-            Console.WriteLine(string.Join(" ", messages));
+            return string.Join(" ", messages);
         }
     }
 }

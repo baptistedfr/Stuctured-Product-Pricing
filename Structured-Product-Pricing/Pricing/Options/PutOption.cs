@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pricing
+namespace Pricing.Options
 {
     public class PutOption : Option
     {
@@ -14,7 +14,7 @@ namespace Pricing
         // Implémentation de la méthode Payoff pour une option Put
         public override double Payoff(double spot)
         {
-            return Math.Max(this.Strike - spot, 0);
+            return Math.Max(Strike - spot, 0);
         }
     }
 }
