@@ -1,11 +1,10 @@
-﻿using Pricing.Options;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pricing.OptionStrategies
+namespace Pricing.Products
 {
     public class Strip : OptionStrategy
     {

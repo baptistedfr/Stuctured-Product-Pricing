@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Pricing.Options;
 
-namespace Pricing.OptionStrategies
+namespace Pricing.Products
 {
     public class CondorSpread : OptionStrategy
     {

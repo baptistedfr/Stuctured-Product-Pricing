@@ -5,11 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-<<<<<<<< HEAD:Structured-Product-Pricing/Pricing/Options/CallOption.cs
-namespace Pricing.Options
-========
 namespace Pricing.Products
->>>>>>>> abcf84e17748316de47f213b6af1e3b67d07ed7d:Structured-Product-Pricing/Pricing/Products/CallOption.cs
 {
     public class CallOption : Option
     {

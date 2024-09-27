@@ -4,11 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-<<<<<<<< HEAD:Structured-Product-Pricing/Pricing/Options/PutOption.cs
-namespace Pricing.Options
-========
 namespace Pricing.Products
->>>>>>>> abcf84e17748316de47f213b6af1e3b67d07ed7d:Structured-Product-Pricing/Pricing/Products/PutOption.cs
 {
     public class PutOption : Option
     {
