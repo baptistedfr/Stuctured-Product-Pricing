@@ -5,7 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pricing
+namespace Pricing.Products
 {
     public class CallOption : Option
     {
@@ -17,7 +17,7 @@ namespace Pricing
         public override double Payoff(double spot)
         {
             // Payoff d'un call : max(spot - strike, 0)
-            return Math.Max(spot - this.Strike, 0);
+            return Math.Max(spot - Strike, 0);
         }
     }
 }

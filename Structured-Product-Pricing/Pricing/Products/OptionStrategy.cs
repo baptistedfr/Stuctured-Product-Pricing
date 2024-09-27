@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pricing
+namespace Pricing.Products
 {
     public abstract class OptionStrategy : IDerives
     {
@@ -23,17 +23,17 @@ namespace Pricing
         {
             if (options.ContainsKey(option))
             {
-           
-                this.Options[option] += quantity;
-                
-                if (this.Options[option] == 0)
+
+                Options[option] += quantity;
+
+                if (Options[option] == 0)
                 {
                     Options.Remove(option);
                 }
             }
             else
             {
-                
+
                 Options.Add(option, quantity);
             }
         }
@@ -41,7 +41,7 @@ namespace Pricing
         public double Payoff(double spot)
         {
             double total = 0;
-            foreach(var option in Options)
+            foreach (var option in Options)
             {
                 total += option.Key.Payoff(spot) * option.Value;
             }
@@ -63,7 +63,8 @@ namespace Pricing
                 switch (option)
                 {
                     case CallOption _:
-                        if (quantity > 0){
+                        if (quantity > 0)
+                        {
                             callAchat += quantity;
                         }
                         else

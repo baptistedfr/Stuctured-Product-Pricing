@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pricing
+namespace Pricing.Products
 {
-    public abstract class Option:IDerives
+    public abstract class Option : IDerives
     {
         // Champs communs
         protected double strike;
@@ -27,7 +27,7 @@ namespace Pricing
         public double Maturity
         {
             get { return maturity; }
-            protected set  
+            protected set
             {
                 if (value < 0)
                     throw new ArgumentException("La maturité ne peut pas être négative.");
@@ -38,8 +38,8 @@ namespace Pricing
         // Constructeur
         public Option(double strike, double maturity)
         {
-            this.Strike = strike;
-            this.Maturity = maturity;
+            Strike = strike;
+            Maturity = maturity;
         }
 
         // Méthodes communes
@@ -48,7 +48,7 @@ namespace Pricing
         // Méthode virtuelle pouvant être redéfinie
         public virtual void Afficher()
         {
-            Console.WriteLine($"Cette option a un strike de {this.Strike} et une maturité de {this.Maturity}");
+            Console.WriteLine($"Cette option a un strike de {Strike} et une maturité de {Maturity}");
         }
 
 
