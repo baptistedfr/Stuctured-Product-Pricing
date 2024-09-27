@@ -16,6 +16,7 @@ Console.WriteLine(bs.Afficher());
 =======
 using Pricing.Products;
 using Pricing;
+using Pricing.Volatility.Models;
 
 //Straddle str = new Straddle(100, 1);
 //double pay = str.Payoff(95);

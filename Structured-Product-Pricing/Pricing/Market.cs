@@ -1,4 +1,8 @@
 ﻿using Pricing.MarketData;
+using Pricing.Rate;
+using Pricing.Volatility;
+using Pricing.Volatility.Calibration;
+using Pricing.Volatility.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,68 +11,55 @@ using System.Threading.Tasks;
 
 namespace Pricing
 {
-    public enum VolatilityType
-    {
-        Cste,
-        SVI
-    }
-
     public class Market
     {
-        private string Ticker;
-        private VolatilityType volType;
-        private double spot;
-        private double volatility;
-        private double rate;
-        private double dividende;
-
-        public double Spot
-        {
-            get { return spot; }
-            set { spot = value; }
-        }
-
-        public VolatilityType VolType
-        {
-            get { return volType; }
-            set { volType = value; }
-
-        }
-        public double Volatility
-        {
-            get { return volatility; }
-            private set { volatility = value; } // La vol ne peut être modifié que par les méthodes internes
-        }
-        public double Rate
-        {
-            get { return rate; }
-            private set { rate = value; } // La vol ne peut être modifié que par les méthodes internes
-        }
-        public double Dividende
-        {
-            get { return dividende; }
-            private set { dividende = value; } // La vol ne peut être modifié que par les méthodes internes
-        }
+        public string Ticker { get; set; }
+        public VolatilityType VolType { get; set; }
+        public VolatilityModel VolModel { get; set; }
+        public NelsonSiegel RateModel { get; set; }
+        public double Spot { get; set; }
+        public double Volatility { get; private set; }
+        public double Rate { get; private set; }
+        public double Dividende { get; private set; }
 
         public Market(string ticker, VolatilityType volType)
         {
-            this.Ticker = ticker;
+            Ticker = ticker;
+            VolType = volType;
         }
 
-        public void AfficherMarket()
+        public void CalibrateVol()
         {
-            Console.WriteLine($"Spot : {this.spot}, Volatility : {this.volatility} Rate : {this.rate}");
+            if (VolType == VolatilityType.Cste)
+            {
+                var parameters = new CsteCalibrationParams(0.15);
+                var volCste = new CsteVolatility();
+                volCste.Calibrate((ICalibrationParams)parameters);
+                VolModel = volCste;
+            }
+            else if (VolType == VolatilityType.SVI)
+            {
+                var optData = new CsvReader().ReadOptionData("C:\\Users\\thibc\\OneDrive\\Documents\\Dev\\Stuctured-Product-Pricing\\option_data.csv");
+                var parameters = new SVICalibrationParams(optData, Spot);
+                var SVI = new SVI();
+                SVI.Calibrate((ICalibrationParams)parameters);
+                VolModel = SVI;
+            }
         }
 
-        public double CalibrateVol()
+        public void CalibrateRate()
         {
-            Console.WriteLine("To Do");
-            return 0.0;
+            var curveData = new CsvReader().ReadRateCurve("C:\\Users\\thibc\\OneDrive\\Documents\\Dev\\Stuctured-Product-Pricing\\yield_us.csv");
+            var nelsonSiegel = new NelsonSiegel();
+            nelsonSiegel.Calibrate(curveData);
+            RateModel = nelsonSiegel;
         }
+        
         public void Initialize()
         {
-            this.Spot = YahooFinance.GetLastSpot(this.Ticker);
-            this.Volatility = CalibrateVol();
+            Spot = YahooFinance.GetLastSpot(Ticker);
+            CalibrateVol();
+            CalibrateRate();
         }
     }
 }
