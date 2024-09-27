@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pricing.MarketData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,19 +7,32 @@ using System.Threading.Tasks;
 
 namespace Pricing
 {
+    public enum VolatilityType
+    {
+        Cste,
+        SVI
+    }
+
     public class Market
     {
-        // Champs
+        private string Ticker;
+        private VolatilityType volType;
         private double spot;
         private double volatility;
         private double rate;
         private double dividende;
 
-        // Propriétés
         public double Spot
         {
             get { return spot; }
-            private set { spot = value; }
+            set { spot = value; }
+        }
+
+        public VolatilityType VolType
+        {
+            get { return volType; }
+            set { volType = value; }
+
         }
         public double Volatility
         {
@@ -36,19 +50,25 @@ namespace Pricing
             private set { dividende = value; } // La vol ne peut être modifié que par les méthodes internes
         }
 
-        // Constructeur
-        public Market(double spot, double volatility, double rate, double dividende = 0)
+        public Market(string ticker, VolatilityType volType)
         {
-            this.spot = spot;
-            this.volatility = volatility;
-            this.rate = rate;
-            this.dividende = dividende;
+            this.Ticker = ticker;
         }
 
-        // MéthodesS
         public void AfficherMarket()
         {
             Console.WriteLine($"Spot : {this.spot}, Volatility : {this.volatility} Rate : {this.rate}");
+        }
+
+        public double CalibrateVol()
+        {
+            Console.WriteLine("To Do");
+            return 0.0;
+        }
+        public void Initialize()
+        {
+            this.Spot = YahooFinance.GetLastSpot(this.Ticker);
+            this.Volatility = CalibrateVol();
         }
     }
 }

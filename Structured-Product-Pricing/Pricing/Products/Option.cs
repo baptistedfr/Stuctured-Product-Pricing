@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
+<<<<<<<< HEAD:Structured-Product-Pricing/Pricing/Options/Option.cs
 namespace Pricing.Options
+========
+namespace Pricing.Products
+>>>>>>>> abcf84e17748316de47f213b6af1e3b67d07ed7d:Structured-Product-Pricing/Pricing/Products/Option.cs
 {
     public abstract class Option : IDerives
     {
@@ -49,9 +52,11 @@ namespace Pricing.Options
         // Méthode virtuelle pouvant être redéfinie
         public virtual string Afficher()
         {
-
+<<<<<<<< HEAD:Structured-Product-Pricing/Pricing/Options/Option.cs
             return $"Cette option a un strike de {Strike} et une maturité de {Maturity}";
-
+========
+            Console.WriteLine($"Cette option a un strike de {Strike} et une maturité de {Maturity}");
+>>>>>>>> abcf84e17748316de47f213b6af1e3b67d07ed7d:Structured-Product-Pricing/Pricing/Products/Option.cs
         }
 
 

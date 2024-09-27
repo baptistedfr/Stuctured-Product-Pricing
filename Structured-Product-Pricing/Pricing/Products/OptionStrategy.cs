@@ -5,8 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Pricing.Options;
 
-
+<<<<<<<< HEAD:Structured-Product-Pricing/Pricing/OptionStrategies/OptionStrategy.cs
 namespace Pricing.OptionStrategies
+========
+namespace Pricing.Products
+>>>>>>>> abcf84e17748316de47f213b6af1e3b67d07ed7d:Structured-Product-Pricing/Pricing/Products/OptionStrategy.cs
 {
     public abstract class OptionStrategy : IDerives
     {
