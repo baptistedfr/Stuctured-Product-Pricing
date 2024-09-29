@@ -48,13 +48,17 @@
             textBoxMaturity = new TextBox();
             labelMaturity = new Label();
             label5 = new Label();
+            groupBoxProduit = new GroupBox();
+            labelPrix = new Label();
+            plotView1 = new OxyPlot.WindowsForms.PlotView();
+            groupBoxProduit.SuspendLayout();
             SuspendLayout();
             // 
             // price
             // 
             price.BackColor = SystemColors.Info;
             price.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            price.Location = new Point(23, 350);
+            price.Location = new Point(453, 17);
             price.Name = "price";
             price.Size = new Size(173, 51);
             price.TabIndex = 0;
@@ -69,12 +73,11 @@
             comboBoxOptions.BackColor = Color.Moccasin;
             comboBoxOptions.ForeColor = Color.Black;
             comboBoxOptions.FormattingEnabled = true;
-            comboBoxOptions.Items.AddRange(new object[] { "Call Option", "Put Option", "Call Spread", "Put Spread", "Butterfly Spread", "Condor Spread", "Straddle", "Stangle", "Strip", "Strap" });
-            comboBoxOptions.Location = new Point(234, 20);
+            comboBoxOptions.Items.AddRange(new object[] { "Call Option", "Put Option", "Call Spread", "Put Spread", "Butterfly Spread", "Condor Spread", "Straddle", "Strangle", "Strip", "Strap" });
+            comboBoxOptions.Location = new Point(169, 29);
             comboBoxOptions.Name = "comboBoxOptions";
             comboBoxOptions.Size = new Size(253, 31);
             comboBoxOptions.TabIndex = 1;
-            comboBoxOptions.Text = "Call Option";
             comboBoxOptions.SelectedIndexChanged += comboBoxOptions_SelectedIndexChanged;
             // 
             // label1
@@ -82,7 +85,7 @@
             label1.AutoSize = true;
             label1.BorderStyle = BorderStyle.FixedSingle;
             label1.Font = new Font("Segoe UI", 19.8000011F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.Location = new Point(572, 9);
+            label1.Location = new Point(35, 9);
             label1.Name = "label1";
             label1.Size = new Size(137, 48);
             label1.TabIndex = 3;
@@ -90,7 +93,7 @@
             // 
             // textBoxVolatility
             // 
-            textBoxVolatility.Location = new Point(925, 53);
+            textBoxVolatility.Location = new Point(209, 102);
             textBoxVolatility.Name = "textBoxVolatility";
             textBoxVolatility.Size = new Size(125, 30);
             textBoxVolatility.TabIndex = 4;
@@ -100,7 +103,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(944, 9);
+            label2.Location = new Point(224, 65);
             label2.Name = "label2";
             label2.Size = new Size(101, 23);
             label2.TabIndex = 5;
@@ -109,7 +112,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(1101, 9);
+            label3.Location = new Point(367, 65);
             label3.Name = "label3";
             label3.Size = new Size(162, 23);
             label3.TabIndex = 6;
@@ -118,7 +121,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(792, 9);
+            label4.Location = new Point(77, 65);
             label4.Name = "label4";
             label4.Size = new Size(45, 23);
             label4.TabIndex = 7;
@@ -127,7 +130,7 @@
             // textBoxSpot
             // 
             textBoxSpot.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            textBoxSpot.Location = new Point(757, 53);
+            textBoxSpot.Location = new Point(47, 102);
             textBoxSpot.Name = "textBoxSpot";
             textBoxSpot.Size = new Size(125, 31);
             textBoxSpot.TabIndex = 8;
@@ -136,49 +139,56 @@
             // 
             // textBoxRf
             // 
-            textBoxRf.Location = new Point(1113, 53);
+            textBoxRf.Location = new Point(390, 102);
             textBoxRf.Name = "textBoxRf";
             textBoxRf.Size = new Size(125, 30);
             textBoxRf.TabIndex = 9;
-            textBoxRf.Text = "5,0";
             textBoxRf.TextAlign = HorizontalAlignment.Center;
             // 
             // textBoxStrike1
             // 
-            textBoxStrike1.Location = new Point(25, 102);
+            textBoxStrike1.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            textBoxStrike1.Location = new Point(153, 136);
             textBoxStrike1.Name = "textBoxStrike1";
-            textBoxStrike1.Size = new Size(93, 30);
+            textBoxStrike1.Size = new Size(93, 34);
             textBoxStrike1.TabIndex = 10;
+            textBoxStrike1.TextAlign = HorizontalAlignment.Center;
             textBoxStrike1.Visible = false;
             // 
             // textBoxStrike3
             // 
-            textBoxStrike3.Location = new Point(279, 102);
+            textBoxStrike3.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            textBoxStrike3.Location = new Point(394, 136);
             textBoxStrike3.Name = "textBoxStrike3";
-            textBoxStrike3.Size = new Size(93, 30);
+            textBoxStrike3.Size = new Size(93, 34);
             textBoxStrike3.TabIndex = 11;
+            textBoxStrike3.TextAlign = HorizontalAlignment.Center;
             textBoxStrike3.Visible = false;
             // 
             // textBoxStrike4
             // 
-            textBoxStrike4.Location = new Point(414, 102);
+            textBoxStrike4.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            textBoxStrike4.Location = new Point(519, 136);
             textBoxStrike4.Name = "textBoxStrike4";
-            textBoxStrike4.Size = new Size(92, 30);
+            textBoxStrike4.Size = new Size(92, 34);
             textBoxStrike4.TabIndex = 12;
+            textBoxStrike4.TextAlign = HorizontalAlignment.Center;
             textBoxStrike4.Visible = false;
             // 
             // textBoxStrike2
             // 
-            textBoxStrike2.Location = new Point(156, 102);
+            textBoxStrike2.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            textBoxStrike2.Location = new Point(269, 136);
             textBoxStrike2.Name = "textBoxStrike2";
-            textBoxStrike2.Size = new Size(93, 30);
+            textBoxStrike2.Size = new Size(93, 34);
             textBoxStrike2.TabIndex = 13;
+            textBoxStrike2.TextAlign = HorizontalAlignment.Center;
             textBoxStrike2.Visible = false;
             // 
             // labelStrike1
             // 
             labelStrike1.AutoSize = true;
-            labelStrike1.Location = new Point(45, 76);
+            labelStrike1.Location = new Point(169, 90);
             labelStrike1.Name = "labelStrike1";
             labelStrike1.Size = new Size(65, 23);
             labelStrike1.TabIndex = 14;
@@ -189,7 +199,7 @@
             // labelStrike2
             // 
             labelStrike2.AutoSize = true;
-            labelStrike2.Location = new Point(175, 76);
+            labelStrike2.Location = new Point(280, 90);
             labelStrike2.Name = "labelStrike2";
             labelStrike2.Size = new Size(65, 23);
             labelStrike2.TabIndex = 15;
@@ -199,7 +209,7 @@
             // labelStrike3
             // 
             labelStrike3.AutoSize = true;
-            labelStrike3.Location = new Point(292, 76);
+            labelStrike3.Location = new Point(403, 90);
             labelStrike3.Name = "labelStrike3";
             labelStrike3.Size = new Size(65, 23);
             labelStrike3.TabIndex = 16;
@@ -209,7 +219,7 @@
             // labelStrike4
             // 
             labelStrike4.AutoSize = true;
-            labelStrike4.Location = new Point(428, 76);
+            labelStrike4.Location = new Point(532, 90);
             labelStrike4.Name = "labelStrike4";
             labelStrike4.Size = new Size(65, 23);
             labelStrike4.TabIndex = 17;
@@ -218,15 +228,17 @@
             // 
             // textBoxMaturity
             // 
-            textBoxMaturity.Location = new Point(23, 183);
+            textBoxMaturity.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            textBoxMaturity.Location = new Point(26, 136);
             textBoxMaturity.Name = "textBoxMaturity";
-            textBoxMaturity.Size = new Size(95, 30);
+            textBoxMaturity.Size = new Size(95, 34);
             textBoxMaturity.TabIndex = 18;
+            textBoxMaturity.TextAlign = HorizontalAlignment.Center;
             // 
             // labelMaturity
             // 
             labelMaturity.AutoSize = true;
-            labelMaturity.Location = new Point(35, 157);
+            labelMaturity.Location = new Point(46, 90);
             labelMaturity.Name = "labelMaturity";
             labelMaturity.Size = new Size(75, 23);
             labelMaturity.TabIndex = 19;
@@ -238,11 +250,57 @@
             label5.AutoSize = true;
             label5.BorderStyle = BorderStyle.FixedSingle;
             label5.Font = new Font("Segoe UI", 19.8000011F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label5.Location = new Point(38, 9);
+            label5.Location = new Point(6, 26);
             label5.Name = "label5";
             label5.Size = new Size(143, 48);
             label5.TabIndex = 20;
             label5.Text = "Produit";
+            // 
+            // groupBoxProduit
+            // 
+            groupBoxProduit.BackColor = Color.AntiqueWhite;
+            groupBoxProduit.Controls.Add(labelStrike4);
+            groupBoxProduit.Controls.Add(labelMaturity);
+            groupBoxProduit.Controls.Add(textBoxStrike4);
+            groupBoxProduit.Controls.Add(labelStrike3);
+            groupBoxProduit.Controls.Add(label5);
+            groupBoxProduit.Controls.Add(labelStrike2);
+            groupBoxProduit.Controls.Add(textBoxStrike3);
+            groupBoxProduit.Controls.Add(textBoxMaturity);
+            groupBoxProduit.Controls.Add(textBoxStrike2);
+            groupBoxProduit.Controls.Add(labelStrike1);
+            groupBoxProduit.Controls.Add(comboBoxOptions);
+            groupBoxProduit.Controls.Add(price);
+            groupBoxProduit.Controls.Add(textBoxStrike1);
+            groupBoxProduit.Location = new Point(653, 23);
+            groupBoxProduit.Name = "groupBoxProduit";
+            groupBoxProduit.Size = new Size(680, 220);
+            groupBoxProduit.TabIndex = 21;
+            groupBoxProduit.TabStop = false;
+            // 
+            // labelPrix
+            // 
+            labelPrix.AutoSize = true;
+            labelPrix.BackColor = Color.Red;
+            labelPrix.BorderStyle = BorderStyle.FixedSingle;
+            labelPrix.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            labelPrix.Location = new Point(777, 336);
+            labelPrix.Name = "labelPrix";
+            labelPrix.Size = new Size(143, 56);
+            labelPrix.TabIndex = 22;
+            labelPrix.Text = "Prix :  ";
+            // 
+            // plotView1
+            // 
+            plotView1.Location = new Point(35, 249);
+            plotView1.Name = "plotView1";
+            plotView1.PanCursor = Cursors.Hand;
+            plotView1.Size = new Size(681, 574);
+            plotView1.TabIndex = 23;
+            plotView1.Text = "plotViewProduct";
+            plotView1.ZoomHorizontalCursor = Cursors.SizeWE;
+            plotView1.ZoomRectangleCursor = Cursors.SizeNWSE;
+            plotView1.ZoomVerticalCursor = Cursors.SizeNS;
             // 
             // Interface
             // 
@@ -250,17 +308,8 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.SeaShell;
             ClientSize = new Size(1504, 835);
-            Controls.Add(label5);
-            Controls.Add(labelMaturity);
-            Controls.Add(textBoxMaturity);
-            Controls.Add(labelStrike4);
-            Controls.Add(labelStrike3);
-            Controls.Add(labelStrike2);
-            Controls.Add(labelStrike1);
-            Controls.Add(textBoxStrike2);
-            Controls.Add(textBoxStrike4);
-            Controls.Add(textBoxStrike3);
-            Controls.Add(textBoxStrike1);
+            Controls.Add(plotView1);
+            Controls.Add(labelPrix);
             Controls.Add(textBoxRf);
             Controls.Add(textBoxSpot);
             Controls.Add(label4);
@@ -268,11 +317,12 @@
             Controls.Add(label2);
             Controls.Add(textBoxVolatility);
             Controls.Add(label1);
-            Controls.Add(comboBoxOptions);
-            Controls.Add(price);
+            Controls.Add(groupBoxProduit);
             Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Name = "Interface";
             Text = "Form1";
+            groupBoxProduit.ResumeLayout(false);
+            groupBoxProduit.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -299,5 +349,8 @@
         private TextBox textBoxMaturity;
         private Label labelMaturity;
         private Label label5;
+        private GroupBox groupBoxProduit;
+        private Label labelPrix;
+        private OxyPlot.WindowsForms.PlotView plotView1;
     }
 }

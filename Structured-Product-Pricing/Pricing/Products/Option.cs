@@ -54,6 +54,10 @@ namespace Pricing.Products
 
         }
 
+        public double GetMaturity()
+        {
+            return Maturity;
+        }
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.FileIO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -107,5 +108,17 @@ namespace Pricing.Products
             // Affichage sur la même ligne
             return string.Join(" ", messages);
         }
+
+        public double GetMaturity()
+        {
+            foreach (var entry in Options)
+            {
+                Option option = entry.Key;
+                return option.Maturity;
+
+            }
+            return 0;
+        }
     }
+    
 }

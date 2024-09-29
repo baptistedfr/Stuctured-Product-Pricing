@@ -35,7 +35,7 @@ namespace Pricing.Volatility.Models
             return Alpha + Beta * (Rho * (logMoneyness - M) + Math.Sqrt(Math.Pow(logMoneyness - M, 2) + Math.Pow(Sigma, 2)));
         }
 
-        public double Volatility(double strike, double maturity, double spot)
+        public override double GetVolatility(double strike, double maturity, double spot)
         {
             var totalVariance = TotalVariance(Math.Log(strike / spot));
             return Math.Sqrt(totalVariance / maturity);
@@ -59,7 +59,7 @@ namespace Pricing.Volatility.Models
             Func<Vector<double>, double> objectiveFunction = parameters =>
             {
                 SetParameters(parameters.ToArray());
-                return optData.Sum(data => Math.Pow(Volatility(data.Strike, data.Maturity, spot) - data.ImpliedVolatility, 2));
+                return optData.Sum(data => Math.Pow(GetVolatility(data.Strike, data.Maturity, spot) - data.ImpliedVolatility, 2));
             };
 
             double[] initialGuess = new double[] { Alpha, Beta, Rho, M, Sigma };

@@ -7,15 +7,17 @@ using System.Threading.Tasks;
 namespace InterfaceProducts
 {
     // Classe pour gérer la logique des strikes
-    public class StrikeManager
+    public class ParamsManager
     {
         private TextBox[] strikeTextBoxes;
         private Label[] strikeLabels;
+        private TextBox maturity;
 
-        public StrikeManager(TextBox[] textBoxes, Label[] labels)
+        public ParamsManager(TextBox[] textBoxes, Label[] labels, TextBox maturity)
         {
-            strikeTextBoxes = textBoxes;
-            strikeLabels = labels;
+            this.strikeTextBoxes = textBoxes;
+            this.strikeLabels = labels;
+            this.maturity = maturity;
         }
 
         public void UpdateStrikeVisibility(string selectedOption)
@@ -25,7 +27,7 @@ namespace InterfaceProducts
             {
                 "Call Spread" => 2,
                 "Put Spread" => 2,
-                "Strange" => 2,
+                "Strangle" => 2,
                 "Butterfly Spread" => 3,
                 "Condor Spread" => 4,
                 _ => 1
@@ -75,9 +77,9 @@ namespace InterfaceProducts
             return true;
         }
 
-        public bool CheckMaturityValues(string maturityText)
+        public bool CheckMaturityValues()
         {
-            if (!double.TryParse(maturityText, out double value) || value <= 0)
+            if (!double.TryParse(maturity.Text, out double value) || value <= 0)
             {
                 MessageBox.Show($"Veuillez entrer une valeur positive valide pour la maturité.", "Valeur Invalide", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;

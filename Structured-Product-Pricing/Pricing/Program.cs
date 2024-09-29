@@ -8,12 +8,15 @@ using System.Threading.Tasks;
 using Pricing.Products;
 using Pricing;
 using Pricing.Volatility;
+using Pricing.Volatility.Models;
+using Pricing.MonteCarlo;
+using System.Runtime.InteropServices;
 
 //ButterflySpread bs = new ButterflySpread([90, 100, 110],1);
 //Console.WriteLine(bs.Payoff(111));
 //Console.WriteLine(bs.Afficher());
-var lastSpot = YahooFinance.GetLastSpot("GLE.PA");
-Console.WriteLine("Last spot : " + lastSpot);
+//var lastSpot = YahooFinance.GetLastSpot("GLE.PA");
+//Console.WriteLine("Last spot : " + lastSpot);
 
 
 
@@ -26,11 +29,15 @@ Console.WriteLine("Last spot : " + lastSpot);
 //Console.WriteLine(bs.Payoff(92));
 //bs.Afficher();
 
-//var lastSpot = YahooFinance.GetLastSpot("GLE.PA");
-//Console.WriteLine("Last spot : " + lastSpot);
+var lastSpot = YahooFinance.GetLastSpot("AAPL");
+Console.WriteLine("Last spot : " + lastSpot);
 
-//var market = new Market("GLE.PA", VolatilityType.SVI);
-//market.Initialize();
+var market = new Market("AAPL", VolatilityType.Cste);
+market.Initialize(0.2);
+CallSpread call = new CallSpread(100,110, 1);
+MonteCarloSimulator mc = new MonteCarloSimulator(call, market, 1000000);
+Console.WriteLine(mc.Price(100));
+
 
 //Console.WriteLine("Last market spot : " + market.Spot);
 

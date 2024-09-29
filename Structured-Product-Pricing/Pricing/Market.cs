@@ -1,4 +1,6 @@
-﻿using Pricing.MarketData;
+﻿using Microsoft.VisualBasic.FileIO;
+using Pricing.MarketData;
+using Pricing.Products;
 using Pricing.Rate;
 using Pricing.Volatility;
 using Pricing.Volatility.Calibration;
@@ -18,8 +20,8 @@ namespace Pricing
         public VolatilityModel VolModel { get; set; }
         public NelsonSiegel RateModel { get; set; }
         public double Spot { get; set; }
-        public double Volatility { get; private set; }
-        public double Rate { get; private set; }
+        public double Volatility { get; set; }
+        public double Rate { get; set; }
         public double Dividende { get; private set; }
 
         public Market(string ticker, VolatilityType volType)
@@ -28,18 +30,19 @@ namespace Pricing
             VolType = volType;
         }
 
-        public void CalibrateVol()
+        public void CalibrateVol(double CsteVol = 0)
         {
             if (VolType == VolatilityType.Cste)
             {
-                var parameters = new CsteCalibrationParams(0.15);
+                var parameters = new CsteCalibrationParams(CsteVol);
                 var volCste = new CsteVolatility();
                 volCste.Calibrate((ICalibrationParams)parameters);
                 VolModel = volCste;
+                Volatility = VolModel.GetVolatility();
             }
             else if (VolType == VolatilityType.SVI)
             {
-                var optData = new CsvReader().ReadOptionData("C:\\Users\\thibc\\OneDrive\\Documents\\Dev\\Stuctured-Product-Pricing\\option_data.csv");
+                var optData = new CsvReader().ReadOptionData("C:\\Users\\bapdu\\COMMUN\\Dauphine\\Stuctured-Product-Pricing\\option_data.csv");
                 var parameters = new SVICalibrationParams(optData, Spot);
                 var SVI = new SVI();
                 SVI.Calibrate((ICalibrationParams)parameters);
@@ -49,16 +52,16 @@ namespace Pricing
 
         public void CalibrateRate()
         {
-            var curveData = new CsvReader().ReadRateCurve("C:\\Users\\thibc\\OneDrive\\Documents\\Dev\\Stuctured-Product-Pricing\\yield_us.csv");
+            var curveData = new CsvReader().ReadRateCurve("C:\\Users\\bapdu\\COMMUN\\Dauphine\\Stuctured-Product-Pricing\\yield_us.csv");
             var nelsonSiegel = new NelsonSiegel();
             nelsonSiegel.Calibrate(curveData);
             RateModel = nelsonSiegel;
         }
         
-        public void Initialize()
+        public void Initialize(double CsteVol = 0)
         {
-            Spot = YahooFinance.GetLastSpot(Ticker);
-            CalibrateVol();
+            //Spot = YahooFinance.GetLastSpot(Ticker);
+            CalibrateVol(CsteVol);
             CalibrateRate();
         }
     }

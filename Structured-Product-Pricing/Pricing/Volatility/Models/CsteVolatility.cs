@@ -16,5 +16,9 @@ namespace Pricing.Volatility.Models
             var param = parameters as CsteCalibrationParams;
             VolLevel = param.VolLevel;
         }
+        public override double GetVolatility(double strike = 0, double maturity = 0, double spot = 0)
+        {
+            return VolLevel;
+        }
     }
 }

@@ -31,7 +31,7 @@ namespace InterfaceProducts
                 "Put Spread" => new PutSpread(strikeValues.Min(), strikeValues.Max(), maturity),
                 "Butterfly Spread" => new ButterflySpread(new[] { strikeValues[0], strikeValues[1], strikeValues[2] }, maturity),
                 "Condor Spread" => new CondorSpread(strikeValues.ToArray(), maturity), // Utilisation du tableau directement
-                "Strange" => new Strangle(strikeValues.Min(), strikeValues.Max(), maturity),
+                "Strangle" => new Strangle(strikeValues.Min(), strikeValues.Max(), maturity),
                 "Straddle" => new Straddle(strikeValues[0], maturity),
                 "Strip" => new Strip(strikeValues[0], maturity),
                 "Strap" => new Strap(strikeValues[0], maturity),

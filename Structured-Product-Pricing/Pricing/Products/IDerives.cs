@@ -11,5 +11,7 @@ namespace Pricing.Products
         double Payoff(double spot);
 
         string Afficher();
+
+        double GetMaturity();
     }
 }
