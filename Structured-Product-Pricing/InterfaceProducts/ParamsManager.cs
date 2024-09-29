@@ -12,12 +12,15 @@ namespace InterfaceProducts
         private TextBox[] strikeTextBoxes;
         private Label[] strikeLabels;
         private TextBox maturity;
-
-        public ParamsManager(TextBox[] textBoxes, Label[] labels, TextBox maturity)
+        private TextBox binary;
+        private Label binaryLabel;
+        public ParamsManager(TextBox[] textBoxes, Label[] labels, TextBox maturity, TextBox binary, Label binaryLabel)
         {
             this.strikeTextBoxes = textBoxes;
             this.strikeLabels = labels;
             this.maturity = maturity;
+            this.binary = binary;
+            this.binaryLabel = binaryLabel;
         }
 
         public void UpdateStrikeVisibility(string selectedOption)
@@ -49,7 +52,19 @@ namespace InterfaceProducts
                 strikeLabels[i].Visible = true;
             }
         }
-
+        public void UpdateBinary(string selectedOption)
+        {
+            if (selectedOption == "Binary Call" || selectedOption == "Binary Put")
+            {
+                binary.Visible = true;
+                binaryLabel.Visible = true;
+            }
+            else
+            {
+                binary.Visible = false;
+                binaryLabel.Visible = false;
+            }
+        }
         public List<double> GetStrikeValues()
         {
             List<double> strikeValues = new List<double>();
@@ -82,6 +97,15 @@ namespace InterfaceProducts
             if (!double.TryParse(maturity.Text, out double value) || value <= 0)
             {
                 MessageBox.Show($"Veuillez entrer une valeur positive valide pour la maturité.", "Valeur Invalide", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            return true;
+        }
+        public bool CheckBinary()
+        {
+            if (binary.Visible == true && (!double.TryParse(binary.Text, out double value) || value <= 0))
+            {
+                MessageBox.Show($"Veuillez entrer une valeur positive valide pour le coupon de l'option binaire.", "Valeur Invalide", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             return true;

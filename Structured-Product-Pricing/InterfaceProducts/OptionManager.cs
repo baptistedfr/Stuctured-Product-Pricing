@@ -20,13 +20,15 @@ namespace InterfaceProducts
             return true;
         }
 
-        public IDerives CreateDerive(string selectedOption, List<double> strikeValues, string maturityText)
+        public IDerives CreateDerive(string selectedOption, List<double> strikeValues, string maturityText, string binaryText)
         { 
             double maturity = double.Parse(maturityText);
             return selectedOption switch
             {
                 "Call Option" => new CallOption(strikeValues[0], maturity),
                 "Put Option" => new PutOption(strikeValues[0], maturity),
+                "Binary Call" => new BinaryCallOption(strikeValues[0], maturity, double.Parse(binaryText)),
+                "Binary Put" => new BinaryPutOption(strikeValues[0], maturity, double.Parse(binaryText)),
                 "Call Spread" => new CallSpread(strikeValues.Min(), strikeValues.Max(), maturity),
                 "Put Spread" => new PutSpread(strikeValues.Min(), strikeValues.Max(), maturity),
                 "Butterfly Spread" => new ButterflySpread(new[] { strikeValues[0], strikeValues[1], strikeValues[2] }, maturity),

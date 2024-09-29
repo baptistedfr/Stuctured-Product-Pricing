@@ -49,6 +49,8 @@
             labelMaturity = new Label();
             label5 = new Label();
             groupBoxProduit = new GroupBox();
+            labelBinary = new Label();
+            textBoxBinary = new TextBox();
             labelPrix = new Label();
             plotView1 = new OxyPlot.WindowsForms.PlotView();
             groupBoxProduit.SuspendLayout();
@@ -73,7 +75,7 @@
             comboBoxOptions.BackColor = Color.Moccasin;
             comboBoxOptions.ForeColor = Color.Black;
             comboBoxOptions.FormattingEnabled = true;
-            comboBoxOptions.Items.AddRange(new object[] { "Call Option", "Put Option", "Call Spread", "Put Spread", "Butterfly Spread", "Condor Spread", "Straddle", "Strangle", "Strip", "Strap" });
+            comboBoxOptions.Items.AddRange(new object[] { "Call Option", "Put Option", "Binary Call", "Binary Put", "Call Spread", "Put Spread", "Butterfly Spread", "Condor Spread", "Straddle", "Strangle", "Strip", "Strap" });
             comboBoxOptions.Location = new Point(169, 29);
             comboBoxOptions.Name = "comboBoxOptions";
             comboBoxOptions.Size = new Size(253, 31);
@@ -259,6 +261,8 @@
             // groupBoxProduit
             // 
             groupBoxProduit.BackColor = Color.AntiqueWhite;
+            groupBoxProduit.Controls.Add(labelBinary);
+            groupBoxProduit.Controls.Add(textBoxBinary);
             groupBoxProduit.Controls.Add(labelStrike4);
             groupBoxProduit.Controls.Add(labelMaturity);
             groupBoxProduit.Controls.Add(textBoxStrike4);
@@ -274,9 +278,30 @@
             groupBoxProduit.Controls.Add(textBoxStrike1);
             groupBoxProduit.Location = new Point(653, 23);
             groupBoxProduit.Name = "groupBoxProduit";
-            groupBoxProduit.Size = new Size(680, 220);
+            groupBoxProduit.Size = new Size(680, 268);
             groupBoxProduit.TabIndex = 21;
             groupBoxProduit.TabStop = false;
+            // 
+            // labelBinary
+            // 
+            labelBinary.AutoSize = true;
+            labelBinary.Location = new Point(163, 193);
+            labelBinary.Name = "labelBinary";
+            labelBinary.Size = new Size(71, 23);
+            labelBinary.TabIndex = 22;
+            labelBinary.Text = "Coupon";
+            labelBinary.TextAlign = ContentAlignment.MiddleCenter;
+            labelBinary.Visible = false;
+            // 
+            // textBoxBinary
+            // 
+            textBoxBinary.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            textBoxBinary.Location = new Point(153, 219);
+            textBoxBinary.Name = "textBoxBinary";
+            textBoxBinary.Size = new Size(93, 34);
+            textBoxBinary.TabIndex = 21;
+            textBoxBinary.TextAlign = HorizontalAlignment.Center;
+            textBoxBinary.Visible = false;
             // 
             // labelPrix
             // 
@@ -292,10 +317,10 @@
             // 
             // plotView1
             // 
-            plotView1.Location = new Point(35, 249);
+            plotView1.Location = new Point(35, 297);
             plotView1.Name = "plotView1";
             plotView1.PanCursor = Cursors.Hand;
-            plotView1.Size = new Size(681, 574);
+            plotView1.Size = new Size(669, 526);
             plotView1.TabIndex = 23;
             plotView1.Text = "plotViewProduct";
             plotView1.ZoomHorizontalCursor = Cursors.SizeWE;
@@ -352,5 +377,7 @@
         private GroupBox groupBoxProduit;
         private Label labelPrix;
         private OxyPlot.WindowsForms.PlotView plotView1;
+        private Label labelBinary;
+        private TextBox textBoxBinary;
     }
 }
