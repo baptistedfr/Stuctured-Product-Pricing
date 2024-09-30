@@ -1,8 +1,11 @@
-﻿using Pricing.Products;
+﻿using Microsoft.VisualBasic.FileIO;
+using Pricing.Products;
+using Pricing.Products.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,36 +15,47 @@ namespace Pricing.MonteCarlo
     {
         private IDerives derive;
         private Market market;
-        private int nbSteps;
+        private int nbSim;
         private double maturity;
 
-        public MonteCarloSimulator(IDerives derive, Market market, int nbSteps = 1000000)
+        public MonteCarloSimulator(IDerives derive, Market market, int nbSim = 100000)
         {
             this.derive = derive;
             this.market = market;
-            this.nbSteps = nbSteps;
-
+            this.nbSim = nbSim;
             this.maturity = derive.GetMaturity(); // Fonction qui recupere la maturité de l'option
             market.Rate = market.RateModel.Rate(maturity) / 100; // On calcule le taux sans risque à partir de la maturité
-
-            Console.WriteLine($"Rate : {market.Rate} ");
-            Console.WriteLine($"Volatility  : {market.Volatility}");
-            Console.WriteLine($"Maturity : maturity");
-
         }
 
         public double Price(double spot = 0)
         {
+            int nbSteps = Convert.ToInt32(maturity * 252);
+            double dt = maturity / nbSteps;
             market.Spot = spot; // On recupere le spot A CHANGER AVEC AUTOMATISATION
-   
-            double[] normalVariables = GenerateNormal();
-            double[] payoffs = new double[nbSteps];
+            double[] normalVariables;
+            double[] payoffs = new double[nbSim];
             double simPrice;
-            double exponent;
-            for (int i = 0; i < nbSteps; i++)
+
+            double drift = (market.Rate - 0.5 * Math.Pow(market.Volatility, 2)) * dt;
+            double diffusion = market.Volatility * Math.Sqrt(dt);
+
+            BarrierOption? barrierOption = derive as BarrierOption;
+            for (int i = 0; i < nbSim; i++)
             {
-                exponent = (market.Rate - 0.5 * market.Volatility * market.Volatility) * maturity + market.Volatility * Math.Sqrt(maturity) * normalVariables[i];
-                simPrice = market.Spot*Math.Exp(exponent);
+                if (barrierOption != null)
+                {
+                    barrierOption.Activated = false; // On remet la barriere à faux
+                }
+                simPrice = market.Spot;
+                normalVariables = GenerateNormal(nbSteps);
+                for (int j=0;j<nbSteps; j++)
+                {
+                    simPrice*= Math.Exp(drift + diffusion * normalVariables[j]);
+                    if (barrierOption != null && barrierOption.BarrierOut(simPrice))
+                    {
+                        break; // Pas besoin de continuer cette trajectoire, la barrière Out est franchis
+                    }
+                }
                 payoffs[i] = derive.Payoff(simPrice);
             }
             
@@ -63,7 +77,7 @@ namespace Pricing.MonteCarlo
             // Vega
             double deltaSigma = 0.01;
             market.Volatility += deltaSigma;
-            double vega = (Price(spot) - priceOption) / (deltaSigma*100);
+            double vega = (Price(spot) - priceOption) / deltaSigma;
             market.Volatility -= deltaSigma; // On remet la vol à son niveau d'avant
             greeks.Add("Vega", vega);
 
@@ -77,18 +91,18 @@ namespace Pricing.MonteCarlo
             // Rho
             double deltaRho = 0.01;
             market.Rate += deltaRho;
-            double rho = (Price(spot) - priceOption) / (deltaRho*100);
+            double rho = (Price(spot) - priceOption) / deltaRho;
             market.Rate -= deltaRho; // On remet la vol à son niveau d'avant
             greeks.Add("Rho", rho);
 
             return greeks;
         }
-        public double[] GenerateNormal()
+        public double[] GenerateNormal(int nb)
         {
-            double [] normalVariables = new double[nbSteps];
+            double [] normalVariables = new double[nb];
             double u1, u2;
             Random aleatoire = new Random();
-            for (int i = 0; i < nbSteps; i++)
+            for (int i = 0; i < nb; i++)
             {
                 u1 = aleatoire.NextDouble();
                 u2 = aleatoire.NextDouble();

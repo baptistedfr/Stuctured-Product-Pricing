@@ -79,7 +79,7 @@
             comboBoxOptions.BackColor = Color.Moccasin;
             comboBoxOptions.ForeColor = Color.Black;
             comboBoxOptions.FormattingEnabled = true;
-            comboBoxOptions.Items.AddRange(new object[] { "Call Option", "Put Option", "Binary Call", "Binary Put", "Call Spread", "Put Spread", "Butterfly Spread", "Condor Spread", "Straddle", "Strangle", "Strip", "Strap" });
+            comboBoxOptions.Items.AddRange(new object[] { "Call Option", "Put Option", "Binary Call", "Binary Put", "Call Up And In", "Call Up And Out", "Call Down And In", "Call Down And Out", "Put Up And In", "Put Up And Out", "Put Down And In", "Put Down And Out", "Call Spread", "Put Spread", "Butterfly Spread", "Condor Spread", "Straddle", "Strangle", "Strip", "Strap" });
             comboBoxOptions.Location = new Point(169, 29);
             comboBoxOptions.Name = "comboBoxOptions";
             comboBoxOptions.Size = new Size(253, 31);

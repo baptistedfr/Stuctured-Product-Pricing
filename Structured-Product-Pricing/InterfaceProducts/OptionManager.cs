@@ -22,7 +22,7 @@ namespace InterfaceProducts
             return true;
         }
 
-        public IDerives CreateDerive(string selectedOption, List<double> strikeValues, string maturityText, string binaryText)
+        public IDerives CreateDerive(string selectedOption, List<double> strikeValues, string maturityText, string binaryText, string barrierText)
         { 
             double maturity = double.Parse(maturityText);
             return selectedOption switch
@@ -31,6 +31,14 @@ namespace InterfaceProducts
                 "Put Option" => new PutOption(strikeValues[0], maturity),
                 "Binary Call" => new BinaryCallOption(strikeValues[0], maturity, double.Parse(binaryText)),
                 "Binary Put" => new BinaryPutOption(strikeValues[0], maturity, double.Parse(binaryText)),
+                "Call Up And In" => new CallUpAndIn(strikeValues[0], maturity, double.Parse(barrierText)),
+                "Call Up And Out" => new CallUpAndOut(strikeValues[0], maturity, double.Parse(barrierText)),
+                "Call Down And Out" => new CallDownAndOut(strikeValues[0], maturity, double.Parse(barrierText)),
+                "Call Down And In" => new CallDownAndIn(strikeValues[0], maturity, double.Parse(barrierText)),
+                "Put Down And In" => new PutDownAndIn(strikeValues[0], maturity, double.Parse(barrierText)),
+                "Put Down And Out" => new PutDownAndOut(strikeValues[0], maturity, double.Parse(barrierText)),
+                "Put Up And In" => new PutUpAndIn(strikeValues[0], maturity, double.Parse(barrierText)),
+                "Put Up And Out" => new PutUpAndOut(strikeValues[0], maturity, double.Parse(barrierText)),
                 "Call Spread" => new CallSpread(strikeValues.Min(), strikeValues.Max(), maturity),
                 "Put Spread" => new PutSpread(strikeValues.Min(), strikeValues.Max(), maturity),
                 "Butterfly Spread" => new ButterflySpread(new[] { strikeValues[0], strikeValues[1], strikeValues[2] }, maturity),

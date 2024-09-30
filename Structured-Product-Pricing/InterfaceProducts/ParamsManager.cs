@@ -71,16 +71,9 @@ namespace InterfaceProducts
         }
         public void UpdateBarrier(string selectedOption)
         {
-            if (selectedOption == "Binary Call" || selectedOption == "Binary Put")
-            {
-                barrier.Visible = true;
-                barrierLabel.Visible = true;
-            }
-            else
-            {
-                barrier.Visible = false;
-                barrierLabel.Visible = false;
-            }
+            bool isBarrierOption = (selectedOption.Contains("Up") || selectedOption.Contains("Down"));
+            barrier.Visible = isBarrierOption;
+            barrierLabel.Visible = isBarrierOption;
         }
         public List<double> GetStrikeValues()
         {
@@ -123,6 +116,15 @@ namespace InterfaceProducts
             if (binary.Visible == true && (!double.TryParse(binary.Text, out double value) || value <= 0))
             {
                 MessageBox.Show($"Veuillez entrer une valeur positive valide pour le coupon de l'option binaire.", "Valeur Invalide", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            return true;
+        }
+        public bool CheckBarrier()
+        {
+            if (barrier.Visible == true && (!double.TryParse(barrier.Text, out double value) || value <= 0))
+            {
+                MessageBox.Show($"Veuillez entrer une valeur positive valide pour le niveau de la barrière.", "Valeur Invalide", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             return true;

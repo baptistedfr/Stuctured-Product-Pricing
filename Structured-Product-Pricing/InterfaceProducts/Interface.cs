@@ -9,6 +9,7 @@ using System.CodeDom;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using OxyPlot.Annotations;
+using Pricing.Products.Options;
 namespace InterfaceProducts
 {
     public partial class Interface : Form
@@ -34,20 +35,21 @@ namespace InterfaceProducts
             if (!optionManager.CheckOptionSelected(comboBoxOptions.SelectedItem) ||
             !paramsManager.CheckVisibleStrikeValues() ||
             !paramsManager.CheckMaturityValues() || 
-            !paramsManager.CheckBinary())
+            !paramsManager.CheckBinary() ||
+            !paramsManager.CheckBarrier())
             {
                 return;
             }
 
             string selectedOption = comboBoxOptions.SelectedItem.ToString();
             MessageBox.Show("Vous avez sélectionné : " + selectedOption);
-            IDerives derive = optionManager.CreateDerive(selectedOption, paramsManager.GetStrikeValues(), textBoxMaturity.Text, textBoxBinary.Text);
+            IDerives derive = optionManager.CreateDerive(selectedOption, paramsManager.GetStrikeValues(), textBoxMaturity.Text, textBoxBinary.Text, textBoxBarrier.Text);
 
             double spot = Convert.ToDouble(textBoxSpot.Text);
             double vol = Convert.ToDouble(textBoxVolatility.Text) / 100;
             var market = new Market("AAPL", VolatilityType.Cste);
             market.Initialize(vol);
-            MonteCarloSimulator mc = new MonteCarloSimulator(derive, market, 1000000);
+            MonteCarloSimulator mc = new MonteCarloSimulator(derive, market, 100000);
             textBoxRf.Text = (Math.Round(market.Rate*100,2).ToString());
             double price = mc.Price(spot);
             labelPrix.Text += Math.Round(price,2).ToString() + " €";
@@ -65,18 +67,10 @@ namespace InterfaceProducts
             }
             dataGridViewGrecs.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             dataGridViewGrecs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-
-            // Calcul de la largeur totale des colonnes
             int totalWidth = dataGridViewGrecs.Columns.GetColumnsWidth(DataGridViewElementStates.Visible);
-
-            // Calcul de la hauteur totale des lignes
             int totalHeight = dataGridViewGrecs.Rows.GetRowsHeight(DataGridViewElementStates.Visible);
-
-            // Ajout de la taille des en-têtes (si tu veux inclure les en-têtes dans la taille totale)
             totalHeight += dataGridViewGrecs.ColumnHeadersHeight;
             totalWidth += dataGridViewGrecs.RowHeadersWidth;
-
-            // Ajustement de la taille du DataGridView
             dataGridViewGrecs.ClientSize = new Size(totalWidth, totalHeight);
 
         }
@@ -87,6 +81,7 @@ namespace InterfaceProducts
             {
                 paramsManager.UpdateStrikeVisibility(comboBoxOptions.SelectedItem.ToString());
                 paramsManager.UpdateBinary(comboBoxOptions.SelectedItem.ToString());
+                paramsManager.UpdateBarrier(comboBoxOptions.SelectedItem.ToString());
             }
            
         }
@@ -94,10 +89,14 @@ namespace InterfaceProducts
         {
             double[] assetPrices = new double[Convert.ToInt32(spot)*2]; // Prix de l'actif sous-jacent
             double[] payoffs = new double[Convert.ToInt32(spot)*2]; // Payoff
-
+            BarrierOption? barrierOption = option as BarrierOption;
             // Remplir les prix de l'actif et calculer les payoffs
             for (int i = 0; i < assetPrices.Length; i++)
             {
+                if (barrierOption != null)
+                {
+                    bool no = barrierOption.BarrierOut(i); // On actualise la barriere
+                }
                 assetPrices[i] = i; 
                 payoffs[i] = option.Payoff(assetPrices[i]) - price;
             }
