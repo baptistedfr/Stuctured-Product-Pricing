@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Pricing.Products
+namespace Pricing.Products.Options
 {
     public abstract class Option : IDerives
     {

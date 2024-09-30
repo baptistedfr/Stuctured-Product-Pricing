@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Pricing.Products
+namespace Pricing.Products.Options
 {
     public abstract class BinaryOption : Option
     {
@@ -23,7 +23,7 @@ namespace Pricing.Products
             }
         }
 
-        public BinaryOption(double strike, double maturity, double coupon): base(strike, maturity)
+        public BinaryOption(double strike, double maturity, double coupon) : base(strike, maturity)
         {
             Coupon = coupon;
         }

@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Pricing.Products;
 using Pricing;
 using Pricing.Volatility;
 using Pricing.Volatility.Models;
 using Pricing.MonteCarlo;
 using System.Runtime.InteropServices;
+using Pricing.Products.Strategies;
 
 //ButterflySpread bs = new ButterflySpread([90, 100, 110],1);
 //Console.WriteLine(bs.Payoff(111));

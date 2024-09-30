@@ -4,8 +4,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-namespace Pricing.Products
+using Pricing.Products.Options;
+namespace Pricing.Products.Strategies
 
 {
     /// <summary>

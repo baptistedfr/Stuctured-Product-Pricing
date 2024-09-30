@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualBasic.FileIO;
+using Pricing.Products.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Pricing.Products
+namespace Pricing.Products.Strategies
 {
     public abstract class OptionStrategy : IDerives
     {
@@ -120,5 +121,5 @@ namespace Pricing.Products
             return 0;
         }
     }
-    
+
 }

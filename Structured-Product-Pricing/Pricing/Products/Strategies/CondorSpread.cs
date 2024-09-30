@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-namespace Pricing.Products
+using Pricing.Products.Options;
+namespace Pricing.Products.Strategies
 {
     public class CondorSpread : OptionStrategy
     {
@@ -19,7 +19,7 @@ namespace Pricing.Products
             AddOption(new CallOption(strikes[0], maturity), 1);
             AddOption(new CallOption(strikes[1], maturity), -1);
             AddOption(new CallOption(strikes[2], maturity), -1);
-            AddOption(new CallOption(strikes[3], maturity), -1);
+            AddOption(new CallOption(strikes[3], maturity), 1);
         }
     }
 }

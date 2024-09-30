@@ -14,13 +14,17 @@ namespace InterfaceProducts
         private TextBox maturity;
         private TextBox binary;
         private Label binaryLabel;
-        public ParamsManager(TextBox[] textBoxes, Label[] labels, TextBox maturity, TextBox binary, Label binaryLabel)
+        private TextBox barrier;
+        private Label barrierLabel;
+        public ParamsManager(TextBox[] textBoxes, Label[] labels, TextBox maturity, TextBox binary, Label binaryLabel, TextBox barrier, Label barrierLabel)
         {
             this.strikeTextBoxes = textBoxes;
             this.strikeLabels = labels;
             this.maturity = maturity;
             this.binary = binary;
             this.binaryLabel = binaryLabel;
+            this.barrier = barrier;
+            this.barrierLabel = barrierLabel;
         }
 
         public void UpdateStrikeVisibility(string selectedOption)
@@ -63,6 +67,19 @@ namespace InterfaceProducts
             {
                 binary.Visible = false;
                 binaryLabel.Visible = false;
+            }
+        }
+        public void UpdateBarrier(string selectedOption)
+        {
+            if (selectedOption == "Binary Call" || selectedOption == "Binary Put")
+            {
+                barrier.Visible = true;
+                barrierLabel.Visible = true;
+            }
+            else
+            {
+                barrier.Visible = false;
+                barrierLabel.Visible = false;
             }
         }
         public List<double> GetStrikeValues()

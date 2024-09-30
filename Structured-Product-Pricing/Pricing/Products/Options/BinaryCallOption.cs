@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pricing.Products
+namespace Pricing.Products.Options
 {
     public class BinaryCallOption : BinaryOption
     {

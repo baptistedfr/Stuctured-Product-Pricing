@@ -20,14 +20,16 @@ namespace InterfaceProducts
 
             InitializeComponent();
             paramsManager = new ParamsManager(new System.Windows.Forms.TextBox[] { textBoxStrike1, textBoxStrike2, textBoxStrike3, textBoxStrike4 },
-                                          new Label[] { labelStrike1, labelStrike2, labelStrike3, labelStrike4 },
-                                          textBoxMaturity, textBoxBinary, labelBinary);
+                                          new Label[] { labelStrike1, labelStrike2, labelStrike3, labelStrike4},
+                                          textBoxMaturity, textBoxBinary, labelBinary, textBoxBarrier, labelBarrier);
             optionManager = new OptionManager();
 
         }
 
         private void price_Click(object sender, EventArgs e)
         {
+            dataGridViewGrecs.Rows.Clear();    // Supprimer toutes les lignes
+            dataGridViewGrecs.Columns.Clear(); // Supprimer toutes les colonnes
             labelPrix.Text = "Prix : "; // On réinitialise le Prix
             if (!optionManager.CheckOptionSelected(comboBoxOptions.SelectedItem) ||
             !paramsManager.CheckVisibleStrikeValues() ||
@@ -50,6 +52,33 @@ namespace InterfaceProducts
             double price = mc.Price(spot);
             labelPrix.Text += Math.Round(price,2).ToString() + " €";
             CreatePayoffChart(spot, derive, price);
+
+            Dictionary<string, double> greeks = mc.ComputeGreeks(price, spot);
+
+            dataGridViewGrecs.Columns.Add("Grec", "Grec");
+            dataGridViewGrecs.Columns.Add("Valeur", "Valeur");
+
+            // Ajout des valeurs du dictionnaire dans le DataGridView
+            foreach (var greek in greeks)
+            {
+                dataGridViewGrecs.Rows.Add(greek.Key, Math.Round(greek.Value,2));
+            }
+            dataGridViewGrecs.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            dataGridViewGrecs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+
+            // Calcul de la largeur totale des colonnes
+            int totalWidth = dataGridViewGrecs.Columns.GetColumnsWidth(DataGridViewElementStates.Visible);
+
+            // Calcul de la hauteur totale des lignes
+            int totalHeight = dataGridViewGrecs.Rows.GetRowsHeight(DataGridViewElementStates.Visible);
+
+            // Ajout de la taille des en-têtes (si tu veux inclure les en-têtes dans la taille totale)
+            totalHeight += dataGridViewGrecs.ColumnHeadersHeight;
+            totalWidth += dataGridViewGrecs.RowHeadersWidth;
+
+            // Ajustement de la taille du DataGridView
+            dataGridViewGrecs.ClientSize = new Size(totalWidth, totalHeight);
+
         }
 
         private void comboBoxOptions_SelectedIndexChanged(object sender, EventArgs e)

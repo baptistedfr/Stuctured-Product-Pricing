@@ -49,11 +49,15 @@
             labelMaturity = new Label();
             label5 = new Label();
             groupBoxProduit = new GroupBox();
+            labelBarrier = new Label();
+            textBoxBarrier = new TextBox();
             labelBinary = new Label();
             textBoxBinary = new TextBox();
             labelPrix = new Label();
             plotView1 = new OxyPlot.WindowsForms.PlotView();
+            dataGridViewGrecs = new DataGridView();
             groupBoxProduit.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewGrecs).BeginInit();
             SuspendLayout();
             // 
             // price
@@ -190,7 +194,7 @@
             // labelStrike1
             // 
             labelStrike1.AutoSize = true;
-            labelStrike1.Location = new Point(169, 90);
+            labelStrike1.Location = new Point(169, 110);
             labelStrike1.Name = "labelStrike1";
             labelStrike1.Size = new Size(65, 23);
             labelStrike1.TabIndex = 14;
@@ -201,7 +205,7 @@
             // labelStrike2
             // 
             labelStrike2.AutoSize = true;
-            labelStrike2.Location = new Point(280, 90);
+            labelStrike2.Location = new Point(285, 110);
             labelStrike2.Name = "labelStrike2";
             labelStrike2.Size = new Size(65, 23);
             labelStrike2.TabIndex = 15;
@@ -211,7 +215,7 @@
             // labelStrike3
             // 
             labelStrike3.AutoSize = true;
-            labelStrike3.Location = new Point(403, 90);
+            labelStrike3.Location = new Point(411, 110);
             labelStrike3.Name = "labelStrike3";
             labelStrike3.Size = new Size(65, 23);
             labelStrike3.TabIndex = 16;
@@ -221,7 +225,7 @@
             // labelStrike4
             // 
             labelStrike4.AutoSize = true;
-            labelStrike4.Location = new Point(532, 90);
+            labelStrike4.Location = new Point(532, 110);
             labelStrike4.Name = "labelStrike4";
             labelStrike4.Size = new Size(65, 23);
             labelStrike4.TabIndex = 17;
@@ -240,7 +244,7 @@
             // labelMaturity
             // 
             labelMaturity.AutoSize = true;
-            labelMaturity.Location = new Point(46, 90);
+            labelMaturity.Location = new Point(38, 110);
             labelMaturity.Name = "labelMaturity";
             labelMaturity.Size = new Size(75, 23);
             labelMaturity.TabIndex = 19;
@@ -261,6 +265,8 @@
             // groupBoxProduit
             // 
             groupBoxProduit.BackColor = Color.AntiqueWhite;
+            groupBoxProduit.Controls.Add(labelBarrier);
+            groupBoxProduit.Controls.Add(textBoxBarrier);
             groupBoxProduit.Controls.Add(labelBinary);
             groupBoxProduit.Controls.Add(textBoxBinary);
             groupBoxProduit.Controls.Add(labelStrike4);
@@ -281,6 +287,27 @@
             groupBoxProduit.Size = new Size(680, 268);
             groupBoxProduit.TabIndex = 21;
             groupBoxProduit.TabStop = false;
+            // 
+            // labelBarrier
+            // 
+            labelBarrier.AutoSize = true;
+            labelBarrier.Location = new Point(42, 193);
+            labelBarrier.Name = "labelBarrier";
+            labelBarrier.Size = new Size(69, 23);
+            labelBarrier.TabIndex = 24;
+            labelBarrier.Text = "Barrière";
+            labelBarrier.TextAlign = ContentAlignment.MiddleCenter;
+            labelBarrier.Visible = false;
+            // 
+            // textBoxBarrier
+            // 
+            textBoxBarrier.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            textBoxBarrier.Location = new Point(28, 219);
+            textBoxBarrier.Name = "textBoxBarrier";
+            textBoxBarrier.Size = new Size(93, 34);
+            textBoxBarrier.TabIndex = 23;
+            textBoxBarrier.TextAlign = HorizontalAlignment.Center;
+            textBoxBarrier.Visible = false;
             // 
             // labelBinary
             // 
@@ -327,12 +354,23 @@
             plotView1.ZoomRectangleCursor = Cursors.SizeNWSE;
             plotView1.ZoomVerticalCursor = Cursors.SizeNS;
             // 
+            // dataGridViewGrecs
+            // 
+            dataGridViewGrecs.BackgroundColor = SystemColors.Info;
+            dataGridViewGrecs.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewGrecs.Location = new Point(758, 521);
+            dataGridViewGrecs.Name = "dataGridViewGrecs";
+            dataGridViewGrecs.RowHeadersWidth = 51;
+            dataGridViewGrecs.Size = new Size(430, 277);
+            dataGridViewGrecs.TabIndex = 24;
+            // 
             // Interface
             // 
             AutoScaleDimensions = new SizeF(9F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.SeaShell;
             ClientSize = new Size(1504, 835);
+            Controls.Add(dataGridViewGrecs);
             Controls.Add(plotView1);
             Controls.Add(labelPrix);
             Controls.Add(textBoxRf);
@@ -348,6 +386,7 @@
             Text = "Form1";
             groupBoxProduit.ResumeLayout(false);
             groupBoxProduit.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewGrecs).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -379,5 +418,8 @@
         private OxyPlot.WindowsForms.PlotView plotView1;
         private Label labelBinary;
         private TextBox textBoxBinary;
+        private Label labelBarrier;
+        private TextBox textBoxBarrier;
+        private DataGridView dataGridViewGrecs;
     }
 }

@@ -5,7 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pricing.Products
+namespace Pricing.Products.Options
 {
     public class CallOption : Option
     {

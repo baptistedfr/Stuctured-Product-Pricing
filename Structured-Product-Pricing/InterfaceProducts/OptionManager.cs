@@ -1,4 +1,6 @@
-﻿using Pricing.Products;
+﻿using Pricing.Products.Options;
+using Pricing.Products.Strategies;
+using Pricing.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -15,7 +15,7 @@ namespace Pricing.MonteCarlo
         private int nbSteps;
         private double maturity;
 
-        public MonteCarloSimulator(IDerives derive, Market market, int nbSteps = 100000)
+        public MonteCarloSimulator(IDerives derive, Market market, int nbSteps = 1000000)
         {
             this.derive = derive;
             this.market = market;
@@ -46,6 +46,42 @@ namespace Pricing.MonteCarlo
             }
             
             return Math.Exp(-market.Rate * maturity) * payoffs.Average();
+        }
+        public Dictionary<string, double > ComputeGreeks(double priceOption, double spot)
+        {
+            Dictionary<string, double> greeks = new Dictionary<string, double>();
+
+            // Delta
+            double deltaS = spot * 0.01;
+            double delta = (Price(spot + deltaS) - priceOption) / deltaS;
+            greeks.Add("Delta", delta);
+
+            // Gamma
+            double gamma = (Price(spot + deltaS) - 2* priceOption + Price(spot - deltaS)) / (deltaS*deltaS);
+            greeks.Add("Gamma", gamma);
+
+            // Vega
+            double deltaSigma = 0.01;
+            market.Volatility += deltaSigma;
+            double vega = (Price(spot) - priceOption) / (deltaSigma*100);
+            market.Volatility -= deltaSigma; // On remet la vol à son niveau d'avant
+            greeks.Add("Vega", vega);
+
+            // Theta
+            double deltaMaturity = 1.0 / 252; // on diminue de 1 jour (1/252 an)
+            maturity -= deltaMaturity;
+            double theta = (Price(spot) - priceOption) / deltaMaturity;
+            maturity += deltaMaturity; // On remet la maturité comme avant
+            greeks.Add("Theta", theta);
+
+            // Rho
+            double deltaRho = 0.01;
+            market.Rate += deltaRho;
+            double rho = (Price(spot) - priceOption) / (deltaRho*100);
+            market.Rate -= deltaRho; // On remet la vol à son niveau d'avant
+            greeks.Add("Rho", rho);
+
+            return greeks;
         }
         public double[] GenerateNormal()
         {
