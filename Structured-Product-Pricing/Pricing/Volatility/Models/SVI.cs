@@ -54,6 +54,7 @@ namespace Pricing.Volatility.Models
         {
             var SVIParams = parameters as SVICalibrationParams;
             var optData = SVIParams.OptData;
+
             var spot = SVIParams.Spot;
 
             Func<Vector<double>, double> objectiveFunction = parameters =>
@@ -66,7 +67,7 @@ namespace Pricing.Volatility.Models
             var initialGuessVector = Vector<double>.Build.DenseOfArray(initialGuess);
 
             IObjectiveFunction func = ObjectiveFunction.Value(objectiveFunction);
-            var optimizer = new NelderMeadSimplex(1e-3, 100000);
+            var optimizer = new NelderMeadSimplex(1e-1, 100000);
             var result = optimizer.FindMinimum(func, initialGuessVector);
 
             var optParams = result.MinimizingPoint.ToArray();

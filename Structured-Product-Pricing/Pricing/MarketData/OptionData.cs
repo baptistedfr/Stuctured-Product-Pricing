@@ -11,5 +11,6 @@ namespace Pricing.MarketData
         public double Strike { get; set; }
         public double ImpliedVolatility { get; set; }
         public double Maturity { get; set; }
+        public double Volume { get; set; }
     }
 }

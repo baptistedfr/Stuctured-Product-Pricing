@@ -21,12 +21,14 @@ namespace Pricing.MarketData
                 double strike = double.Parse(values[1], CultureInfo.InvariantCulture);
                 double impliedVolatility = double.Parse(values[4], CultureInfo.InvariantCulture);
                 double maturity = double.Parse(values[5], CultureInfo.InvariantCulture);
+                double volume = double.Parse(values[3], CultureInfo.InvariantCulture);
 
                 optionDataList.Add(new OptionData
                 {
                     Strike = strike,
                     ImpliedVolatility = impliedVolatility,
-                    Maturity = maturity
+                    Maturity = maturity,
+                    Volume = volume
                 });
             }
 

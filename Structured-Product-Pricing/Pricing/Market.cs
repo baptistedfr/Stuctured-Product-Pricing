@@ -48,7 +48,7 @@ namespace Pricing
             }
             else if (VolType == VolatilityType.SVI)
             {
-                var filePath = GetDataPath("option_data.csv");
+                var filePath = GetDataPath("sp500_data.csv");
                 var optData = new CsvReader().ReadOptionData(filePath);
                 var parameters = new SVICalibrationParams(optData, Spot);
                 var SVI = new SVI();
@@ -68,7 +68,7 @@ namespace Pricing
         
         public void Initialize(double CsteVol = 0)
         {
-            //Spot = YahooFinance.GetLastSpot(Ticker);
+            Spot = YahooFinance.GetLastSpot(Ticker);
             CalibrateVol(CsteVol);
             CalibrateRate();
         }
