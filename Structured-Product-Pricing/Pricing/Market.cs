@@ -30,6 +30,12 @@ namespace Pricing
             VolType = volType;
         }
 
+        public string GetDataPath(string fileName)
+        {
+            string currentDir = AppDomain.CurrentDomain.BaseDirectory;
+            string solutionRoot = Directory.GetParent(currentDir).Parent.Parent.Parent.Parent.FullName;
+            return Path.Combine(solutionRoot, "CsvData", fileName);
+        }
         public void CalibrateVol(double CsteVol = 0)
         {
             if (VolType == VolatilityType.Cste)
@@ -42,7 +48,8 @@ namespace Pricing
             }
             else if (VolType == VolatilityType.SVI)
             {
-                var optData = new CsvReader().ReadOptionData("C:\\Users\\bapdu\\COMMUN\\Dauphine\\Stuctured-Product-Pricing\\option_data.csv");
+                var filePath = GetDataPath("option_data.csv");
+                var optData = new CsvReader().ReadOptionData(filePath);
                 var parameters = new SVICalibrationParams(optData, Spot);
                 var SVI = new SVI();
                 SVI.Calibrate((ICalibrationParams)parameters);
@@ -52,7 +59,8 @@ namespace Pricing
 
         public void CalibrateRate()
         {
-            var curveData = new CsvReader().ReadRateCurve("C:\\Users\\bapdu\\COMMUN\\Dauphine\\Stuctured-Product-Pricing\\yield_us.csv");
+            var filePath = GetDataPath("yield_us.csv");
+            var curveData = new CsvReader().ReadRateCurve(filePath);
             var nelsonSiegel = new NelsonSiegel();
             nelsonSiegel.Calibrate(curveData);
             RateModel = nelsonSiegel;
