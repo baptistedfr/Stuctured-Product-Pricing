@@ -29,9 +29,13 @@ namespace InterfaceProducts
 
         private void price_Click(object sender, EventArgs e)
         {
+            plotView1.Model = null;  // Assigner un modèle nul pour vider l'affichage
             dataGridViewGrecs.Rows.Clear();    // Supprimer toutes les lignes
             dataGridViewGrecs.Columns.Clear(); // Supprimer toutes les colonnes
             labelPrix.Text = "Prix : "; // On réinitialise le Prix
+            labelCF.Text = "Close Formula : "; // On réinitialise le Prix
+
+            // On regarde si les paramètres sont bien renseignés
             if (!optionManager.CheckOptionSelected(comboBoxOptions.SelectedItem) ||
             !paramsManager.CheckVisibleStrikeValues() ||
             !paramsManager.CheckMaturityValues() || 
@@ -41,7 +45,7 @@ namespace InterfaceProducts
                 return;
             }
 
-            string selectedOption = comboBoxOptions.SelectedItem.ToString();
+            string? selectedOption = comboBoxOptions.SelectedItem.ToString();
             MessageBox.Show("Vous avez sélectionné : " + selectedOption);
             IDerives derive = optionManager.CreateDerive(selectedOption, paramsManager.GetStrikeValues(), textBoxMaturity.Text, textBoxBinary.Text, textBoxBarrier.Text);
 
@@ -53,26 +57,13 @@ namespace InterfaceProducts
             textBoxRf.Text = (Math.Round(market.Rate*100,2).ToString());
             double price = mc.Price(spot);
             labelPrix.Text += Math.Round(price,2).ToString() + " €";
-            CreatePayoffChart(spot, derive, price);
-
-            Dictionary<string, double> greeks = mc.ComputeGreeks(price, spot);
-
-            dataGridViewGrecs.Columns.Add("Grec", "Grec");
-            dataGridViewGrecs.Columns.Add("Valeur", "Valeur");
-
-            // Ajout des valeurs du dictionnaire dans le DataGridView
-            foreach (var greek in greeks)
+            labelCF.Text += Math.Round(derive.CloseFormula(market), 2);
+            if (!selectedOption.Contains("Call Down") && !selectedOption.Contains("Put Up"))
             {
-                dataGridViewGrecs.Rows.Add(greek.Key, Math.Round(greek.Value,2));
+                CreatePayoffChart(spot, derive, price);
             }
-            dataGridViewGrecs.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            dataGridViewGrecs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            int totalWidth = dataGridViewGrecs.Columns.GetColumnsWidth(DataGridViewElementStates.Visible);
-            int totalHeight = dataGridViewGrecs.Rows.GetRowsHeight(DataGridViewElementStates.Visible);
-            totalHeight += dataGridViewGrecs.ColumnHeadersHeight;
-            totalWidth += dataGridViewGrecs.RowHeadersWidth;
-            dataGridViewGrecs.ClientSize = new Size(totalWidth, totalHeight);
 
+            GenerateGreeks(mc, price, spot);
         }
 
         private void comboBoxOptions_SelectedIndexChanged(object sender, EventArgs e)
@@ -85,19 +76,39 @@ namespace InterfaceProducts
             }
            
         }
+        public void GenerateGreeks(MonteCarloSimulator mc, double price, double spot)
+        {
+            Dictionary<string, double> greeks = mc.ComputeGreeks(price, spot);
+
+            dataGridViewGrecs.Columns.Add("Grec", "Grec");
+            dataGridViewGrecs.Columns.Add("Valeur", "Valeur");
+
+            // Ajout des valeurs du dictionnaire dans le DataGridView
+            foreach (var greek in greeks)
+            {
+                dataGridViewGrecs.Rows.Add(greek.Key, Math.Round(greek.Value, 2));
+            }
+            dataGridViewGrecs.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            dataGridViewGrecs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            int totalWidth = dataGridViewGrecs.Columns.GetColumnsWidth(DataGridViewElementStates.Visible);
+            int totalHeight = dataGridViewGrecs.Rows.GetRowsHeight(DataGridViewElementStates.Visible);
+            totalHeight += dataGridViewGrecs.ColumnHeadersHeight;
+            totalWidth += dataGridViewGrecs.RowHeadersWidth;
+            dataGridViewGrecs.ClientSize = new Size(totalWidth, totalHeight);
+        }
         private void CreatePayoffChart(double spot, IDerives option, double price)
         {
-            double[] assetPrices = new double[Convert.ToInt32(spot)*2]; // Prix de l'actif sous-jacent
-            double[] payoffs = new double[Convert.ToInt32(spot)*2]; // Payoff
+            double[] assetPrices = new double[Convert.ToInt32(spot)]; // Prix de l'actif sous-jacent
+            double[] payoffs = new double[Convert.ToInt32(spot)]; // Payoff
             BarrierOption? barrierOption = option as BarrierOption;
-            // Remplir les prix de l'actif et calculer les payoffs
+           
             for (int i = 0; i < assetPrices.Length; i++)
             {
                 if (barrierOption != null)
                 {
-                    bool no = barrierOption.BarrierOut(i); // On actualise la barriere
+                    bool no = barrierOption.BarrierOut(i + Convert.ToInt32(spot / 2)); // On actualise la barriere
                 }
-                assetPrices[i] = i; 
+                assetPrices[i] = i + Convert.ToInt32(spot/2); 
                 payoffs[i] = option.Payoff(assetPrices[i]) - price;
             }
 
@@ -128,6 +139,19 @@ namespace InterfaceProducts
                 LineStyle = LineStyle.Dash // Style en pointillés
             };
             plotModel.Annotations.Add(zeroLine);
+
+            if (barrierOption != null)
+            {
+                // On va plot la barrière
+                var barrierLine = new LineAnnotation
+                {
+                    Type = LineAnnotationType.Vertical,
+                    X = barrierOption.Barrier, // Position sur l'axe des ordonnées
+                    Color = OxyColors.Green,
+                    LineStyle = LineStyle.Dash // Style en pointillés
+                };
+                plotModel.Annotations.Add(barrierLine);
+            }
 
             // Configurer les axes
             plotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Bottom, Title = "S" });

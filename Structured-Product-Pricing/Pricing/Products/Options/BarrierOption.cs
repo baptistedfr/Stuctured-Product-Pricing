@@ -32,7 +32,7 @@ namespace Pricing.Products.Options
             Barrier = barrier;
             Activated = false;
         }
-
+        
         public override string Afficher()
         {
             return $"Cette option à barrière a un strike de {Strike}, une maturité de {Maturity} et une barrière de {Barrier}";

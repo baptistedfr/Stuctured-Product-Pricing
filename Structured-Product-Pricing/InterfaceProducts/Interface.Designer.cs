@@ -56,6 +56,7 @@
             labelPrix = new Label();
             plotView1 = new OxyPlot.WindowsForms.PlotView();
             dataGridViewGrecs = new DataGridView();
+            labelCF = new Label();
             groupBoxProduit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewGrecs).BeginInit();
             SuspendLayout();
@@ -291,7 +292,7 @@
             // labelBarrier
             // 
             labelBarrier.AutoSize = true;
-            labelBarrier.Location = new Point(42, 193);
+            labelBarrier.Location = new Point(165, 193);
             labelBarrier.Name = "labelBarrier";
             labelBarrier.Size = new Size(69, 23);
             labelBarrier.TabIndex = 24;
@@ -302,7 +303,7 @@
             // textBoxBarrier
             // 
             textBoxBarrier.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            textBoxBarrier.Location = new Point(28, 219);
+            textBoxBarrier.Location = new Point(153, 219);
             textBoxBarrier.Name = "textBoxBarrier";
             textBoxBarrier.Size = new Size(93, 34);
             textBoxBarrier.TabIndex = 23;
@@ -312,7 +313,7 @@
             // labelBinary
             // 
             labelBinary.AutoSize = true;
-            labelBinary.Location = new Point(163, 193);
+            labelBinary.Location = new Point(38, 193);
             labelBinary.Name = "labelBinary";
             labelBinary.Size = new Size(71, 23);
             labelBinary.TabIndex = 22;
@@ -323,7 +324,7 @@
             // textBoxBinary
             // 
             textBoxBinary.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            textBoxBinary.Location = new Point(153, 219);
+            textBoxBinary.Location = new Point(26, 219);
             textBoxBinary.Name = "textBoxBinary";
             textBoxBinary.Size = new Size(93, 34);
             textBoxBinary.TabIndex = 21;
@@ -364,12 +365,25 @@
             dataGridViewGrecs.Size = new Size(430, 277);
             dataGridViewGrecs.TabIndex = 24;
             // 
+            // labelCF
+            // 
+            labelCF.AutoSize = true;
+            labelCF.BackColor = Color.Tomato;
+            labelCF.BorderStyle = BorderStyle.FixedSingle;
+            labelCF.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            labelCF.Location = new Point(777, 432);
+            labelCF.Name = "labelCF";
+            labelCF.Size = new Size(335, 56);
+            labelCF.TabIndex = 25;
+            labelCF.Text = "Close Formula :  ";
+            // 
             // Interface
             // 
             AutoScaleDimensions = new SizeF(9F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.SeaShell;
             ClientSize = new Size(1504, 835);
+            Controls.Add(labelCF);
             Controls.Add(dataGridViewGrecs);
             Controls.Add(plotView1);
             Controls.Add(labelPrix);
@@ -421,5 +435,6 @@
         private Label labelBarrier;
         private TextBox textBoxBarrier;
         private DataGridView dataGridViewGrecs;
+        private Label labelCF;
     }
 }

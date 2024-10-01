@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -27,6 +28,7 @@ namespace Pricing.Products.Options
         {
             Coupon = coupon;
         }
+
 
         public override string Afficher()
         {

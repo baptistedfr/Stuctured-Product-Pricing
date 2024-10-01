@@ -13,10 +13,10 @@ namespace Pricing.MonteCarlo
 {
     public class MonteCarloSimulator
     {
-        private IDerives derive;
-        private Market market;
-        private int nbSim;
-        private double maturity;
+        public IDerives derive;
+        public Market market;
+        public int nbSim;
+        public double maturity;
 
         public MonteCarloSimulator(IDerives derive, Market market, int nbSim = 100000)
         {
@@ -32,33 +32,37 @@ namespace Pricing.MonteCarlo
             int nbSteps = Convert.ToInt32(maturity * 252);
             double dt = maturity / nbSteps;
             market.Spot = spot; // On recupere le spot A CHANGER AVEC AUTOMATISATION
-            double[] normalVariables;
             double[] payoffs = new double[nbSim];
-            double simPrice;
 
             double drift = (market.Rate - 0.5 * Math.Pow(market.Volatility, 2)) * dt;
             double diffusion = market.Volatility * Math.Sqrt(dt);
 
             BarrierOption? barrierOption = derive as BarrierOption;
-            for (int i = 0; i < nbSim; i++)
+
+            Parallel.For(0, nbSim, i =>
             {
+                BarrierOption? barrierOption = derive as BarrierOption;
+                double simPrice = market.Spot;
+
                 if (barrierOption != null)
                 {
-                    barrierOption.Activated = false; // On remet la barriere à faux
+                    barrierOption.Activated = false; 
                 }
-                simPrice = market.Spot;
-                normalVariables = GenerateNormal(nbSteps);
-                for (int j=0;j<nbSteps; j++)
+
+                double[] normalVariables = GenerateNormal(nbSteps);
+
+                for (int j = 0; j < nbSteps; j++)
                 {
-                    simPrice*= Math.Exp(drift + diffusion * normalVariables[j]);
+                    simPrice *= Math.Exp(drift + diffusion * normalVariables[j]);
+
                     if (barrierOption != null && barrierOption.BarrierOut(simPrice))
                     {
-                        break; // Pas besoin de continuer cette trajectoire, la barrière Out est franchis
+                        break;
                     }
                 }
                 payoffs[i] = derive.Payoff(simPrice);
-            }
-            
+            });
+
             return Math.Exp(-market.Rate * maturity) * payoffs.Average();
         }
         public Dictionary<string, double > ComputeGreeks(double priceOption, double spot)
@@ -82,10 +86,10 @@ namespace Pricing.MonteCarlo
             greeks.Add("Vega", vega);
 
             // Theta
-            double deltaMaturity = 1.0 / 252; // on diminue de 1 jour (1/252 an)
+            double deltaMaturity = 10.0 / 252; // on diminue de 10 jour (10/252 an)
             maturity -= deltaMaturity;
             double theta = (Price(spot) - priceOption) / deltaMaturity;
-            maturity += deltaMaturity; // On remet la maturité comme avant
+            maturity = derive.GetMaturity(); // On remet la maturité comme avant
             greeks.Add("Theta", theta);
 
             // Rho

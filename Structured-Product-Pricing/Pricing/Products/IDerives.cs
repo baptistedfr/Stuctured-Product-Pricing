@@ -13,5 +13,7 @@ namespace Pricing.Products
         string Afficher();
 
         double GetMaturity();
+
+        double CloseFormula(Market market);
     }
 }

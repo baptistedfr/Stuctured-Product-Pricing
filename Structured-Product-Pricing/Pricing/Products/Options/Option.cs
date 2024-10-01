@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using MathNet.Numerics.Distributions;
 
 namespace Pricing.Products.Options
 {
@@ -46,6 +46,11 @@ namespace Pricing.Products.Options
         // Méthodes communes
         public abstract double Payoff(double spot);
 
+        public virtual double CloseFormula(Market market)
+        {
+            throw new NotImplementedException();
+        }
+
         // Méthode virtuelle pouvant être redéfinie
         public virtual string Afficher()
         {
@@ -53,6 +58,7 @@ namespace Pricing.Products.Options
             return $"Cette option a un strike de {Strike} et une maturité de {Maturity}";
 
         }
+
 
         public double GetMaturity()
         {

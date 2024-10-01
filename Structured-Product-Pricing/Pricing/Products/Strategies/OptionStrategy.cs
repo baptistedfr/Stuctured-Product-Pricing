@@ -50,6 +50,17 @@ namespace Pricing.Products.Strategies
             }
             return total;
         }
+        public double CloseFormula(Market market)
+        {
+            double price = 0;
+            foreach (var option in Options)
+            {
+                Option opt = option.Key;
+                int quantity = option.Value;
+                price += opt.CloseFormula(market) * quantity;
+            }
+            return price;
+        }
 
         public string Afficher()
         {
