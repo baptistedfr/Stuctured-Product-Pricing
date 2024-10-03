@@ -16,12 +16,19 @@ namespace Pricing.Rate
         private double Beta2 { get; set; }
         private double Tau { get; set; }
 
-        public double Rate(double maturity)
+        /// <summary>
+        /// Method used to get the rate from the NelsonSiegel extrapolation with calibrated params
+        /// </summary>
+        /// <param name="maturity">Maturity to extract the rate</param>
+        public double GetRate(double maturity)
         {
             if (maturity == 0) return Beta0;
             return Beta0 + Beta1 * (1 - Math.Exp(-maturity / Tau)) / (maturity / Tau) + Beta2 * ((1 - Math.Exp(-maturity / Tau)) / (maturity / Tau) - Math.Exp(-maturity / Tau));
         }
 
+        /// <summary>
+        /// Method used to calibrate the NelsonSiegel model thanks to the US Yield Curve
+        /// </summary>
         public void Calibrate(List<RateCurveData> rateCurveData)
         {
             double initialBeta0 = rateCurveData.Average(x => x.Rate);
@@ -38,7 +45,7 @@ namespace Pricing.Rate
 
                 return rateCurveData.Sum(data =>
                 {
-                    double estimatedRate = Rate(data.Maturity);
+                    double estimatedRate = GetRate(data.Maturity);
                     return Math.Pow(estimatedRate - data.Rate, 2);
                 });
             };

@@ -1,4 +1,5 @@
 ﻿using Pricing.Volatility.Calibration;
+using Pricing.Volatility.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace Pricing.Volatility.Models
             CsteCalibrationParams? param = parameters as CsteCalibrationParams;
             VolLevel = param.VolLevel;
         }
-        public override double GetVolatility(double strike = 0, double maturity = 0, double spot = 0)
+        public override double GetVolatility(IVolatilityParams parameters = null)
         {
             return VolLevel;
         }

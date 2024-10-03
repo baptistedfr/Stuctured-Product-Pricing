@@ -26,10 +26,12 @@ namespace Pricing
         public double Rate { get; set; }
         public double Dividende { get; private set; }
 
+        /// <summary>
+        /// Case of Automaticaly calibrated Market
+        /// </summary>
         public Market(string ticker, VolatilityType volType, double CsteVol = 0, double spot = 100)
         {
             Spot = spot;
-            // Cas du marché automatique
             Ticker = ticker;
             VolType = volType;
             //Spot = YahooFinance.GetLastSpot(Ticker);
@@ -37,10 +39,12 @@ namespace Pricing
             CalibrateRate();
         }
 
+        /// <summary>
+        /// Case of custom Market
+        /// </summary>
         public Market(double rate, double CsteVol, double spot)
         {
             Spot = spot;
-            // Cas du marché choisi par l'utilisateur
             VolType = VolatilityType.Cste;
             CalibrateVol(CsteVol); //On peut quand meme utiliser cette fonction
             Rate = rate;

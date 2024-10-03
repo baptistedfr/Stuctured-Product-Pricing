@@ -10,6 +10,7 @@ using MathNet.Numerics.Optimization;
 using MathNet.Numerics.LinearAlgebra;
 using Pricing.MarketData;
 using Pricing.Volatility.Calibration;
+using Pricing.Volatility.Parameters;
 
 namespace Pricing.Volatility.Models
 {
@@ -35,10 +36,13 @@ namespace Pricing.Volatility.Models
             return Alpha + Beta * (Rho * (logMoneyness - M) + Math.Sqrt(Math.Pow(logMoneyness - M, 2) + Math.Pow(Sigma, 2)));
         }
 
-        public override double GetVolatility(double strike, double maturity, double spot)
+        public override double GetVolatility(IVolatilityParams parameters)
         {
-            var totalVariance = TotalVariance(Math.Log(strike / spot));
-            return Math.Sqrt(totalVariance / maturity);
+            var sviParams = parameters as SVIParams;
+            if (sviParams == null) throw new ArgumentException("Invalid calibration parameters for SVI model");
+
+            var totalVariance = TotalVariance(Math.Log(sviParams.Strike / sviParams.Spot));
+            return Math.Sqrt(totalVariance / sviParams.Maturity);
         }
 
         private void SetParameters(double[] parameters)
@@ -60,7 +64,11 @@ namespace Pricing.Volatility.Models
             Func<Vector<double>, double> objectiveFunction = parameters =>
             {
                 SetParameters(parameters.ToArray());
-                return optData.Sum(data => Math.Pow(GetVolatility(data.Strike, data.Maturity, spot) - data.ImpliedVolatility, 2));
+                return optData.Sum(data =>
+                {
+                    var sviParams = new SVIParams(data.Strike, data.Maturity, spot);
+                    return Math.Pow(GetVolatility(sviParams) - data.ImpliedVolatility, 2);
+                });
             };
 
             double[] initialGuess = new double[] { Alpha, Beta, Rho, M, Sigma };
