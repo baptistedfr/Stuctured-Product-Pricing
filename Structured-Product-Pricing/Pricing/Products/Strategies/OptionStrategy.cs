@@ -2,6 +2,7 @@
 using Pricing.Products.Options;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,9 +27,7 @@ namespace Pricing.Products.Strategies
         {
             if (options.ContainsKey(option))
             {
-
                 Options[option] += quantity;
-
                 if (Options[option] == 0)
                 {
                     Options.Remove(option);
@@ -36,11 +35,9 @@ namespace Pricing.Products.Strategies
             }
             else
             {
-
                 Options.Add(option, quantity);
             }
         }
-
         public double Payoff(double spot)
         {
             double total = 0;
@@ -61,7 +58,19 @@ namespace Pricing.Products.Strategies
             }
             return price;
         }
-
+        public double CalculateVolSVI(Market market)
+        {
+            double vol = 0.0;
+            int nb = 0;
+            foreach (var option in Options)
+            {
+                Option opt = option.Key;
+                int quantity = option.Value;
+                vol += market.VolModel.GetVolatility(opt.Strike, opt.Maturity, market.Spot) * Math.Abs(quantity);
+                nb += Math.Abs(quantity);
+            }
+            return vol/nb;
+        }
         public string Afficher()
         {
             int callAchat = 0;

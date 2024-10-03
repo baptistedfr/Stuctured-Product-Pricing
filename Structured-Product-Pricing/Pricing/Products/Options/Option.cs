@@ -58,11 +58,14 @@ namespace Pricing.Products.Options
             return $"Cette option a un strike de {Strike} et une maturité de {Maturity}";
 
         }
-
-
         public double GetMaturity()
         {
             return Maturity;
+        }
+
+        public double CalculateVolSVI(Market market)
+        {
+            return market.VolModel.GetVolatility(Strike, Maturity, market.Spot);
         }
 
     }

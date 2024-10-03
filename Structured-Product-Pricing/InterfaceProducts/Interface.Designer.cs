@@ -32,9 +32,9 @@
             comboBoxOptions = new ComboBox();
             label1 = new Label();
             textBoxVolatility = new TextBox();
-            label2 = new Label();
-            label3 = new Label();
-            label4 = new Label();
+            labelVol = new Label();
+            labelRf = new Label();
+            labelSpot = new Label();
             textBoxSpot = new TextBox();
             textBoxRf = new TextBox();
             textBoxStrike1 = new TextBox();
@@ -57,8 +57,18 @@
             plotView1 = new OxyPlot.WindowsForms.PlotView();
             dataGridViewGrecs = new DataGridView();
             labelCF = new Label();
+            groupBoxMarket = new GroupBox();
+            panel2 = new Panel();
+            radioButtonVolSto = new RadioButton();
+            radioButtonVolCste = new RadioButton();
+            panel1 = new Panel();
+            radioButtonManual = new RadioButton();
+            radioButtonAuto = new RadioButton();
             groupBoxProduit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewGrecs).BeginInit();
+            groupBoxMarket.SuspendLayout();
+            panel2.SuspendLayout();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // price
@@ -91,64 +101,69 @@
             // 
             label1.AutoSize = true;
             label1.BorderStyle = BorderStyle.FixedSingle;
-            label1.Font = new Font("Segoe UI", 19.8000011F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.Location = new Point(35, 9);
+            label1.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.Location = new Point(6, 17);
             label1.Name = "label1";
-            label1.Size = new Size(137, 48);
+            label1.Size = new Size(160, 56);
             label1.TabIndex = 3;
             label1.Text = "Market";
             // 
             // textBoxVolatility
             // 
-            textBoxVolatility.Location = new Point(209, 102);
+            textBoxVolatility.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            textBoxVolatility.Location = new Point(194, 203);
             textBoxVolatility.Name = "textBoxVolatility";
-            textBoxVolatility.Size = new Size(125, 30);
+            textBoxVolatility.Size = new Size(125, 34);
             textBoxVolatility.TabIndex = 4;
             textBoxVolatility.Text = "20,5";
             textBoxVolatility.TextAlign = HorizontalAlignment.Center;
             // 
-            // label2
+            // labelVol
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(224, 65);
-            label2.Name = "label2";
-            label2.Size = new Size(101, 23);
-            label2.TabIndex = 5;
-            label2.Text = "Volatilté (%)";
+            labelVol.AutoSize = true;
+            labelVol.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            labelVol.Location = new Point(194, 154);
+            labelVol.Name = "labelVol";
+            labelVol.Size = new Size(128, 28);
+            labelVol.TabIndex = 5;
+            labelVol.Text = "Volatilité (%)";
             // 
-            // label3
+            // labelRf
             // 
-            label3.AutoSize = true;
-            label3.Location = new Point(367, 65);
-            label3.Name = "label3";
-            label3.Size = new Size(162, 23);
-            label3.TabIndex = 6;
-            label3.Text = "Taux sans risque (%)";
+            labelRf.AutoSize = true;
+            labelRf.Font = new Font("Segoe UI", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            labelRf.Location = new Point(352, 154);
+            labelRf.Name = "labelRf";
+            labelRf.Size = new Size(218, 31);
+            labelRf.TabIndex = 6;
+            labelRf.Text = "Taux sans risque (%)";
             // 
-            // label4
+            // labelSpot
             // 
-            label4.AutoSize = true;
-            label4.Location = new Point(77, 65);
-            label4.Name = "label4";
-            label4.Size = new Size(45, 23);
-            label4.TabIndex = 7;
-            label4.Text = "Spot";
+            labelSpot.AutoSize = true;
+            labelSpot.Font = new Font("Segoe UI", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            labelSpot.Location = new Point(45, 154);
+            labelSpot.Name = "labelSpot";
+            labelSpot.Size = new Size(61, 31);
+            labelSpot.TabIndex = 7;
+            labelSpot.Text = "Spot";
             // 
             // textBoxSpot
             // 
-            textBoxSpot.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            textBoxSpot.Location = new Point(47, 102);
+            textBoxSpot.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            textBoxSpot.Location = new Point(14, 203);
             textBoxSpot.Name = "textBoxSpot";
-            textBoxSpot.Size = new Size(125, 31);
+            textBoxSpot.Size = new Size(125, 34);
             textBoxSpot.TabIndex = 8;
             textBoxSpot.Text = "100";
             textBoxSpot.TextAlign = HorizontalAlignment.Center;
             // 
             // textBoxRf
             // 
-            textBoxRf.Location = new Point(390, 102);
+            textBoxRf.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            textBoxRf.Location = new Point(391, 203);
             textBoxRf.Name = "textBoxRf";
-            textBoxRf.Size = new Size(125, 30);
+            textBoxRf.Size = new Size(125, 34);
             textBoxRf.TabIndex = 9;
             textBoxRf.TextAlign = HorizontalAlignment.Center;
             // 
@@ -256,10 +271,10 @@
             // 
             label5.AutoSize = true;
             label5.BorderStyle = BorderStyle.FixedSingle;
-            label5.Font = new Font("Segoe UI", 19.8000011F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label5.Location = new Point(6, 26);
+            label5.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label5.Location = new Point(0, 12);
             label5.Name = "label5";
-            label5.Size = new Size(143, 48);
+            label5.Size = new Size(166, 56);
             label5.TabIndex = 20;
             label5.Text = "Produit";
             // 
@@ -377,23 +392,96 @@
             labelCF.TabIndex = 25;
             labelCF.Text = "Close Formula :  ";
             // 
+            // groupBoxMarket
+            // 
+            groupBoxMarket.BackColor = Color.AntiqueWhite;
+            groupBoxMarket.Controls.Add(panel2);
+            groupBoxMarket.Controls.Add(panel1);
+            groupBoxMarket.Controls.Add(label1);
+            groupBoxMarket.Controls.Add(textBoxSpot);
+            groupBoxMarket.Controls.Add(labelSpot);
+            groupBoxMarket.Controls.Add(textBoxVolatility);
+            groupBoxMarket.Controls.Add(labelVol);
+            groupBoxMarket.Controls.Add(labelRf);
+            groupBoxMarket.Controls.Add(textBoxRf);
+            groupBoxMarket.Location = new Point(21, 23);
+            groupBoxMarket.Name = "groupBoxMarket";
+            groupBoxMarket.Size = new Size(570, 268);
+            groupBoxMarket.TabIndex = 26;
+            groupBoxMarket.TabStop = false;
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(radioButtonVolSto);
+            panel2.Controls.Add(radioButtonVolCste);
+            panel2.Location = new Point(94, 97);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(376, 36);
+            panel2.TabIndex = 12;
+            // 
+            // radioButtonVolSto
+            // 
+            radioButtonVolSto.AutoSize = true;
+            radioButtonVolSto.Location = new Point(191, 3);
+            radioButtonVolSto.Name = "radioButtonVolSto";
+            radioButtonVolSto.Size = new Size(157, 27);
+            radioButtonVolSto.TabIndex = 12;
+            radioButtonVolSto.TabStop = true;
+            radioButtonVolSto.Text = "Vol Stochastique";
+            radioButtonVolSto.UseVisualStyleBackColor = true;
+            radioButtonVolSto.CheckedChanged += radioButtonVolSto_CheckedChanged;
+            // 
+            // radioButtonVolCste
+            // 
+            radioButtonVolCste.AutoSize = true;
+            radioButtonVolCste.Location = new Point(14, 3);
+            radioButtonVolCste.Name = "radioButtonVolCste";
+            radioButtonVolCste.Size = new Size(138, 27);
+            radioButtonVolCste.TabIndex = 11;
+            radioButtonVolCste.Text = "Vol Constante";
+            radioButtonVolCste.UseVisualStyleBackColor = true;
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(radioButtonManual);
+            panel1.Controls.Add(radioButtonAuto);
+            panel1.Location = new Point(172, 17);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(198, 71);
+            panel1.TabIndex = 10;
+            // 
+            // radioButtonManual
+            // 
+            radioButtonManual.AutoSize = true;
+            radioButtonManual.Location = new Point(14, 41);
+            radioButtonManual.Name = "radioButtonManual";
+            radioButtonManual.Size = new Size(177, 27);
+            radioButtonManual.TabIndex = 1;
+            radioButtonManual.Text = "Marché sur mesure";
+            radioButtonManual.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonAuto
+            // 
+            radioButtonAuto.AutoSize = true;
+            radioButtonAuto.Location = new Point(14, 3);
+            radioButtonAuto.Name = "radioButtonAuto";
+            radioButtonAuto.Size = new Size(152, 27);
+            radioButtonAuto.TabIndex = 0;
+            radioButtonAuto.Text = "Marché existant";
+            radioButtonAuto.UseVisualStyleBackColor = true;
+            radioButtonAuto.CheckedChanged += radioButtonAuto_CheckedChanged;
+            // 
             // Interface
             // 
             AutoScaleDimensions = new SizeF(9F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.SeaShell;
             ClientSize = new Size(1504, 835);
+            Controls.Add(groupBoxMarket);
             Controls.Add(labelCF);
             Controls.Add(dataGridViewGrecs);
             Controls.Add(plotView1);
             Controls.Add(labelPrix);
-            Controls.Add(textBoxRf);
-            Controls.Add(textBoxSpot);
-            Controls.Add(label4);
-            Controls.Add(label3);
-            Controls.Add(label2);
-            Controls.Add(textBoxVolatility);
-            Controls.Add(label1);
             Controls.Add(groupBoxProduit);
             Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Name = "Interface";
@@ -401,6 +489,12 @@
             groupBoxProduit.ResumeLayout(false);
             groupBoxProduit.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewGrecs).EndInit();
+            groupBoxMarket.ResumeLayout(false);
+            groupBoxMarket.PerformLayout();
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -411,9 +505,9 @@
         private ComboBox comboBoxOptions;
         private Label label1;
         private TextBox textBoxVolatility;
-        private Label label2;
-        private Label label3;
-        private Label label4;
+        private Label labelVol;
+        private Label labelRf;
+        private Label labelSpot;
         private TextBox textBoxSpot;
         private TextBox textBoxRf;
         private TextBox textBoxStrike1;
@@ -436,5 +530,12 @@
         private TextBox textBoxBarrier;
         private DataGridView dataGridViewGrecs;
         private Label labelCF;
+        private GroupBox groupBoxMarket;
+        private Panel panel1;
+        private RadioButton radioButtonManual;
+        private RadioButton radioButtonAuto;
+        private Panel panel2;
+        private RadioButton radioButtonVolCste;
+        private RadioButton radioButtonVolSto;
     }
 }

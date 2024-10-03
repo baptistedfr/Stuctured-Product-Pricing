@@ -32,7 +32,11 @@ namespace Pricing.Products.Options
             Barrier = barrier;
             Activated = false;
         }
-        
+        public override double CloseFormula(Market market)
+        {
+            return 0;
+        }
+
         public override string Afficher()
         {
             return $"Cette option à barrière a un strike de {Strike}, une maturité de {Maturity} et une barrière de {Barrier}";

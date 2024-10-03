@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using Pricing.MarketData;
+using Pricing.Products.Options;
 using Pricing.Products;
 using Pricing.Rate;
 using Pricing.Volatility;
@@ -10,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Pricing.Products.Strategies;
 
 namespace Pricing
 {
@@ -24,10 +26,24 @@ namespace Pricing
         public double Rate { get; set; }
         public double Dividende { get; private set; }
 
-        public Market(string ticker, VolatilityType volType)
+        public Market(string ticker, VolatilityType volType, double CsteVol = 0, double spot = 100)
         {
+            Spot = spot;
+            // Cas du marché automatique
             Ticker = ticker;
             VolType = volType;
+            //Spot = YahooFinance.GetLastSpot(Ticker);
+            CalibrateVol(CsteVol);
+            CalibrateRate();
+        }
+
+        public Market(double rate, double CsteVol, double spot)
+        {
+            Spot = spot;
+            // Cas du marché choisi par l'utilisateur
+            VolType = VolatilityType.Cste;
+            CalibrateVol(CsteVol); //On peut quand meme utiliser cette fonction
+            Rate = rate;
         }
 
         public string GetDataPath(string fileName)
@@ -64,13 +80,6 @@ namespace Pricing
             var nelsonSiegel = new NelsonSiegel();
             nelsonSiegel.Calibrate(curveData);
             RateModel = nelsonSiegel;
-        }
-        
-        public void Initialize(double CsteVol = 0)
-        {
-            Spot = YahooFinance.GetLastSpot(Ticker);
-            CalibrateVol(CsteVol);
-            CalibrateRate();
         }
     }
 }

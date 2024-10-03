@@ -15,5 +15,7 @@ namespace Pricing.Products
         double GetMaturity();
 
         double CloseFormula(Market market);
+
+        double CalculateVolSVI(Market market);
     }
 }

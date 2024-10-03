@@ -10,21 +10,25 @@ using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using OxyPlot.Annotations;
 using Pricing.Products.Options;
+using Microsoft.VisualBasic.Devices;
 namespace InterfaceProducts
 {
     public partial class Interface : Form
     {
         private ParamsManager paramsManager;
         private OptionManager optionManager;
+        private MarketManager marketManager;
         public Interface()
         {
 
             InitializeComponent();
             paramsManager = new ParamsManager(new System.Windows.Forms.TextBox[] { textBoxStrike1, textBoxStrike2, textBoxStrike3, textBoxStrike4 },
-                                          new Label[] { labelStrike1, labelStrike2, labelStrike3, labelStrike4},
+                                          new Label[] { labelStrike1, labelStrike2, labelStrike3, labelStrike4 },
                                           textBoxMaturity, textBoxBinary, labelBinary, textBoxBarrier, labelBarrier);
             optionManager = new OptionManager();
 
+            marketManager = new MarketManager(textBoxSpot, textBoxVolatility, textBoxRf, radioButtonAuto, radioButtonManual, radioButtonVolSto, radioButtonVolCste);
+            
         }
 
         private void price_Click(object sender, EventArgs e)
@@ -38,9 +42,11 @@ namespace InterfaceProducts
             // On regarde si les paramètres sont bien renseignés
             if (!optionManager.CheckOptionSelected(comboBoxOptions.SelectedItem) ||
             !paramsManager.CheckVisibleStrikeValues() ||
-            !paramsManager.CheckMaturityValues() || 
+            !paramsManager.CheckMaturityValues() ||
             !paramsManager.CheckBinary() ||
-            !paramsManager.CheckBarrier())
+            !paramsManager.CheckBarrier() ||
+            !marketManager.CheckRadioButton() ||
+            !marketManager.CheckMarket())
             {
                 return;
             }
@@ -49,21 +55,23 @@ namespace InterfaceProducts
             MessageBox.Show("Vous avez sélectionné : " + selectedOption);
             IDerives derive = optionManager.CreateDerive(selectedOption, paramsManager.GetStrikeValues(), textBoxMaturity.Text, textBoxBinary.Text, textBoxBarrier.Text);
 
-            double spot = Convert.ToDouble(textBoxSpot.Text);
-            double vol = Convert.ToDouble(textBoxVolatility.Text) / 100;
-            var market = new Market("AAPL", VolatilityType.Cste);
-            market.Initialize(vol);
+            Market market = marketManager.CreateMarket();
+            
             MonteCarloSimulator mc = new MonteCarloSimulator(derive, market, 100000);
-            textBoxRf.Text = (Math.Round(market.Rate*100,2).ToString());
-            double price = mc.Price(spot);
-            labelPrix.Text += Math.Round(price,2).ToString() + " €";
+            if (radioButtonAuto.Checked)
+            {
+                marketManager.ActualiseMarket(market);
+            }
+            
+            double price = mc.Price();
+            labelPrix.Text += Math.Round(price, 2).ToString() + " €";
             labelCF.Text += Math.Round(derive.CloseFormula(market), 2);
             if (!selectedOption.Contains("Call Down") && !selectedOption.Contains("Put Up"))
             {
-                CreatePayoffChart(spot, derive, price);
+                CreatePayoffChart(market.Spot, derive, price);
             }
 
-            GenerateGreeks(mc, price, spot);
+            //GenerateGreeks(mc, price, spot);
         }
 
         private void comboBoxOptions_SelectedIndexChanged(object sender, EventArgs e)
@@ -74,41 +82,41 @@ namespace InterfaceProducts
                 paramsManager.UpdateBinary(comboBoxOptions.SelectedItem.ToString());
                 paramsManager.UpdateBarrier(comboBoxOptions.SelectedItem.ToString());
             }
-           
-        }
-        public void GenerateGreeks(MonteCarloSimulator mc, double price, double spot)
-        {
-            Dictionary<string, double> greeks = mc.ComputeGreeks(price, spot);
 
-            dataGridViewGrecs.Columns.Add("Grec", "Grec");
-            dataGridViewGrecs.Columns.Add("Valeur", "Valeur");
-
-            // Ajout des valeurs du dictionnaire dans le DataGridView
-            foreach (var greek in greeks)
-            {
-                dataGridViewGrecs.Rows.Add(greek.Key, Math.Round(greek.Value, 2));
-            }
-            dataGridViewGrecs.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            dataGridViewGrecs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            int totalWidth = dataGridViewGrecs.Columns.GetColumnsWidth(DataGridViewElementStates.Visible);
-            int totalHeight = dataGridViewGrecs.Rows.GetRowsHeight(DataGridViewElementStates.Visible);
-            totalHeight += dataGridViewGrecs.ColumnHeadersHeight;
-            totalWidth += dataGridViewGrecs.RowHeadersWidth;
-            dataGridViewGrecs.ClientSize = new Size(totalWidth, totalHeight);
         }
+        //public void GenerateGreeks(MonteCarloSimulator mc, double price, double spot)
+        //{
+        //    Dictionary<string, double> greeks = mc.ComputeGreeks(price, spot);
+
+        //    dataGridViewGrecs.Columns.Add("Grec", "Grec");
+        //    dataGridViewGrecs.Columns.Add("Valeur", "Valeur");
+
+        //    // Ajout des valeurs du dictionnaire dans le DataGridView
+        //    foreach (var greek in greeks)
+        //    {
+        //        dataGridViewGrecs.Rows.Add(greek.Key, Math.Round(greek.Value, 2));
+        //    }
+        //    dataGridViewGrecs.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+        //    dataGridViewGrecs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+        //    int totalWidth = dataGridViewGrecs.Columns.GetColumnsWidth(DataGridViewElementStates.Visible);
+        //    int totalHeight = dataGridViewGrecs.Rows.GetRowsHeight(DataGridViewElementStates.Visible);
+        //    totalHeight += dataGridViewGrecs.ColumnHeadersHeight;
+        //    totalWidth += dataGridViewGrecs.RowHeadersWidth;
+        //    dataGridViewGrecs.ClientSize = new Size(totalWidth, totalHeight);
+        //}
         private void CreatePayoffChart(double spot, IDerives option, double price)
         {
             double[] assetPrices = new double[Convert.ToInt32(spot)]; // Prix de l'actif sous-jacent
             double[] payoffs = new double[Convert.ToInt32(spot)]; // Payoff
             BarrierOption? barrierOption = option as BarrierOption;
-           
+
             for (int i = 0; i < assetPrices.Length; i++)
             {
                 if (barrierOption != null)
                 {
                     bool no = barrierOption.BarrierOut(i + Convert.ToInt32(spot / 2)); // On actualise la barriere
                 }
-                assetPrices[i] = i + Convert.ToInt32(spot/2); 
+                assetPrices[i] = i + Convert.ToInt32(spot / 2);
                 payoffs[i] = option.Payoff(assetPrices[i]) - price;
             }
 
@@ -159,6 +167,24 @@ namespace InterfaceProducts
 
             // Assigner le modèle au PlotView
             plotView1.Model = plotModel;
+        }
+        private void radioButtonAuto_CheckedChanged(object sender, EventArgs e)
+        {
+
+            marketManager.UpdateMarket();
+        }
+
+        private void radioButtonVolSto_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonVolSto.Checked)
+            {
+                textBoxVolatility.Text = "";
+                textBoxVolatility.Enabled = false;
+            }
+            else
+            {
+                textBoxVolatility.Enabled = true;
+            }
         }
     }
 

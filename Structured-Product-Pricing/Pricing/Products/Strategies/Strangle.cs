@@ -13,7 +13,6 @@ namespace Pricing.Products.Strategies
         {
             AddOption(new PutOption(lowerStrike, maturity), 1);
             AddOption(new CallOption(upperStrike, maturity), 1);
-
         }
     }
 }

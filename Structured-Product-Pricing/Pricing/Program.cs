@@ -32,12 +32,12 @@ using Pricing.Products.Strategies;
 var lastSpot = YahooFinance.GetLastSpot("AAPL");
 Console.WriteLine("Last spot : " + lastSpot);
 
-var market = new Market("AAPL", VolatilityType.SVI);
-market.Initialize();
-CallSpread call = new CallSpread(100,110, 1);
-MonteCarloSimulator mc = new MonteCarloSimulator(call, market, 1000000);
-Console.WriteLine(market.VolModel.GetVolatility(110, 1, 100));
-Console.WriteLine(mc.Price(100));
+//var market = new Market("AAPL", VolatilityType.SVI);
+//market.Initialize();
+//CallSpread call = new CallSpread(100,110, 1);
+//MonteCarloSimulator mc = new MonteCarloSimulator(call, market, 1000000);
+//Console.WriteLine(market.VolModel.GetVolatility(110, 1, 100));
+//Console.WriteLine(mc.Price(100));
 
 
 //Console.WriteLine("Last market spot : " + market.Spot);
