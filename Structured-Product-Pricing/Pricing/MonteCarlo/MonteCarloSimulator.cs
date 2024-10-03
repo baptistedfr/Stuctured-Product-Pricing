@@ -74,48 +74,48 @@ namespace Pricing.MonteCarlo
 
             return Math.Exp(-market.Rate * maturity) * payoffs.Average();
         }
-        //public Dictionary<string, double> ComputeGreeks(double priceOption)
-        //{
-        //    Dictionary<string, double> greeks = new Dictionary<string, double>();
+        public Dictionary<string, double> ComputeGreeks(double priceOption)
+        {
+            Dictionary<string, double> greeks = new Dictionary<string, double>();
 
-        //    // Delta
-        //    double deltaS = market.Spot * 0.01;
-        //    market.Spot += deltaS;
-        //    double priceDeltaSpotPos = Price();
-        //    double delta = (priceDeltaSpotPos - priceOption) / deltaS;
-        //    market.Spot -= deltaS; //On remet le spot à normale
-        //    greeks.Add("Delta", delta);
+            // Delta
+            double deltaS = market.Spot * 0.01;
+            market.Spot += deltaS;
+            double priceDeltaSpotPos = Price();
+            double delta = (priceDeltaSpotPos - priceOption) / deltaS;
+            market.Spot -= deltaS; //On remet le spot à normale
+            greeks.Add("Delta", delta);
 
-        //    // Gamma
-        //    market.Spot -= deltaS;
-        //    double priceDeltaSpotNeg = Price();
-        //    double gamma = (Price(spot + deltaS) - 2 * priceOption + Price(spot - deltaS)) / (deltaS * deltaS);
-        //    market.Spot -= deltaS;
-        //    greeks.Add("Gamma", gamma);
+            // Gamma
+            market.Spot -= deltaS;
+            double priceDeltaSpotNeg = Price();
+            double gamma = (priceDeltaSpotPos - 2 * priceOption + priceDeltaSpotNeg) / (deltaS * deltaS);
+            market.Spot += deltaS;
+            greeks.Add("Gamma", gamma);
 
-        //    // Vega
-        //    double deltaSigma = 0.01;
-        //    market.Volatility += deltaSigma;
-        //    double vega = (Price(spot) - priceOption) / deltaSigma;
-        //    market.Volatility -= deltaSigma; // On remet la vol à son niveau d'avant
-        //    greeks.Add("Vega", vega);
+            // Vega
+            double deltaSigma = 0.01;
+            market.Volatility += deltaSigma;
+            double vega = (Price() - priceOption) / deltaSigma;
+            market.Volatility -= deltaSigma; // On remet la vol à son niveau d'avant
+            greeks.Add("Vega", vega);
 
-        //    // Theta
-        //    double deltaMaturity = 10.0 / 252; // on diminue de 10 jour (10/252 an)
-        //    maturity -= deltaMaturity;
-        //    double theta = (Price(spot) - priceOption) / deltaMaturity;
-        //    maturity = derive.GetMaturity(); // On remet la maturité comme avant
-        //    greeks.Add("Theta", theta);
+            // Theta
+            double deltaMaturity = 10.0 / 252; // on diminue de 10 jour (10/252 an)
+            maturity -= deltaMaturity;
+            double theta = (Price() - priceOption) / deltaMaturity;
+            maturity = derive.GetMaturity(); // On remet la maturité comme avant
+            greeks.Add("Theta", theta);
 
-        //    // Rho
-        //    double deltaRho = 0.01;
-        //    market.Rate += deltaRho;
-        //    double rho = (Price(spot) - priceOption) / deltaRho;
-        //    market.Rate -= deltaRho; // On remet la vol à son niveau d'avant
-        //    greeks.Add("Rho", rho);
+            // Rho
+            double deltaRho = 0.01;
+            market.Rate += deltaRho;
+            double rho = (Price() - priceOption) / deltaRho;
+            market.Rate -= deltaRho; // On remet la vol à son niveau d'avant
+            greeks.Add("Rho", rho);
 
-        //    return greeks;
-        //}
+            return greeks;
+        }
         public double[] GenerateNormal(int nb)
         {
             double [] normalVariables = new double[nb];

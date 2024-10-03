@@ -63,7 +63,7 @@ namespace InterfaceProducts
             }
             if (radioButtonAuto.Checked)
             {
-                return new Market("Test", volType, vol, spot);
+                return new Market("AAPL", volType, vol, spot);
             }
             else
             {

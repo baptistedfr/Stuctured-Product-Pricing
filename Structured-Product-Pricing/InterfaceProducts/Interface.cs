@@ -71,7 +71,7 @@ namespace InterfaceProducts
                 CreatePayoffChart(market.Spot, derive, price);
             }
 
-            //GenerateGreeks(mc, price, spot);
+            GenerateGreeks(mc, price);
         }
 
         private void comboBoxOptions_SelectedIndexChanged(object sender, EventArgs e)
@@ -84,26 +84,26 @@ namespace InterfaceProducts
             }
 
         }
-        //public void GenerateGreeks(MonteCarloSimulator mc, double price, double spot)
-        //{
-        //    Dictionary<string, double> greeks = mc.ComputeGreeks(price, spot);
+        public void GenerateGreeks(MonteCarloSimulator mc, double price)
+        {
+            Dictionary<string, double> greeks = mc.ComputeGreeks(price);
 
-        //    dataGridViewGrecs.Columns.Add("Grec", "Grec");
-        //    dataGridViewGrecs.Columns.Add("Valeur", "Valeur");
+            dataGridViewGrecs.Columns.Add("Grec", "Grec");
+            dataGridViewGrecs.Columns.Add("Valeur", "Valeur");
 
-        //    // Ajout des valeurs du dictionnaire dans le DataGridView
-        //    foreach (var greek in greeks)
-        //    {
-        //        dataGridViewGrecs.Rows.Add(greek.Key, Math.Round(greek.Value, 2));
-        //    }
-        //    dataGridViewGrecs.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-        //    dataGridViewGrecs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-        //    int totalWidth = dataGridViewGrecs.Columns.GetColumnsWidth(DataGridViewElementStates.Visible);
-        //    int totalHeight = dataGridViewGrecs.Rows.GetRowsHeight(DataGridViewElementStates.Visible);
-        //    totalHeight += dataGridViewGrecs.ColumnHeadersHeight;
-        //    totalWidth += dataGridViewGrecs.RowHeadersWidth;
-        //    dataGridViewGrecs.ClientSize = new Size(totalWidth, totalHeight);
-        //}
+            // Ajout des valeurs du dictionnaire dans le DataGridView
+            foreach (var greek in greeks)
+            {
+                dataGridViewGrecs.Rows.Add(greek.Key, Math.Round(greek.Value, 2));
+            }
+            dataGridViewGrecs.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            dataGridViewGrecs.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            int totalWidth = dataGridViewGrecs.Columns.GetColumnsWidth(DataGridViewElementStates.Visible);
+            int totalHeight = dataGridViewGrecs.Rows.GetRowsHeight(DataGridViewElementStates.Visible);
+            totalHeight += dataGridViewGrecs.ColumnHeadersHeight;
+            totalWidth += dataGridViewGrecs.RowHeadersWidth;
+            dataGridViewGrecs.ClientSize = new Size(totalWidth, totalHeight);
+        }
         private void CreatePayoffChart(double spot, IDerives option, double price)
         {
             double[] assetPrices = new double[Convert.ToInt32(spot)]; // Prix de l'actif sous-jacent
