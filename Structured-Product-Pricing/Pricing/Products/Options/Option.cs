@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MathNet.Numerics.Distributions;
+using Pricing.Volatility.Parameters;
 
 namespace Pricing.Products.Options
 {
@@ -65,7 +66,7 @@ namespace Pricing.Products.Options
 
         public double CalculateVolSVI(Market market)
         {
-            return market.VolModel.GetVolatility(Strike, Maturity, market.Spot);
+            return market.VolModel.GetVolatility(new SVIParams(Strike, Maturity, market.Spot));
         }
 
     }

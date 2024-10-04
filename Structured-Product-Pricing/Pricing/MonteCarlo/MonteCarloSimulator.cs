@@ -44,7 +44,9 @@ namespace Pricing.MonteCarlo
 
             BrownianGenerator brownianGenerator = new BrownianGenerator();
             BarrierOption? barrierOption = Derive as BarrierOption;
-
+            double drift = (Market.Rate - 0.5 * Market.Volatility * Market.Volatility) * Dt;
+            double diffusion = Market.Volatility * Math.Sqrt(Dt);
+            bool isHeston = Market.VolType == VolatilityType.Heston;
             Parallel.For(0, NbSimulation, i =>
             {
                 BarrierOption? barrierOption = Derive as BarrierOption;
@@ -55,9 +57,8 @@ namespace Pricing.MonteCarlo
                 }
 
                 double simPrice = Market.Spot;
-
                 // Pricing with Heston discretisation
-                if (Market.VolType == VolatilityType.Heston)
+                if (isHeston)
                 {
                     double[] varianceSimulated = [];
                     varianceSimulated[0] = 0.2;
@@ -86,10 +87,7 @@ namespace Pricing.MonteCarlo
                 {
                     var (dW1, _) = brownianGenerator.GenerateBrownian(NbSteps, 0);
 
-                    double drift = (Market.Rate - 0.5 * Market.Volatility) * Dt;
-                    double diffusion = Math.Sqrt(Market.Volatility * Dt);
-
-                    for (int j = 1; j < NbSteps + 1; j++)
+                    for (int j = 0; j < NbSteps; j++)
                     {
                         simPrice *= Math.Exp(drift + diffusion * dW1[j]);
                         if (barrierOption != null && barrierOption.BarrierOut(simPrice))

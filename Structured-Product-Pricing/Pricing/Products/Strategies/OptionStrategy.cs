@@ -66,7 +66,7 @@ namespace Pricing.Products.Strategies
             {
                 Option opt = option.Key;
                 int quantity = option.Value;
-                vol += market.VolModel.GetVolatility(opt.Strike, opt.Maturity, market.Spot) * Math.Abs(quantity);
+                vol += opt.CalculateVolSVI(market);//market.VolModel.GetVolatility(opt.Strike, opt.Maturity, market.Spot) * Math.Abs(quantity);
                 nb += Math.Abs(quantity);
             }
             return vol/nb;

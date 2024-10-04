@@ -28,8 +28,8 @@ namespace Pricing.MonteCarlo
         /// </summary>
         public (double[], double[]) GenerateBrownian(int nbSteps, double correlation)
         {
-            var dW1 = new double[nbSteps];
-            var dW2 = new double[nbSteps];
+            double[] dW1 = new double[nbSteps];
+            double[] dW2 = new double[nbSteps];
 
             for (int i = 0; i < nbSteps; i += 1)
             {
