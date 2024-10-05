@@ -16,10 +16,11 @@ namespace InterfaceProducts
         private TextBox textBoxRf;
         private RadioButton radioButtonAuto;
         private RadioButton radioButtonManual;
+        private RadioButton radioButtonVolSVI;
         private RadioButton radioButtonVolSto;
         private RadioButton radioButtonVolCste;
         public MarketManager(TextBox textBoxSpot, TextBox textBoxVol, TextBox textBoxRf, RadioButton radioButtonAuto, RadioButton radioButtonManual,
-            RadioButton radioButtonVolSto, RadioButton radioButtonVolCste)
+            RadioButton radioButtonVolSto, RadioButton radioButtonVolCste, RadioButton radioButtonVolSVI)
         {
             this.textBoxSpot = textBoxSpot;
             this.textBoxVol = textBoxVol;
@@ -28,11 +29,12 @@ namespace InterfaceProducts
             this.radioButtonManual = radioButtonManual;
             this.radioButtonVolSto = radioButtonVolSto;
             this.radioButtonVolCste = radioButtonVolCste;
+            this.radioButtonVolSVI = radioButtonVolSVI;
         }
 
         public bool CheckRadioButton()
         {
-            if ((!radioButtonAuto.Checked && !radioButtonManual.Checked) || (!radioButtonVolSto.Checked && !radioButtonVolCste.Checked))
+            if ((!radioButtonAuto.Checked && !radioButtonManual.Checked) || (!radioButtonVolSto.Checked && !radioButtonVolCste.Checked && !radioButtonVolSVI.Checked))
             {
                 MessageBox.Show($"Veuillez cocher un marché et une volatilité.", "Valeur Invalide", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
@@ -56,7 +58,19 @@ namespace InterfaceProducts
         public Market CreateMarket()
         {
             double spot = Convert.ToDouble(textBoxSpot.Text);
-            VolatilityType volType = radioButtonVolCste.Checked ? VolatilityType.Cste : VolatilityType.SVI;
+            VolatilityType volType;
+            if (radioButtonVolSVI.Checked)
+            {
+                volType = VolatilityType.SVI;
+            }
+            else if (radioButtonVolSto.Checked)
+            {
+                volType = VolatilityType.Heston;
+            }
+            else
+            {
+                volType = VolatilityType.Cste;
+            }
             double vol = 0;
             if (volType == VolatilityType.Cste)
             {
@@ -76,7 +90,11 @@ namespace InterfaceProducts
         public void ActualiseMarket(Market market)
         {
             textBoxRf.Text = (Math.Round(market.Rate * 100, 2).ToString());
-            textBoxVol.Text = (Math.Round(market.Volatility * 100, 2).ToString());
+            if (market.VolType != VolatilityType.Heston) 
+            { 
+                textBoxVol.Text = (Math.Round(market.Volatility * 100, 2).ToString());
+            }
+           
         }
 
         public void UpdateMarket()
@@ -84,6 +102,7 @@ namespace InterfaceProducts
             if (radioButtonManual.Checked)
             {
                 radioButtonVolSto.Enabled = false;
+                radioButtonVolSVI.Enabled = false;
                 radioButtonVolCste.Checked = true;
                 radioButtonVolCste.Enabled = false;
                 //textBoxSpot.Enabled = true;
@@ -94,6 +113,7 @@ namespace InterfaceProducts
             {
                 radioButtonVolCste.Enabled = true;
                 radioButtonVolSto.Enabled = true;
+                radioButtonVolSVI.Enabled = true;
                 //textBoxSpot.Text = "100";
                 textBoxRf.Text = "";
                 //textBoxSpot.Enabled = false;

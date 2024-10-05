@@ -33,13 +33,29 @@ namespace Pricing.MonteCarlo
 
             for (int i = 0; i < nbSteps; i += 1)
             {
-                var (dZ1, dZ2) = GenerateNormal();
-
+                var (dZ1, dZ2) = GenerateNormal();               
                 dW1[i] = dZ1;
                 dW2[i] = correlation * dZ1 + Math.Sqrt(1 - Math.Pow(correlation, 2)) * dZ2;
             }
 
             return (dW1, dW2);
+        }
+        public double[] GenerateNormal(int nb)
+        {
+            double[] normalVariables = new double[nb];
+            double u1, u2;
+
+            // Si une seed est fournie, on l'utilise, sinon on utilise le temps système
+            Random aleatoire = new Random();
+
+            for (int i = 0; i < nb; i++)
+            {
+                u1 = aleatoire.NextDouble();
+                u2 = aleatoire.NextDouble();
+                normalVariables[i] = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
+            }
+
+            return normalVariables;
         }
     }
 }

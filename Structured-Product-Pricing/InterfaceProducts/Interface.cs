@@ -27,7 +27,7 @@ namespace InterfaceProducts
                                           textBoxMaturity, textBoxBinary, labelBinary, textBoxBarrier, labelBarrier);
             optionManager = new OptionManager();
 
-            marketManager = new MarketManager(textBoxSpot, textBoxVolatility, textBoxRf, radioButtonAuto, radioButtonManual, radioButtonVolSto, radioButtonVolCste);
+            marketManager = new MarketManager(textBoxSpot, textBoxVolatility, textBoxRf, radioButtonAuto, radioButtonManual, radioButtonVolSto, radioButtonVolCste, radioButtonVolSVI);
             
         }
 
@@ -63,14 +63,15 @@ namespace InterfaceProducts
                 marketManager.ActualiseMarket(market);
             }
             
-            double price = mc.Price();
-            labelPrix.Text += Math.Round(price, 2).ToString() + " €";
-            labelCF.Text += Math.Round(derive.CloseFormula(market), 2);
+            (double price, double confidenceInterval) = mc.Price();
+            labelPrix.Text += Math.Round(price, 2).ToString() + " € +/- " + Math.Round(confidenceInterval,3) + " €";
+            double closePrice = derive.CloseFormula(market);
+            labelCF.Text += Math.Round(closePrice, 2) + " €";
             if (!selectedOption.Contains("Call Down") && !selectedOption.Contains("Put Up"))
             {
                 CreatePayoffChart(market.Spot, derive, price);
             }
-
+            //ConvergenceChart(closePrice, tabPrices);
             GenerateGreeks(mc, price);
         }
 
@@ -86,7 +87,7 @@ namespace InterfaceProducts
         }
         public void GenerateGreeks(MonteCarloSimulator mc, double price)
         {
-            Dictionary<string, double> greeks = mc.ComputeGreeks(price);
+            Dictionary<string, double> greeks = mc.ComputeGreeks();
 
             dataGridViewGrecs.Columns.Add("Grec", "Grec");
             dataGridViewGrecs.Columns.Add("Valeur", "Valeur");
@@ -121,12 +122,12 @@ namespace InterfaceProducts
             }
 
             // Créer le modèle de plot
-            var plotModel = new PlotModel { Title = "Graphique du Gain" };
+            var plotModel = new PlotModel { Title = "Graphique du P&L en fonction du prix" };
 
             // Créer une série de lignes pour le payoff
             var series = new LineSeries
             {
-                Title = "Gain",
+                Title = "P&L",
                 MarkerType = MarkerType.Circle,
                 Color = OxyColors.Red
             };
@@ -163,10 +164,48 @@ namespace InterfaceProducts
 
             // Configurer les axes
             plotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Bottom, Title = "S" });
-            plotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Left, Title = "Gain" });
+            plotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Left, Title = "P&L" });
 
             // Assigner le modèle au PlotView
             plotView1.Model = plotModel;
+        }
+        private void ConvergenceChart(double closePrice, double[] prices)
+        {
+            
+            var plotModel = new PlotModel { Title = "Convergence" };
+
+            // Créer une série de lignes pour le payoff
+            var series = new LineSeries
+            {
+                Title = "Monte Carlo",
+                MarkerType = MarkerType.Circle,
+                Color = OxyColors.Blue
+            };
+
+            // Ajouter les points au graphique
+            for (int i = 0; i < prices.Length; i++)
+            {
+                series.Points.Add(new DataPoint(i, prices[i]));
+            }
+            plotModel.Series.Add(series);
+
+            // Ajouter une ligne horizontale en pointillés noirs à y = 0
+            var closePriceLine = new LineAnnotation
+            {
+                Type = LineAnnotationType.Horizontal,
+                Y = closePrice, // Position sur l'axe des ordonnées
+                Color = OxyColors.Red,
+                LineStyle = LineStyle.Dash // Style en pointillés
+            };
+            plotModel.Annotations.Add(closePriceLine);
+
+
+            // Configurer les axes
+            plotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Bottom, Title = "Nombre Simulations" });
+            plotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Left, Title = "Prix" });
+
+            // Assigner le modèle au PlotView
+            //plotViewConvergence.Model = plotModel;
         }
         private void radioButtonAuto_CheckedChanged(object sender, EventArgs e)
         {

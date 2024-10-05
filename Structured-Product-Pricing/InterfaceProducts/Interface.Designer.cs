@@ -59,6 +59,7 @@
             labelCF = new Label();
             groupBoxMarket = new GroupBox();
             panel2 = new Panel();
+            radioButtonVolSVI = new RadioButton();
             radioButtonVolSto = new RadioButton();
             radioButtonVolCste = new RadioButton();
             panel1 = new Panel();
@@ -352,7 +353,7 @@
             labelPrix.BackColor = Color.Red;
             labelPrix.BorderStyle = BorderStyle.FixedSingle;
             labelPrix.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            labelPrix.Location = new Point(777, 336);
+            labelPrix.Location = new Point(128, 319);
             labelPrix.Name = "labelPrix";
             labelPrix.Size = new Size(143, 56);
             labelPrix.TabIndex = 22;
@@ -360,10 +361,11 @@
             // 
             // plotView1
             // 
-            plotView1.Location = new Point(35, 297);
+            plotView1.BackColor = Color.Snow;
+            plotView1.Location = new Point(81, 428);
             plotView1.Name = "plotView1";
             plotView1.PanCursor = Cursors.Hand;
-            plotView1.Size = new Size(669, 526);
+            plotView1.Size = new Size(681, 422);
             plotView1.TabIndex = 23;
             plotView1.Text = "plotViewProduct";
             plotView1.ZoomHorizontalCursor = Cursors.SizeWE;
@@ -374,10 +376,10 @@
             // 
             dataGridViewGrecs.BackgroundColor = SystemColors.Info;
             dataGridViewGrecs.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewGrecs.Location = new Point(758, 521);
+            dataGridViewGrecs.Location = new Point(887, 487);
             dataGridViewGrecs.Name = "dataGridViewGrecs";
             dataGridViewGrecs.RowHeadersWidth = 51;
-            dataGridViewGrecs.Size = new Size(430, 277);
+            dataGridViewGrecs.Size = new Size(200, 188);
             dataGridViewGrecs.TabIndex = 24;
             // 
             // labelCF
@@ -386,7 +388,7 @@
             labelCF.BackColor = Color.Tomato;
             labelCF.BorderStyle = BorderStyle.FixedSingle;
             labelCF.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            labelCF.Location = new Point(777, 432);
+            labelCF.Location = new Point(782, 319);
             labelCF.Name = "labelCF";
             labelCF.Size = new Size(335, 56);
             labelCF.TabIndex = 25;
@@ -412,17 +414,29 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(radioButtonVolSVI);
             panel2.Controls.Add(radioButtonVolSto);
             panel2.Controls.Add(radioButtonVolCste);
-            panel2.Location = new Point(94, 97);
+            panel2.Location = new Point(14, 97);
             panel2.Name = "panel2";
-            panel2.Size = new Size(376, 36);
+            panel2.Size = new Size(502, 36);
             panel2.TabIndex = 12;
+            // 
+            // radioButtonVolSVI
+            // 
+            radioButtonVolSVI.AutoSize = true;
+            radioButtonVolSVI.Location = new Point(205, 3);
+            radioButtonVolSVI.Name = "radioButtonVolSVI";
+            radioButtonVolSVI.Size = new Size(85, 27);
+            radioButtonVolSVI.TabIndex = 13;
+            radioButtonVolSVI.TabStop = true;
+            radioButtonVolSVI.Text = "Vol SVI";
+            radioButtonVolSVI.UseVisualStyleBackColor = true;
             // 
             // radioButtonVolSto
             // 
             radioButtonVolSto.AutoSize = true;
-            radioButtonVolSto.Location = new Point(191, 3);
+            radioButtonVolSto.Location = new Point(338, 3);
             radioButtonVolSto.Name = "radioButtonVolSto";
             radioButtonVolSto.Size = new Size(157, 27);
             radioButtonVolSto.TabIndex = 12;
@@ -476,7 +490,7 @@
             AutoScaleDimensions = new SizeF(9F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.SeaShell;
-            ClientSize = new Size(1504, 835);
+            ClientSize = new Size(1504, 898);
             Controls.Add(groupBoxMarket);
             Controls.Add(labelCF);
             Controls.Add(dataGridViewGrecs);
@@ -537,5 +551,6 @@
         private Panel panel2;
         private RadioButton radioButtonVolCste;
         private RadioButton radioButtonVolSto;
+        private RadioButton radioButtonVolSVI;
     }
 }
