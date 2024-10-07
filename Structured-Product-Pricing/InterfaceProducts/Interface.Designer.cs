@@ -128,6 +128,7 @@
             labelVol.Size = new Size(128, 28);
             labelVol.TabIndex = 5;
             labelVol.Text = "Volatilité (%)";
+            labelVol.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // labelRf
             // 

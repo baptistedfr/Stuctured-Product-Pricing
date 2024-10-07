@@ -43,65 +43,73 @@ namespace Pricing.MonteCarlo
         public (double price, double interval) Price()
         {
             double[] payoffs = new double[NbSimulation];
-            //double[] prices = new double[NbSimulation];
             BrownianGenerator brownianGenerator = new BrownianGenerator();
-            BarrierOption? barrierOption = Derive as BarrierOption;
-            bool isHeston = Market.VolType == VolatilityType.Heston;
+            bool isBarrier = (Derive as BarrierOption != null); // On regarde si c est une option barrière, dans ce cas il faudra discretiser
+            bool isHeston = Market.VolType == VolatilityType.Heston; // On regarde si le calcul de la volatilité est stochastique
             Parallel.For(0, NbSimulation, i =>
             {
-
-                if (barrierOption != null)
-                {
-                    barrierOption.Activated = false;
-                }
-
                 double simPrice = Market.Spot;
-                // Pricing with Heston discretisation
-                if (isHeston)
-                {
-                    double[] varianceSimulated = new double[NbSteps];
-                    varianceSimulated[0] = 0.2;
-                    var hestonModel = Market.VolModel as Heston;
-                    var (dW1, dW2) = brownianGenerator.GenerateBrownian(NbSteps, hestonModel.Rho);
-
-                    for (int j = 1; j < NbSteps + 1; j++)
-                    {
-                        HestonParams volParams = new HestonParams(varianceSimulated[j - 1], Dt, dW2[j-1]);
-                        var hestonVariance = Math.Max(0, hestonModel.GetVolatility(volParams));
-
-                        double hestonDrift = (Market.Rate - 0.5 * Math.Pow(hestonVariance,2)) * Dt;
-                        double hestonDiffusion = hestonVariance*Math.Sqrt(Dt);
-
-                        simPrice *= Math.Exp(hestonDrift + hestonDiffusion * dW1[j]);
-
-                        if (barrierOption != null && barrierOption.BarrierOut(simPrice))
-                        {
-                            break;
-                        }
-                    }
-                }
-                // Pricing without Heston : Volatility is either constant or calculated from the SVI in the constructor
-                else
-                {
-                    double drift = (Market.Rate - 0.5 * Math.Pow(Market.Volatility, 2)) * Dt;
-                    double diffusion = Market.Volatility * Math.Sqrt(Dt);
-                    double[] dW1 = brownianGenerator.GenerateNormal(NbSteps);
-
-                    for (int j = 0; j < NbSteps; j++)
-                    {
-                        simPrice *= Math.Exp(drift + diffusion * dW1[j]);
-                        if (barrierOption != null && barrierOption.BarrierOut(simPrice))
-                        {
-                            break;
-                        }
-                    }
-                }
-                payoffs[i] = Derive.Payoff(simPrice);
-                //prices[i] = Math.Exp(-Market.Rate * Maturity) * payoffs.Take(i + 1).Average();
+                payoffs[i] = GeneratePayoff(simPrice, isBarrier, isHeston);
             });
             double confidenceInterval = ConfidenceInterval(payoffs);
             double price = Math.Exp(-Market.Rate * Maturity) * payoffs.Average();
             return (price, confidenceInterval);
+        }
+        public double GeneratePayoff(double simPrice, bool isBarrier, bool isHeston)
+        {
+            BrownianGenerator brownianGenerator = new BrownianGenerator();
+            BarrierOption? barrierOption = Derive as BarrierOption;
+
+            if (isHeston)
+            {
+                double[] varianceSimulated = new double[NbSteps];
+                varianceSimulated[0] = 0.2;
+                var hestonModel = Market.VolModel as Heston;
+                var (dW1, dW2) = brownianGenerator.GenerateBrownian(NbSteps, hestonModel.Rho);
+
+                for (int j = 1; j < NbSteps + 1; j++)
+                {
+                    HestonParams volParams = new HestonParams(varianceSimulated[j - 1], Dt, dW2[j - 1]);
+                    var hestonVariance = Math.Max(0, hestonModel.GetVolatility(volParams));
+
+                    double hestonDrift = (Market.Rate - 0.5 * Math.Pow(hestonVariance, 2)) * Dt;
+                    double hestonDiffusion = hestonVariance * Math.Sqrt(Dt);
+
+                    simPrice *= Math.Exp(hestonDrift + hestonDiffusion * dW1[j]);
+
+                    if (barrierOption != null && barrierOption.BarrierOut(simPrice))
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                if (isBarrier) // Cas de vol SVI ou vol constante, on doit quand meme discretiser pour les barrières
+                {
+                    double drift = (Market.Rate - 0.5 * Math.Pow(Market.Volatility, 2)) * Dt;
+                    double diffusion = Market.Volatility * Math.Sqrt(Dt);
+                    double[] dW1 = brownianGenerator.GenerateNormal(NbSteps);
+                    for (int j = 0; j < NbSteps; j++)
+                    {
+                        simPrice *= Math.Exp(drift + diffusion * dW1[j]);
+
+                        if (barrierOption != null && barrierOption.BarrierOut(simPrice))
+                        {
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    double drift = (Market.Rate - 0.5 * Math.Pow(Market.Volatility, 2)) * Maturity;
+                    double diffusion = Market.Volatility * Math.Sqrt(Maturity);
+                    double[] dW1 = brownianGenerator.GenerateNormal(1);
+                    simPrice *= Math.Exp(drift + diffusion * dW1[0]);
+                }
+            }
+
+            return Derive.Payoff(simPrice);
         }
         public double ConfidenceInterval(double[] payoffs)
         {
