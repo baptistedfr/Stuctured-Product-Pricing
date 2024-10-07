@@ -75,6 +75,11 @@ namespace Pricing
                 SVI.Calibrate((ICalibrationParams)parameters);
                 VolModel = SVI;
             }
+            else if (VolType == VolatilityType.Heston)
+            {
+                var heston = new Heston();
+                VolModel = heston;
+            }
         }
 
         public void CalibrateRate()
