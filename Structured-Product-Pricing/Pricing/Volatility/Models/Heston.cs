@@ -10,7 +10,7 @@ namespace Pricing.Volatility.Models
         public double VolOfVol { get; set; }
         public double Rho { get; set; }
 
-        public Heston(double spot, double rate, double volatility, double kappa, double theta, double volOfVol, double rho)
+        public Heston(double kappa = 0.1, double theta = 0.1, double volOfVol = 0.1, double rho = 0.8)
         {
             Kappa = kappa;
             Theta = theta;
@@ -28,19 +28,6 @@ namespace Pricing.Volatility.Models
 
             var prevVar = hestonParams.PreviousVariance;
             return prevVar + Kappa * (Theta - Math.Max(prevVar, 0) * hestonParams.Dt) + VolOfVol * Math.Sqrt(Math.Max(prevVar, 0)) * hestonParams.BrownianMotion;
-        }
-
-        /// <summary>
-        /// Function use to calibrate the Heston models to fit the best the Market Data.
-        /// The model has to be calibrated at market initialisation.
-        /// Once calibrated, one can directly use the model to have a volatility estimation by calling "GetVolatility" method.
-        /// </summary>
-        public override void Calibrate(ICalibrationParams parameters)
-        {
-            Kappa = 0.1;
-            Theta = 0.1;
-            VolOfVol = 0.1;
-            Rho = 0.8;
         }
     }
 }

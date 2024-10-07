@@ -17,9 +17,9 @@ namespace InterfaceCsv
 
             PricingJob job1 = new PricingJob(1, "Athena", 5.05, 0.3);
             PricingJob job2 = new PricingJob(2, "Phoenix", 10.2, 1.2);
-            List<PricingJob> jbList = new List<PricingJob> { job1, job2 };
+            List<PricingJob> jobList = new List<PricingJob> { job1, job2 };
 
-            excel.WriteOutput(jbList, fileName);
+            excel.WriteOutput(jobList, fileName);
             Console.WriteLine("end");
         }
     }
