@@ -29,5 +29,10 @@ namespace Pricing.Volatility.Models
             var prevVar = hestonParams.PreviousVariance;
             return prevVar + Kappa * (Theta - Math.Max(prevVar, 0) * hestonParams.Dt) + VolOfVol * Math.Sqrt(Math.Max(prevVar, 0)) * hestonParams.BrownianMotion;
         }
+
+        public override void Calibrate(ICalibrationParams parameters)
+        {
+
+        }
     }
 }

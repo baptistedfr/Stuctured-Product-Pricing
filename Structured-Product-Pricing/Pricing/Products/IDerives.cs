@@ -12,7 +12,7 @@ namespace Pricing.Products
 
         double CloseFormula(Market market);
 
-        double CalculateVolSVI(Market market);
+        
 
 
     }

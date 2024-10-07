@@ -10,5 +10,6 @@ namespace Pricing.Products
     {
         double Payoff(double spot);
         double GetMaturity();
+        double CalculateVolSVI(Market market);
     }
 }

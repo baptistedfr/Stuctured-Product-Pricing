@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pricing.Volatility.Parameters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,7 +35,10 @@ namespace Pricing.Products
             return Maturity;
         }
         public abstract double PayoffPath(double[] paths, double rf);
-
+        public double CalculateVolSVI(Market market)
+        {
+            return market.VolModel.GetVolatility(new SVIParams(Nominal, Maturity, market.Spot));
+        }
         public virtual double Payoff(double spot)
         {
             return 0;

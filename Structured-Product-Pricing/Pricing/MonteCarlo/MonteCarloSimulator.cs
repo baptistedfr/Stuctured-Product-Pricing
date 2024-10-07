@@ -43,7 +43,10 @@ namespace Pricing.MonteCarlo
             Maturity = autocall.Maturity;
             NbSteps = Convert.ToInt32(Maturity * autocall.FreqObservation);
             Dt = Maturity / NbSteps;
-
+            if (market.VolModel as SVI != null)
+            {
+                market.Volatility = Product.CalculateVolSVI(market);
+            }
             if (Market.RateModel != null)
             {
                 Market.Rate = Market.RateModel.GetRate(Maturity) / 100;
@@ -54,8 +57,9 @@ namespace Pricing.MonteCarlo
         /// Monte-Carlo pricer for regular option strategies
         /// </summary>
         /// <returns></returns>
-        public (double price, double interval) Price()
+        public (double price, double interval) Price(int? seed=null)
         {
+            
             double[] payoffs = new double[NbSimulation];
             BrownianGenerator brownianGenerator = new BrownianGenerator();
             bool isBarrier = (Product as BarrierOption != null); // On regarde si c est une option barrière, dans ce cas il faudra discretiser
@@ -155,7 +159,7 @@ namespace Pricing.MonteCarlo
         {
             Autocall? autocall = Product as Autocall;
             double lowerBound = 0.0; // Borne inférieure du coupon
-            double upperBound = 100; // Borne supérieure du coupon
+            double upperBound = 50; // Borne supérieure du coupon
             double coupon = 0.0;
 
             while (upperBound - lowerBound > tolerance)
@@ -169,11 +173,11 @@ namespace Pricing.MonteCarlo
 
                 if (price < autocall.Nominal)
                 {
-                    lowerBound = coupon; // Cherche un coupon plus élevé
+                    lowerBound = coupon; 
                 }
                 else
                 {
-                    upperBound = coupon; // Cherche un coupon plus bas
+                    upperBound = coupon; 
                 }
             }
 
