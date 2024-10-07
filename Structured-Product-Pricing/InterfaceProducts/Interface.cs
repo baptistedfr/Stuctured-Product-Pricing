@@ -24,47 +24,61 @@ namespace InterfaceProducts
             InitializeComponent();
             paramsManager = new ParamsManager(new System.Windows.Forms.TextBox[] { textBoxStrike1, textBoxStrike2, textBoxStrike3, textBoxStrike4 },
                                           new Label[] { labelStrike1, labelStrike2, labelStrike3, labelStrike4 },
-                                          textBoxMaturity, textBoxBinary, labelBinary, textBoxBarrier, labelBarrier);
-            optionManager = new OptionManager();
+                                          textBoxMaturity, textBoxBinary, labelBinary, textBoxBarrier, labelBarrier,
+                                          new System.Windows.Forms.TextBox[] { textBoxBarrier, textBoxBarrierCoupon, textBoxBarrierCapital },
+                                          new Label[] { labelBarrier, labelBarrierCoupon, labelBarrierCapital },
+                                          comboBoxFreqObservation,labelFreqObservation
+                                          );
+            optionManager = new OptionManager(radioButtonAutocall, radioButtonDerive, comboBoxOptions);
 
             marketManager = new MarketManager(textBoxSpot, textBoxVolatility, textBoxRf, radioButtonAuto, radioButtonManual, radioButtonVolSto, radioButtonVolCste, radioButtonVolSVI);
-            
+
         }
-
-        private void price_Click(object sender, EventArgs e)
+        private void ResetUI()
         {
-            plotView1.Model = null;  // Assigner un modèle nul pour vider l'affichage
-            dataGridViewGrecs.Rows.Clear();    // Supprimer toutes les lignes
-            dataGridViewGrecs.Columns.Clear(); // Supprimer toutes les colonnes
-            labelPrix.Text = "Prix : "; // On réinitialise le Prix
-            labelCF.Text = "Close Formula : "; // On réinitialise le Prix
-
+            plotView1.Model = null;
+            dataGridViewGrecs.Rows.Clear();
+            dataGridViewGrecs.Columns.Clear();
+            labelPrix.Text = "Prix : ";
+            labelCF.Text = "Close Formula : ";
+        }
+        private bool ValidateParameters()
+        {
             // On regarde si les paramètres sont bien renseignés
-            if (!optionManager.CheckOptionSelected(comboBoxOptions.SelectedItem) ||
+            if (!optionManager.CheckProduct() ||
+            !optionManager.CheckOptionSelected() ||
             !paramsManager.CheckVisibleStrikeValues() ||
             !paramsManager.CheckMaturityValues() ||
             !paramsManager.CheckBinary() ||
             !paramsManager.CheckBarrier() ||
+            !paramsManager.CheckAutocall() ||
             !marketManager.CheckRadioButton() ||
             !marketManager.CheckMarket())
             {
+                return false;
+            }
+            return true;
+        }
+      
+        private void price_Click(object sender, EventArgs e)
+        {
+            ResetUI();
+            if (ValidateParameters() == false)
+            {
                 return;
             }
-
-            string? selectedOption = comboBoxOptions.SelectedItem.ToString();
-            MessageBox.Show("Vous avez sélectionné : " + selectedOption);
-            IDerives derive = optionManager.CreateDerive(selectedOption, paramsManager.GetStrikeValues(), textBoxMaturity.Text, textBoxBinary.Text, textBoxBarrier.Text);
+            IDerives derive = optionManager.CreateDerive(paramsManager.GetStrikeValues(), textBoxMaturity.Text, textBoxBinary.Text, textBoxBarrier.Text);
 
             Market market = marketManager.CreateMarket();
-            
+
             MonteCarloSimulator mc = new MonteCarloSimulator(derive, market, 100000);
             if (radioButtonAuto.Checked)
             {
                 marketManager.ActualiseMarket(market);
             }
-            
+            string selectedOption = comboBoxOptions.SelectedItem.ToString();
             (double price, double confidenceInterval) = mc.Price();
-            labelPrix.Text += Math.Round(price, 2).ToString() + " € +/- " + Math.Round(confidenceInterval,3) + " €";
+            labelPrix.Text += Math.Round(price, 2).ToString() + " € +/- " + Math.Round(confidenceInterval, 3) + " €";
             double closePrice = derive.CloseFormula(market);
             labelCF.Text += Math.Round(closePrice, 2) + " €";
             if (!selectedOption.Contains("Call Down") && !selectedOption.Contains("Put Up"))
@@ -74,14 +88,35 @@ namespace InterfaceProducts
             //ConvergenceChart(closePrice, tabPrices);
             GenerateGreeks(mc, price);
         }
+        private void buttonAutocall_Click(object sender, EventArgs e)
+        {
+            ResetUI();
+            if (ValidateParameters() == false)
+            {
+                return;
+            }
+            Autocall  autocall = optionManager.CreateAutocall(textBoxMaturity.Text, comboBoxFreqObservation.SelectedItem.ToString(), textBoxBarrier.Text, textBoxBarrierCoupon.Text, textBoxBarrierCapital.Text);
 
+            Market market = marketManager.CreateMarket();
+
+            MonteCarloSimulator mc = new MonteCarloSimulator(autocall, market, 100000);
+            if (radioButtonAuto.Checked)
+            {
+                marketManager.ActualiseMarket(market);
+            }
+            double coupon = mc.FindCouponAutocall();
+
+            textBoxBinary.Text = (coupon.ToString());
+            ////ConvergenceChart(closePrice, tabPrices);
+            GenerateGreeks(mc, 100);
+        }
         private void comboBoxOptions_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBoxOptions.SelectedItem != null)
             {
                 paramsManager.UpdateStrikeVisibility(comboBoxOptions.SelectedItem.ToString());
                 paramsManager.UpdateBinary(comboBoxOptions.SelectedItem.ToString());
-                paramsManager.UpdateBarrier(comboBoxOptions.SelectedItem.ToString());
+                paramsManager.UpdateBarrier(comboBoxOptions.SelectedItem.ToString(), radioButtonAutocall.Checked);
             }
 
         }
@@ -171,7 +206,7 @@ namespace InterfaceProducts
         }
         private void ConvergenceChart(double closePrice, double[] prices)
         {
-            
+
             var plotModel = new PlotModel { Title = "Convergence" };
 
             // Créer une série de lignes pour le payoff
@@ -209,10 +244,8 @@ namespace InterfaceProducts
         }
         private void radioButtonAuto_CheckedChanged(object sender, EventArgs e)
         {
-
             marketManager.UpdateMarket();
         }
-
         private void radioButtonVolSto_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButtonVolSto.Checked)
@@ -225,7 +258,15 @@ namespace InterfaceProducts
                 textBoxVolatility.Enabled = true;
             }
         }
+
+        private void radioButtonAutocall_CheckedChanged_1(object sender, EventArgs e)
+        {
+            optionManager.UpdateProduct(price,buttonAutocall, textBoxSpot);
+        }
+
+        private void radioButtonDerive_CheckedChanged_1(object sender, EventArgs e)
+        {
+            optionManager.UpdateProduct(price, buttonAutocall, textBoxSpot);
+        }
     }
-
-
 }

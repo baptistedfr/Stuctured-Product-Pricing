@@ -49,6 +49,15 @@
             labelMaturity = new Label();
             label5 = new Label();
             groupBoxProduit = new GroupBox();
+            comboBoxFreqObservation = new ComboBox();
+            labelFreqObservation = new Label();
+            labelBarrierCapital = new Label();
+            labelBarrierCoupon = new Label();
+            textBoxBarrierCapital = new TextBox();
+            textBoxBarrierCoupon = new TextBox();
+            panel3 = new Panel();
+            radioButtonDerive = new RadioButton();
+            buttonAutocall = new Button();
             labelBarrier = new Label();
             textBoxBarrier = new TextBox();
             labelBinary = new Label();
@@ -65,7 +74,9 @@
             panel1 = new Panel();
             radioButtonManual = new RadioButton();
             radioButtonAuto = new RadioButton();
+            radioButtonAutocall = new RadioButton();
             groupBoxProduit.SuspendLayout();
+            panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewGrecs).BeginInit();
             groupBoxMarket.SuspendLayout();
             panel2.SuspendLayout();
@@ -76,9 +87,9 @@
             // 
             price.BackColor = SystemColors.Info;
             price.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            price.Location = new Point(453, 17);
+            price.Location = new Point(477, 17);
             price.Name = "price";
-            price.Size = new Size(173, 51);
+            price.Size = new Size(153, 51);
             price.TabIndex = 0;
             price.Text = "Price";
             price.UseVisualStyleBackColor = false;
@@ -91,8 +102,7 @@
             comboBoxOptions.BackColor = Color.Moccasin;
             comboBoxOptions.ForeColor = Color.Black;
             comboBoxOptions.FormattingEnabled = true;
-            comboBoxOptions.Items.AddRange(new object[] { "Call Option", "Put Option", "Binary Call", "Binary Put", "Call Up And In", "Call Up And Out", "Call Down And In", "Call Down And Out", "Put Up And In", "Put Up And Out", "Put Down And In", "Put Down And Out", "Call Spread", "Put Spread", "Butterfly Spread", "Condor Spread", "Straddle", "Strangle", "Strip", "Strap" });
-            comboBoxOptions.Location = new Point(169, 29);
+            comboBoxOptions.Location = new Point(214, 29);
             comboBoxOptions.Name = "comboBoxOptions";
             comboBoxOptions.Size = new Size(253, 31);
             comboBoxOptions.TabIndex = 1;
@@ -172,7 +182,7 @@
             // textBoxStrike1
             // 
             textBoxStrike1.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            textBoxStrike1.Location = new Point(153, 136);
+            textBoxStrike1.Location = new Point(359, 136);
             textBoxStrike1.Name = "textBoxStrike1";
             textBoxStrike1.Size = new Size(93, 34);
             textBoxStrike1.TabIndex = 10;
@@ -182,7 +192,7 @@
             // textBoxStrike3
             // 
             textBoxStrike3.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            textBoxStrike3.Location = new Point(394, 136);
+            textBoxStrike3.Location = new Point(600, 136);
             textBoxStrike3.Name = "textBoxStrike3";
             textBoxStrike3.Size = new Size(93, 34);
             textBoxStrike3.TabIndex = 11;
@@ -192,7 +202,7 @@
             // textBoxStrike4
             // 
             textBoxStrike4.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            textBoxStrike4.Location = new Point(519, 136);
+            textBoxStrike4.Location = new Point(725, 136);
             textBoxStrike4.Name = "textBoxStrike4";
             textBoxStrike4.Size = new Size(92, 34);
             textBoxStrike4.TabIndex = 12;
@@ -202,7 +212,7 @@
             // textBoxStrike2
             // 
             textBoxStrike2.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            textBoxStrike2.Location = new Point(269, 136);
+            textBoxStrike2.Location = new Point(475, 136);
             textBoxStrike2.Name = "textBoxStrike2";
             textBoxStrike2.Size = new Size(93, 34);
             textBoxStrike2.TabIndex = 13;
@@ -212,7 +222,7 @@
             // labelStrike1
             // 
             labelStrike1.AutoSize = true;
-            labelStrike1.Location = new Point(169, 110);
+            labelStrike1.Location = new Point(375, 110);
             labelStrike1.Name = "labelStrike1";
             labelStrike1.Size = new Size(65, 23);
             labelStrike1.TabIndex = 14;
@@ -223,7 +233,7 @@
             // labelStrike2
             // 
             labelStrike2.AutoSize = true;
-            labelStrike2.Location = new Point(285, 110);
+            labelStrike2.Location = new Point(491, 110);
             labelStrike2.Name = "labelStrike2";
             labelStrike2.Size = new Size(65, 23);
             labelStrike2.TabIndex = 15;
@@ -233,7 +243,7 @@
             // labelStrike3
             // 
             labelStrike3.AutoSize = true;
-            labelStrike3.Location = new Point(411, 110);
+            labelStrike3.Location = new Point(617, 110);
             labelStrike3.Name = "labelStrike3";
             labelStrike3.Size = new Size(65, 23);
             labelStrike3.TabIndex = 16;
@@ -243,7 +253,7 @@
             // labelStrike4
             // 
             labelStrike4.AutoSize = true;
-            labelStrike4.Location = new Point(532, 110);
+            labelStrike4.Location = new Point(738, 110);
             labelStrike4.Name = "labelStrike4";
             labelStrike4.Size = new Size(65, 23);
             labelStrike4.TabIndex = 17;
@@ -253,7 +263,7 @@
             // textBoxMaturity
             // 
             textBoxMaturity.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            textBoxMaturity.Location = new Point(26, 136);
+            textBoxMaturity.Location = new Point(232, 136);
             textBoxMaturity.Name = "textBoxMaturity";
             textBoxMaturity.Size = new Size(95, 34);
             textBoxMaturity.TabIndex = 18;
@@ -262,7 +272,7 @@
             // labelMaturity
             // 
             labelMaturity.AutoSize = true;
-            labelMaturity.Location = new Point(38, 110);
+            labelMaturity.Location = new Point(244, 110);
             labelMaturity.Name = "labelMaturity";
             labelMaturity.Size = new Size(75, 23);
             labelMaturity.TabIndex = 19;
@@ -274,7 +284,7 @@
             label5.AutoSize = true;
             label5.BorderStyle = BorderStyle.FixedSingle;
             label5.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label5.Location = new Point(0, 12);
+            label5.Location = new Point(24, 17);
             label5.Name = "label5";
             label5.Size = new Size(166, 56);
             label5.TabIndex = 20;
@@ -283,6 +293,14 @@
             // groupBoxProduit
             // 
             groupBoxProduit.BackColor = Color.AntiqueWhite;
+            groupBoxProduit.Controls.Add(comboBoxFreqObservation);
+            groupBoxProduit.Controls.Add(labelFreqObservation);
+            groupBoxProduit.Controls.Add(labelBarrierCapital);
+            groupBoxProduit.Controls.Add(labelBarrierCoupon);
+            groupBoxProduit.Controls.Add(textBoxBarrierCapital);
+            groupBoxProduit.Controls.Add(textBoxBarrierCoupon);
+            groupBoxProduit.Controls.Add(panel3);
+            groupBoxProduit.Controls.Add(buttonAutocall);
             groupBoxProduit.Controls.Add(labelBarrier);
             groupBoxProduit.Controls.Add(textBoxBarrier);
             groupBoxProduit.Controls.Add(labelBinary);
@@ -300,16 +318,117 @@
             groupBoxProduit.Controls.Add(comboBoxOptions);
             groupBoxProduit.Controls.Add(price);
             groupBoxProduit.Controls.Add(textBoxStrike1);
-            groupBoxProduit.Location = new Point(653, 23);
+            groupBoxProduit.Location = new Point(629, 23);
             groupBoxProduit.Name = "groupBoxProduit";
-            groupBoxProduit.Size = new Size(680, 268);
+            groupBoxProduit.Size = new Size(908, 277);
             groupBoxProduit.TabIndex = 21;
             groupBoxProduit.TabStop = false;
+            // 
+            // comboBoxFreqObservation
+            // 
+            comboBoxFreqObservation.AccessibleRole = AccessibleRole.ScrollBar;
+            comboBoxFreqObservation.AutoCompleteMode = AutoCompleteMode.Suggest;
+            comboBoxFreqObservation.BackColor = Color.Moccasin;
+            comboBoxFreqObservation.ForeColor = Color.Black;
+            comboBoxFreqObservation.FormattingEnabled = true;
+            comboBoxFreqObservation.Items.AddRange(new object[] { "Annuelle", "Semestrielle", "Trimestrielle", "Mensuelle" });
+            comboBoxFreqObservation.Location = new Point(28, 219);
+            comboBoxFreqObservation.Name = "comboBoxFreqObservation";
+            comboBoxFreqObservation.Size = new Size(174, 31);
+            comboBoxFreqObservation.TabIndex = 34;
+            comboBoxFreqObservation.Visible = false;
+            // 
+            // labelFreqObservation
+            // 
+            labelFreqObservation.AutoSize = true;
+            labelFreqObservation.Location = new Point(34, 193);
+            labelFreqObservation.Name = "labelFreqObservation";
+            labelFreqObservation.Size = new Size(168, 23);
+            labelFreqObservation.TabIndex = 33;
+            labelFreqObservation.Text = "Freq observation /an";
+            labelFreqObservation.TextAlign = ContentAlignment.MiddleCenter;
+            labelFreqObservation.Visible = false;
+            // 
+            // labelBarrierCapital
+            // 
+            labelBarrierCapital.AutoSize = true;
+            labelBarrierCapital.Location = new Point(646, 193);
+            labelBarrierCapital.Name = "labelBarrierCapital";
+            labelBarrierCapital.Size = new Size(127, 23);
+            labelBarrierCapital.TabIndex = 31;
+            labelBarrierCapital.Text = "Barrière Capital";
+            labelBarrierCapital.TextAlign = ContentAlignment.MiddleCenter;
+            labelBarrierCapital.Visible = false;
+            // 
+            // labelBarrierCoupon
+            // 
+            labelBarrierCoupon.AutoSize = true;
+            labelBarrierCoupon.Location = new Point(495, 193);
+            labelBarrierCoupon.Name = "labelBarrierCoupon";
+            labelBarrierCoupon.Size = new Size(135, 23);
+            labelBarrierCoupon.TabIndex = 30;
+            labelBarrierCoupon.Text = "Barrière Coupon";
+            labelBarrierCoupon.TextAlign = ContentAlignment.MiddleCenter;
+            labelBarrierCoupon.Visible = false;
+            // 
+            // textBoxBarrierCapital
+            // 
+            textBoxBarrierCapital.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            textBoxBarrierCapital.Location = new Point(664, 219);
+            textBoxBarrierCapital.Name = "textBoxBarrierCapital";
+            textBoxBarrierCapital.Size = new Size(93, 34);
+            textBoxBarrierCapital.TabIndex = 28;
+            textBoxBarrierCapital.TextAlign = HorizontalAlignment.Center;
+            textBoxBarrierCapital.Visible = false;
+            // 
+            // textBoxBarrierCoupon
+            // 
+            textBoxBarrierCoupon.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            textBoxBarrierCoupon.Location = new Point(518, 219);
+            textBoxBarrierCoupon.Name = "textBoxBarrierCoupon";
+            textBoxBarrierCoupon.Size = new Size(93, 34);
+            textBoxBarrierCoupon.TabIndex = 27;
+            textBoxBarrierCoupon.TextAlign = HorizontalAlignment.Center;
+            textBoxBarrierCoupon.Visible = false;
+            // 
+            // panel3
+            // 
+            panel3.Controls.Add(radioButtonAutocall);
+            panel3.Controls.Add(radioButtonDerive);
+            panel3.Location = new Point(24, 85);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(150, 88);
+            panel3.TabIndex = 26;
+            // 
+            // radioButtonDerive
+            // 
+            radioButtonDerive.AutoSize = true;
+            radioButtonDerive.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            radioButtonDerive.Location = new Point(10, 54);
+            radioButtonDerive.Name = "radioButtonDerive";
+            radioButtonDerive.Size = new Size(123, 32);
+            radioButtonDerive.TabIndex = 14;
+            radioButtonDerive.TabStop = true;
+            radioButtonDerive.Text = "Derivative";
+            radioButtonDerive.UseVisualStyleBackColor = true;
+            radioButtonDerive.CheckedChanged += radioButtonDerive_CheckedChanged_1;
+            // 
+            // buttonAutocall
+            // 
+            buttonAutocall.BackColor = SystemColors.Info;
+            buttonAutocall.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            buttonAutocall.Location = new Point(646, 17);
+            buttonAutocall.Name = "buttonAutocall";
+            buttonAutocall.Size = new Size(214, 51);
+            buttonAutocall.TabIndex = 25;
+            buttonAutocall.Text = "Price Autocall Coupon";
+            buttonAutocall.UseVisualStyleBackColor = false;
+            buttonAutocall.Click += buttonAutocall_Click;
             // 
             // labelBarrier
             // 
             labelBarrier.AutoSize = true;
-            labelBarrier.Location = new Point(165, 193);
+            labelBarrier.Location = new Point(371, 193);
             labelBarrier.Name = "labelBarrier";
             labelBarrier.Size = new Size(69, 23);
             labelBarrier.TabIndex = 24;
@@ -320,7 +439,7 @@
             // textBoxBarrier
             // 
             textBoxBarrier.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            textBoxBarrier.Location = new Point(153, 219);
+            textBoxBarrier.Location = new Point(359, 219);
             textBoxBarrier.Name = "textBoxBarrier";
             textBoxBarrier.Size = new Size(93, 34);
             textBoxBarrier.TabIndex = 23;
@@ -330,7 +449,7 @@
             // labelBinary
             // 
             labelBinary.AutoSize = true;
-            labelBinary.Location = new Point(38, 193);
+            labelBinary.Location = new Point(244, 193);
             labelBinary.Name = "labelBinary";
             labelBinary.Size = new Size(71, 23);
             labelBinary.TabIndex = 22;
@@ -341,7 +460,7 @@
             // textBoxBinary
             // 
             textBoxBinary.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            textBoxBinary.Location = new Point(26, 219);
+            textBoxBinary.Location = new Point(232, 219);
             textBoxBinary.Name = "textBoxBinary";
             textBoxBinary.Size = new Size(93, 34);
             textBoxBinary.TabIndex = 21;
@@ -486,12 +605,24 @@
             radioButtonAuto.UseVisualStyleBackColor = true;
             radioButtonAuto.CheckedChanged += radioButtonAuto_CheckedChanged;
             // 
+            // radioButtonAutocall
+            // 
+            radioButtonAutocall.AutoSize = true;
+            radioButtonAutocall.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            radioButtonAutocall.Location = new Point(10, 18);
+            radioButtonAutocall.Name = "radioButtonAutocall";
+            radioButtonAutocall.Size = new Size(106, 32);
+            radioButtonAutocall.TabIndex = 15;
+            radioButtonAutocall.TabStop = true;
+            radioButtonAutocall.Text = "Autocall";
+            radioButtonAutocall.UseVisualStyleBackColor = true;
+            // 
             // Interface
             // 
             AutoScaleDimensions = new SizeF(9F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.SeaShell;
-            ClientSize = new Size(1504, 898);
+            ClientSize = new Size(1585, 898);
             Controls.Add(groupBoxMarket);
             Controls.Add(labelCF);
             Controls.Add(dataGridViewGrecs);
@@ -503,6 +634,8 @@
             Text = "Form1";
             groupBoxProduit.ResumeLayout(false);
             groupBoxProduit.PerformLayout();
+            panel3.ResumeLayout(false);
+            panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewGrecs).EndInit();
             groupBoxMarket.ResumeLayout(false);
             groupBoxMarket.PerformLayout();
@@ -553,5 +686,15 @@
         private RadioButton radioButtonVolCste;
         private RadioButton radioButtonVolSto;
         private RadioButton radioButtonVolSVI;
+        private Panel panel3;
+        private RadioButton radioButtonDerive;
+        private Button buttonAutocall;
+        private TextBox textBoxBarrierCapital;
+        private TextBox textBoxBarrierCoupon;
+        private Label labelBarrierCapital;
+        private Label labelBarrierCoupon;
+        private Label labelFreqObservation;
+        private ComboBox comboBoxFreqObservation;
+        private RadioButton radioButtonAutocall;
     }
 }

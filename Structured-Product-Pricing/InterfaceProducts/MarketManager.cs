@@ -58,24 +58,8 @@ namespace InterfaceProducts
         public Market CreateMarket()
         {
             double spot = Convert.ToDouble(textBoxSpot.Text);
-            VolatilityType volType;
-            if (radioButtonVolSVI.Checked)
-            {
-                volType = VolatilityType.SVI;
-            }
-            else if (radioButtonVolSto.Checked)
-            {
-                volType = VolatilityType.Heston;
-            }
-            else
-            {
-                volType = VolatilityType.Cste;
-            }
-            double vol = 0;
-            if (volType == VolatilityType.Cste)
-            {
-                vol = Convert.ToDouble(textBoxVol.Text) / 100;
-            }
+            var volType = DetermineVolatilityType();
+            double vol = volType == VolatilityType.Cste ? Convert.ToDouble(textBoxVol.Text) / 100 : 0;
             if (radioButtonAuto.Checked)
             {
                 return new Market("AAPL", volType, vol, spot);
@@ -87,14 +71,19 @@ namespace InterfaceProducts
                 return new Market(rate, vol, spot);
             }
         }
+        private VolatilityType DetermineVolatilityType()
+        {
+            if (radioButtonVolSVI.Checked) return VolatilityType.SVI;
+            if (radioButtonVolSto.Checked) return VolatilityType.Heston;
+            return VolatilityType.Cste;
+        }
         public void ActualiseMarket(Market market)
         {
             textBoxRf.Text = (Math.Round(market.Rate * 100, 2).ToString());
             if (market.VolType != VolatilityType.Heston) 
             { 
                 textBoxVol.Text = (Math.Round(market.Volatility * 100, 2).ToString());
-            }
-           
+            } 
         }
 
         public void UpdateMarket()

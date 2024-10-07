@@ -12,9 +12,48 @@ namespace InterfaceProducts
     // Classe pour gérer la logique des options
     public class OptionManager
     {
-        public bool CheckOptionSelected(object selectedItem)
+        private RadioButton radioButtonAutocall;
+        private RadioButton radioButtonDerive;
+        private ComboBox comboBoxProduct;
+
+        private static List<string> Options = new List<string>
         {
-            if (selectedItem == null)
+            "Call Option",
+            "Put Option",
+            "Binary Call",
+            "Binary Put",
+            "Call Up And In",
+            "Call Up And Out",
+            "Call Down And In",
+            "Call Down And Out",
+            "Put Up And In",
+            "Put Up And Out",
+            "Put Down And In",
+            "Put Down And Out",
+            "Call Spread",
+            "Put Spread",
+            "Butterfly Spread",
+            "Condor Spread",
+            "Straddle",
+            "Strangle",
+            "Strip",
+            "Strap"
+        };
+
+        private static List<string> Autocalls = new List<string>
+        {
+            "Autocall Phoenix",
+            "Autocall Athena"
+        };
+        public OptionManager(RadioButton Autocall, RadioButton Derivative, ComboBox product)
+        {
+            this.radioButtonAutocall = Autocall;
+            this.radioButtonDerive = Derivative;
+            this.comboBoxProduct = product;
+        }
+        public bool CheckOptionSelected()
+        {
+            if (comboBoxProduct.SelectedItem == null)
             {
                 MessageBox.Show("Vous n'avez pas choisi de produit à pricer !", "Erreur de sélection", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
@@ -22,10 +61,11 @@ namespace InterfaceProducts
             return true;
         }
 
-        public IDerives CreateDerive(string selectedOption, List<double> strikeValues, string maturityText, string binaryText, string barrierText)
-        { 
+        public IDerives CreateDerive(List<double> strikeValues, string maturityText, string binaryText, string barrierText)
+        {
+            string selectedProduct = comboBoxProduct.SelectedItem.ToString();
             double maturity = double.Parse(maturityText);
-            return selectedOption switch
+            return selectedProduct switch
             {
                 "Call Option" => new CallOption(strikeValues[0], maturity),
                 "Put Option" => new PutOption(strikeValues[0], maturity),
@@ -49,6 +89,65 @@ namespace InterfaceProducts
                 "Strap" => new Strap(strikeValues[0], maturity),
                 _ => throw new ArgumentException("Option non reconnue")
             };
+        }
+        public Autocall CreateAutocall(string maturityText, string freqObservationText, string barrierRappel, string barrierCoupon, string barrierCapital)
+        {
+            string selectedProduct = comboBoxProduct.SelectedItem.ToString();
+            double freqObservation=1;
+            switch (freqObservationText)
+            {
+                case "Annuelle":
+                    freqObservation = 1;
+                    break;
+                case "Semestrielle":
+                    freqObservation = 2;
+                    break;
+                case "Trimestrielle":
+                    freqObservation = 4;
+                    break;
+                case "Mensuelle":
+                    freqObservation = 12;
+                    break;
+            }
+            double maturity = double.Parse(maturityText);
+            return selectedProduct switch
+            {
+                "Autocall Phoenix" => new AutocallPhoenix(double.Parse(maturityText), freqObservation, double.Parse(barrierCoupon), double.Parse(barrierRappel), double.Parse(barrierCapital)),
+                "Autocall Athena" => new AutocallAthena(double.Parse(maturityText), freqObservation, double.Parse(barrierCoupon), double.Parse(barrierRappel), double.Parse(barrierCapital)),
+                _ => throw new ArgumentException("Option non reconnue")
+            };
+        }
+        public bool CheckProduct()
+        {
+            if ((!radioButtonAutocall.Checked && !radioButtonDerive.Checked))
+            {
+                MessageBox.Show($"Veuillez cocher un produit (Autocall ou Derivé).", "Valeur Invalide", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            return true;
+        }
+
+        public void UpdateProduct(Button bouttonPrice, Button bouttonCoupon, TextBox textBoxSpot)
+        {
+            
+            comboBoxProduct.Items.Clear(); // On vide les éléments actuels de la ComboBox
+            if (radioButtonAutocall.Checked)
+            {
+                comboBoxProduct.Items.AddRange(Autocalls.ToArray()); // Ajouter les nouveaux éléments  
+                bouttonPrice.Visible = false;
+                bouttonCoupon.Visible = true;
+                textBoxSpot.Text = "100";
+                textBoxSpot.Enabled = false;
+            }
+            else
+            {
+                comboBoxProduct.Items.AddRange(Options.ToArray()); // Ajouter les nouveaux éléments
+                bouttonPrice.Visible = true;
+                bouttonCoupon.Visible = false;
+                textBoxSpot.Text = "100";
+                textBoxSpot.Enabled = true;
+            }
+            comboBoxProduct.SelectedIndex = 0; // Sélectionner automatiquement le premier élément
         }
     }
 }

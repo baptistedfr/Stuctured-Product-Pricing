@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace Pricing.Products
 {
-    public interface IDerives : IProduct
+    public interface IProduct
     {
-        string Afficher();
-
-        double CloseFormula(Market market);
-
-        double CalculateVolSVI(Market market);
-
-
+        double Payoff(double spot);
+        double GetMaturity();
     }
 }

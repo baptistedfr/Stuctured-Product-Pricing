@@ -8,7 +8,7 @@ namespace Pricing.MonteCarlo
 {
     public class MonteCarloSimulator
     {
-        public IDerives Derive;
+        public IProduct Product;
         public Market Market;
         public double Maturity;
 
@@ -16,9 +16,9 @@ namespace Pricing.MonteCarlo
         public int NbSteps;
         public double Dt;
 
-        public MonteCarloSimulator(IDerives derive, Market market, int nbSim = 100000)
+        public MonteCarloSimulator(IProduct derive, Market market, int nbSim = 100000)
         {
-            Derive = derive;
+            Product = derive;
             Market = market;
             NbSimulation = nbSim;
             Maturity = derive.GetMaturity();
@@ -27,14 +27,28 @@ namespace Pricing.MonteCarlo
 
             if (market.VolModel as SVI != null)
             {
-                market.Volatility = derive.CalculateVolSVI(market);
+                IDerives? derivative = Product as IDerives;
+                market.Volatility = derivative.CalculateVolSVI(market);
             }
             if (market.RateModel != null)
             {
                 market.Rate = market.RateModel.GetRate(Maturity) / 100;
             }
         }
+        public MonteCarloSimulator(Autocall autocall, Market market, int nbSim = 100000)
+        {
+            Product = autocall as IProduct;
+            Market = market;
+            NbSimulation = nbSim;
+            Maturity = autocall.Maturity;
+            NbSteps = Convert.ToInt32(Maturity * autocall.FreqObservation);
+            Dt = Maturity / NbSteps;
 
+            if (Market.RateModel != null)
+            {
+                Market.Rate = Market.RateModel.GetRate(Maturity) / 100;
+            }
+        }
 
         /// <summary>
         /// Monte-Carlo pricer for regular option strategies
@@ -44,21 +58,30 @@ namespace Pricing.MonteCarlo
         {
             double[] payoffs = new double[NbSimulation];
             BrownianGenerator brownianGenerator = new BrownianGenerator();
-            bool isBarrier = (Derive as BarrierOption != null); // On regarde si c est une option barrière, dans ce cas il faudra discretiser
+            bool isBarrier = (Product as BarrierOption != null); // On regarde si c est une option barrière, dans ce cas il faudra discretiser
             bool isHeston = Market.VolType == VolatilityType.Heston; // On regarde si le calcul de la volatilité est stochastique
+            bool isAutocall = (Product as Autocall != null);
             Parallel.For(0, NbSimulation, i =>
             {
                 double simPrice = Market.Spot;
-                payoffs[i] = GeneratePayoff(simPrice, isBarrier, isHeston);
+                if (isAutocall)
+                {
+                    payoffs[i] = GenerateAutocallPayoff(simPrice);
+                }
+                else
+                {
+                    payoffs[i] = GenerateDerivativePayoff(simPrice, isBarrier, isHeston);
+                }
+                
             });
             double confidenceInterval = ConfidenceInterval(payoffs);
             double price = Math.Exp(-Market.Rate * Maturity) * payoffs.Average();
             return (price, confidenceInterval);
         }
-        public double GeneratePayoff(double simPrice, bool isBarrier, bool isHeston)
+        public double GenerateDerivativePayoff(double simPrice, bool isBarrier, bool isHeston)
         {
             BrownianGenerator brownianGenerator = new BrownianGenerator();
-            BarrierOption? barrierOption = Derive as BarrierOption;
+            BarrierOption? barrierOption = Product as BarrierOption;
 
             if (isHeston)
             {
@@ -109,7 +132,52 @@ namespace Pricing.MonteCarlo
                 }
             }
 
-            return Derive.Payoff(simPrice);
+            return Product.Payoff(simPrice);
+        }
+
+        public double GenerateAutocallPayoff(double simPrice)
+        {
+            BrownianGenerator brownianGenerator = new BrownianGenerator();
+            Autocall? autocall = Product as Autocall;
+            double drift = (Market.Rate - 0.5 * Math.Pow(Market.Volatility, 2)) * Dt;
+            double diffusion = Market.Volatility * Math.Sqrt(Dt);
+            double[] dW1 = brownianGenerator.GenerateNormal(NbSteps);
+            double[] paths = new double[NbSteps];
+            for (int i = 0; i < NbSteps; i++)
+            {
+                simPrice *= Math.Exp(drift + diffusion * dW1[i]);
+                paths[i] = simPrice;
+            }
+            return autocall.PayoffPath(paths, Market.Rate);
+        }
+
+        public double FindCouponAutocall(double tolerance = 0.0001)
+        {
+            Autocall? autocall = Product as Autocall;
+            double lowerBound = 0.0; // Borne inférieure du coupon
+            double upperBound = 100; // Borne supérieure du coupon
+            double coupon = 0.0;
+
+            while (upperBound - lowerBound > tolerance)
+            {
+                coupon = (lowerBound + upperBound) / 2; // Point médian
+                autocall.Coupon = coupon;
+
+                // Simulez un chemin (path) pour obtenir le payoff avec ce coupon
+                
+                (double price, double _) = Price();
+
+                if (price < autocall.Nominal)
+                {
+                    lowerBound = coupon; // Cherche un coupon plus élevé
+                }
+                else
+                {
+                    upperBound = coupon; // Cherche un coupon plus bas
+                }
+            }
+
+            return coupon; // Retourne le coupon qui donne un nominal de 100
         }
         public double ConfidenceInterval(double[] payoffs)
         {
