@@ -37,4 +37,8 @@
     </COMReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Pricing\Pricing.csproj" />
+  </ItemGroup>
+
 </Project>

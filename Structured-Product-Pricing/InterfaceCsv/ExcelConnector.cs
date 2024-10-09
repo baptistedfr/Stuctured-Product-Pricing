@@ -8,9 +8,9 @@ namespace InterfaceExcel
     internal class ExcelConnector
     {   
         private Excel.Application Application;
-        private Excel.Workbook Workbook { get; set; }
-        private Excel.Worksheet InputSheet { get; set; }
-        private Excel.Worksheet OutputSheet { get; set; }
+        private Workbook Workbook { get; set; }
+        private Worksheet InputSheet { get; set; }
+        private Worksheet OutputSheet { get; set; }
 
         public ExcelConnector(string excelFilePath)
         {
@@ -20,40 +20,55 @@ namespace InterfaceExcel
             OutputSheet = (Worksheet)Workbook.Sheets["Outputs"];
             Application.Visible = true;
         }
-        public void WriteOutput(List<PricingJob> pricingJobs, string pathFile)
-        {
-            int currentColumn = 1;
 
+        /// <summary>
+        /// Parse the excel input sheet and convert it to pricing jobs
+        /// </summary>
+        public List<PricingJob> GetInput()
+        {
+            List<PricingJob> pricingJobs = new List<PricingJob>();
+
+            int startRow = 2;
+            int currentRow = startRow;
+
+            while (InputSheet.Cells[currentRow, 1].Value != null)
+            {
+                var jobNumber = Convert.ToInt16(InputSheet.Cells[currentRow, 1].Value);
+                var productType = InputSheet.Cells[currentRow, 2].Value.ToString();
+                var maturity = Convert.ToDouble(InputSheet.Cells[currentRow, 3].Value);
+                var barrierCapital = Convert.ToDouble(InputSheet.Cells[currentRow, 4].Value);
+                var barrierCoupon = Convert.ToDouble(InputSheet.Cells[currentRow, 5].Value);
+                var barrierCall = Convert.ToDouble(InputSheet.Cells[currentRow, 6].Value);
+                var obsFrequency = Convert.ToChar(InputSheet.Cells[currentRow, 7].Value.ToString());
+
+                PricingJob job = new PricingJob(jobNumber, productType, obsFrequency, maturity, barrierCapital, barrierCoupon, barrierCall);
+                pricingJobs.Add(job);
+
+                currentRow++;
+            }
+            return pricingJobs;
+        }
+
+        /// <summary>
+        /// Write in the output sheet of the excel file all the attributes of the pricing tasks
+        /// </summary>
+        public void WriteOutput(List<PricingJob> pricingJobs, string excelPath)
+        {
+            int currentRow = 1;
             foreach (var job in pricingJobs)
             {
-                int currentRow = 1;
                 Type type = job.GetType();
                 foreach (PropertyInfo prop in type.GetProperties())
                 {
-                    OutputSheet.Cells[currentRow, currentColumn].Value = prop.Name.ToString();
-                    OutputSheet.Cells[currentRow, currentColumn+1].Value = prop.GetValue(job).ToString();
-
+                    OutputSheet.Cells[currentRow, 1].Value = prop.Name.ToString();
+                    OutputSheet.Cells[currentRow, 2].Value = prop.GetValue(job).ToString();
                     currentRow++;
                 }
-
-                currentColumn += 3;
+                currentRow += 2;
             }
-            //PrintExcel();
-            CloseAndSave(pathFile);
+            CloseAndSave(excelPath);
         }
-
-        public void PrintExcel()
-        {
-            for(int i=1; i<10; i++)
-            {
-                for (int j = 1; j < 10; j++)
-                {
-                    var contenu = OutputSheet.Cells[i, j].Value;
-                    if (contenu is not null) Console.WriteLine(contenu);
-                }
-            }
-        }
-
+        
         private void CloseAndSave(string oldPath)
         {
             try
