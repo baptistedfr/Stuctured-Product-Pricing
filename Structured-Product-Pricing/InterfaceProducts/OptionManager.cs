@@ -127,25 +127,40 @@ namespace InterfaceProducts
             return true;
         }
 
-        public void UpdateProduct(Button bouttonPrice, Button bouttonCoupon, TextBox textBoxSpot)
+        public void UpdateProduct(Button bouttonPrice, Button bouttonCoupon, TextBox textBoxSpot, ComboBox ticker, bool isAuto, RadioButton volSto)
         {
             
             comboBoxProduct.Items.Clear(); // On vide les éléments actuels de la ComboBox
             if (radioButtonAutocall.Checked)
-            {
+            {   
                 comboBoxProduct.Items.AddRange(Autocalls.ToArray()); // Ajouter les nouveaux éléments  
                 bouttonPrice.Visible = false;
                 bouttonCoupon.Visible = true;
                 textBoxSpot.Text = "100";
                 textBoxSpot.Enabled = false;
+                ticker.Visible = false;
+                volSto.Enabled = false;
+                volSto.Checked = false;
             }
             else
             {
+                
+                
+                if (isAuto)
+                {
+                    ticker.Visible = true;
+                    textBoxSpot.Enabled = false;
+                    volSto.Enabled = true;
+                }
+                else
+                {
+                    textBoxSpot.Text = "";
+                    ticker.Visible = false;
+                    textBoxSpot.Enabled = true;
+                }
                 comboBoxProduct.Items.AddRange(Options.ToArray()); // Ajouter les nouveaux éléments
                 bouttonPrice.Visible = true;
-                bouttonCoupon.Visible = false;
-                textBoxSpot.Text = "100";
-                textBoxSpot.Enabled = true;
+                bouttonCoupon.Visible = false; 
             }
             comboBoxProduct.SelectedIndex = 0; // Sélectionner automatiquement le premier élément
         }

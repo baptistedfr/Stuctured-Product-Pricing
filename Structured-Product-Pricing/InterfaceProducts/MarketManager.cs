@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Pricing.Volatility;
+using OxyPlot;
+using System.Xml.Linq;
 
 namespace InterfaceProducts
 {
@@ -19,8 +21,9 @@ namespace InterfaceProducts
         private RadioButton radioButtonVolSVI;
         private RadioButton radioButtonVolSto;
         private RadioButton radioButtonVolCste;
+        private ComboBox comboBoxTicker;
         public MarketManager(TextBox textBoxSpot, TextBox textBoxVol, TextBox textBoxRf, RadioButton radioButtonAuto, RadioButton radioButtonManual,
-            RadioButton radioButtonVolSto, RadioButton radioButtonVolCste, RadioButton radioButtonVolSVI)
+            RadioButton radioButtonVolSto, RadioButton radioButtonVolCste, RadioButton radioButtonVolSVI, ComboBox comboBoxTicker)
         {
             this.textBoxSpot = textBoxSpot;
             this.textBoxVol = textBoxVol;
@@ -30,6 +33,7 @@ namespace InterfaceProducts
             this.radioButtonVolSto = radioButtonVolSto;
             this.radioButtonVolCste = radioButtonVolCste;
             this.radioButtonVolSVI = radioButtonVolSVI;
+            this.comboBoxTicker = comboBoxTicker;
         }
 
         public bool CheckRadioButton()
@@ -52,6 +56,20 @@ namespace InterfaceProducts
                     element.Focus();
                     return false;
                 }
+            }
+            //if (!double.TryParse(textBoxSpot.Text, out double value2) || value2 <= 0)
+            //{
+            //    MessageBox.Show($"Veuillez entrer une valeur positive valide pour le ticker.", "Valeur Invalide", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    return false;
+            //}
+            return true;
+        }
+        public bool CheckTicker()
+        {
+            if (comboBoxTicker.SelectedItem == null && comboBoxTicker.Visible == true)
+            {
+                MessageBox.Show("Vous n'avez pas choisi de Ticker !", "Erreur de sélection", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
             return true;
         }
@@ -79,6 +97,7 @@ namespace InterfaceProducts
         }
         public void ActualiseMarket(Market market)
         {
+            textBoxSpot.Text = (Math.Round(market.Spot, 2).ToString());
             textBoxRf.Text = (Math.Round(market.Rate * 100, 2).ToString());
             if (market.VolType != VolatilityType.Heston) 
             { 
@@ -86,28 +105,57 @@ namespace InterfaceProducts
             } 
         }
 
-        public void UpdateMarket()
+        public void UpdateMarket(bool isAutocall)
         {
             if (radioButtonManual.Checked)
             {
+                comboBoxTicker.Visible = false;
                 radioButtonVolSto.Enabled = false;
                 radioButtonVolSVI.Enabled = false;
                 radioButtonVolCste.Checked = true;
                 radioButtonVolCste.Enabled = false;
-                //textBoxSpot.Enabled = true;
+                textBoxSpot.Enabled = !isAutocall;
                 textBoxVol.Enabled = true;
                 textBoxRf.Enabled = true;
             }
             if (radioButtonAuto.Checked)
             {
+                comboBoxTicker.Visible = !isAutocall;
                 radioButtonVolCste.Enabled = true;
-                radioButtonVolSto.Enabled = true;
+                radioButtonVolSto.Enabled = !isAutocall;
                 radioButtonVolSVI.Enabled = true;
-                //textBoxSpot.Text = "100";
                 textBoxRf.Text = "";
-                //textBoxSpot.Enabled = false;
+                if (isAutocall)
+                {
+                    textBoxSpot.Text = "100";
+                }
+                else{
+                    textBoxSpot.Text = "";
+                }
+                textBoxSpot.Enabled = false;
                 textBoxRf.Enabled = false;
             }
+        }
+
+        public void UpdateSpot()
+        {
+            GetLastSpot(comboBoxTicker.SelectedItem.ToString());
+        }
+        public async void GetLastSpot(string Ticker)
+        {
+            var data = await Task.Run(() => YahooFinance.Get(Ticker));
+            double spot = 0;
+            try
+            {
+                spot= data.chart.result.First().indicators.adjclose.First().adjclose.Last();
+            }
+            catch
+            {
+                MessageBox.Show($"Merci d'entrer un ticker correct", "Valeur Invalide", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            textBoxSpot.Text = spot.ToString();
+
+
         }
     }
 }

@@ -67,14 +67,18 @@ namespace Pricing.MonteCarlo
             bool isAutocall = (Product as Autocall != null);
             Parallel.For(0, NbSimulation, i =>
             {
+                if (seed != null)
+                {
+                    seed += 1; // Si il y a une seed on la change a chaque iteration
+                }
                 double simPrice = Market.Spot;
                 if (isAutocall)
                 {
-                    payoffs[i] = GenerateAutocallPayoff(simPrice);
+                    payoffs[i] = GenerateAutocallPayoff(simPrice, seed);
                 }
                 else
                 {
-                    payoffs[i] = GenerateDerivativePayoff(simPrice, isBarrier, isHeston);
+                    payoffs[i] = GenerateDerivativePayoff(simPrice, isBarrier, isHeston, seed);
                 }
                 
             });
@@ -82,7 +86,7 @@ namespace Pricing.MonteCarlo
             double price = Math.Exp(-Market.Rate * Maturity) * payoffs.Average();
             return (price, confidenceInterval);
         }
-        public double GenerateDerivativePayoff(double simPrice, bool isBarrier, bool isHeston)
+        public double GenerateDerivativePayoff(double simPrice, bool isBarrier, bool isHeston, int? seed = null)
         {
             BrownianGenerator brownianGenerator = new BrownianGenerator();
             BarrierOption? barrierOption = Product as BarrierOption;
@@ -102,7 +106,7 @@ namespace Pricing.MonteCarlo
                     double hestonDrift = (Market.Rate - 0.5 * Math.Pow(hestonVariance, 2)) * Dt;
                     double hestonDiffusion = hestonVariance * Math.Sqrt(Dt);
 
-                    simPrice *= Math.Exp(hestonDrift + hestonDiffusion * dW1[j]);
+                    simPrice *= Math.Exp(hestonDrift + hestonDiffusion * dW1[j-1]);
 
                     if (barrierOption != null && barrierOption.BarrierOut(simPrice))
                     {
@@ -116,7 +120,7 @@ namespace Pricing.MonteCarlo
                 {
                     double drift = (Market.Rate - 0.5 * Math.Pow(Market.Volatility, 2)) * Dt;
                     double diffusion = Market.Volatility * Math.Sqrt(Dt);
-                    double[] dW1 = brownianGenerator.GenerateNormal(NbSteps);
+                    double[] dW1 = brownianGenerator.GenerateNormal(NbSteps, seed);
                     for (int j = 0; j < NbSteps; j++)
                     {
                         simPrice *= Math.Exp(drift + diffusion * dW1[j]);
@@ -131,7 +135,7 @@ namespace Pricing.MonteCarlo
                 {
                     double drift = (Market.Rate - 0.5 * Math.Pow(Market.Volatility, 2)) * Maturity;
                     double diffusion = Market.Volatility * Math.Sqrt(Maturity);
-                    double[] dW1 = brownianGenerator.GenerateNormal(1);
+                    double[] dW1 = brownianGenerator.GenerateNormal(1, seed);
                     simPrice *= Math.Exp(drift + diffusion * dW1[0]);
                 }
             }
@@ -139,13 +143,13 @@ namespace Pricing.MonteCarlo
             return Product.Payoff(simPrice);
         }
 
-        public double GenerateAutocallPayoff(double simPrice)
+        public double GenerateAutocallPayoff(double simPrice, int? seed = null)
         {
             BrownianGenerator brownianGenerator = new BrownianGenerator();
             Autocall? autocall = Product as Autocall;
             double drift = (Market.Rate - 0.5 * Math.Pow(Market.Volatility, 2)) * Dt;
             double diffusion = Market.Volatility * Math.Sqrt(Dt);
-            double[] dW1 = brownianGenerator.GenerateNormal(NbSteps);
+            double[] dW1 = brownianGenerator.GenerateNormal(NbSteps, seed);
             double[] paths = new double[NbSteps];
             for (int i = 0; i < NbSteps; i++)
             {
@@ -192,14 +196,6 @@ namespace Pricing.MonteCarlo
             return (confidenceLevel * (standardDeviation / Math.Sqrt(NbSimulation)));
         }
 
-        /// <summary>
-        /// Monte-Carlo pricer for structured products
-        /// </summary>
-        /// <returns></returns>
-        public double PriceStructu()
-        {
-            return 0.0;
-        }
 
         /// <summary>
         /// Compute option greeks with finite difference method
@@ -207,7 +203,8 @@ namespace Pricing.MonteCarlo
         public Dictionary<string, double> ComputeGreeks()
         {
             // On fixe la seed
-            double priceOption = Price().price; // Prix initial
+            int seedInitial = 1;
+            double priceOption = Price(seedInitial).price; // Prix initial
             Dictionary<string, double> greeks = new Dictionary<string, double>();
 
             // Sauvegarde des valeurs initiales
@@ -219,14 +216,14 @@ namespace Pricing.MonteCarlo
             // Calcul du Delta
             double deltaS = originalSpot * 0.01;  // Variation du spot
             Market.Spot += deltaS;
-            double priceDeltaSpotPos = Price().price;  
+            double priceDeltaSpotPos = Price(seedInitial).price;  
             double delta = (priceDeltaSpotPos - priceOption) / deltaS;
             Market.Spot = originalSpot;  // Réinitialise le spot
             greeks.Add("Delta", delta);
 
             // Calcul du Gamma
             Market.Spot = originalSpot - deltaS;
-            double priceDeltaSpotNeg = Price().price;  
+            double priceDeltaSpotNeg = Price(seedInitial).price;  
             double gamma = (priceDeltaSpotPos - 2 * priceOption + priceDeltaSpotNeg) / (deltaS * deltaS);
             Market.Spot = originalSpot;  // Réinitialise le spot
             greeks.Add("Gamma", gamma);
@@ -234,21 +231,21 @@ namespace Pricing.MonteCarlo
             // Calcul du Vega
             double deltaSigma = 0.01;  // Variation de la volatilité
             Market.Volatility += deltaSigma;
-            double vega = (Price().price - priceOption) / deltaSigma;  
+            double vega = (Price(seedInitial).price - priceOption) / deltaSigma;  
             Market.Volatility = originalVolatility;  // Réinitialise la volatilité
             greeks.Add("Vega", vega);
 
             // Calcul du Theta
             double deltaMaturity = 10.0 / 252;  // Variation de la maturité, ici 10 jours
             Maturity -= deltaMaturity;
-            double theta = (Price().price - priceOption) / deltaMaturity;  
+            double theta = (Price(seedInitial).price - priceOption) / deltaMaturity;  
             Maturity = originalMaturity;  // Réinitialise la maturité
             greeks.Add("Theta", theta);
 
             // Calcul du Rho
             double deltaRho = 0.01;  // Variation du taux d'intérêt
             Market.Rate += deltaRho;
-            double rho = (Price().price - priceOption) / deltaRho; 
+            double rho = (Price(seedInitial).price - priceOption) / deltaRho; 
             Market.Rate = originalRate;  // Réinitialise le taux d'intérêt
             greeks.Add("Rho", rho);
          

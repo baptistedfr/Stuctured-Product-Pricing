@@ -40,13 +40,13 @@ namespace Pricing.MonteCarlo
 
             return (dW1, dW2);
         }
-        public double[] GenerateNormal(int nb)
+        public double[] GenerateNormal(int nb,int? seed=null)
         {
             double[] normalVariables = new double[nb];
             double u1, u2;
 
             // Si une seed est fournie, on l'utilise, sinon on utilise le temps système
-            Random aleatoire = new Random();
+            Random aleatoire = (seed.HasValue) ? new Random(seed.Value) : new Random();
 
             for (int i = 0; i < nb; i++)
             {

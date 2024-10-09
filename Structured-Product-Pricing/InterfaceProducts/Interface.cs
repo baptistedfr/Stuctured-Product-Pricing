@@ -27,11 +27,12 @@ namespace InterfaceProducts
                                           textBoxMaturity, textBoxBinary, labelBinary, textBoxBarrier, labelBarrier,
                                           new System.Windows.Forms.TextBox[] { textBoxBarrier, textBoxBarrierCoupon, textBoxBarrierCapital },
                                           new Label[] { labelBarrier, labelBarrierCoupon, labelBarrierCapital },
-                                          comboBoxFreqObservation,labelFreqObservation
+                                          comboBoxFreqObservation, labelFreqObservation
                                           );
             optionManager = new OptionManager(radioButtonAutocall, radioButtonDerive, comboBoxOptions);
 
-            marketManager = new MarketManager(textBoxSpot, textBoxVolatility, textBoxRf, radioButtonAuto, radioButtonManual, radioButtonVolSto, radioButtonVolCste, radioButtonVolSVI);
+            marketManager = new MarketManager(textBoxSpot, textBoxVolatility, textBoxRf, radioButtonAuto, radioButtonManual,
+                                    radioButtonVolSto, radioButtonVolCste, radioButtonVolSVI, comboBoxTicker);
 
         }
         private void ResetUI()
@@ -53,13 +54,14 @@ namespace InterfaceProducts
             !paramsManager.CheckBarrier() ||
             !paramsManager.CheckAutocall() ||
             !marketManager.CheckRadioButton() ||
-            !marketManager.CheckMarket())
+            !marketManager.CheckMarket() ||
+            !marketManager.CheckTicker())
             {
                 return false;
             }
             return true;
         }
-      
+
         private void price_Click(object sender, EventArgs e)
         {
             ResetUI();
@@ -95,7 +97,7 @@ namespace InterfaceProducts
             {
                 return;
             }
-            Autocall  autocall = optionManager.CreateAutocall(textBoxMaturity.Text, comboBoxFreqObservation.SelectedItem.ToString(), textBoxBarrier.Text, textBoxBarrierCoupon.Text, textBoxBarrierCapital.Text);
+            Autocall autocall = optionManager.CreateAutocall(textBoxMaturity.Text, comboBoxFreqObservation.SelectedItem.ToString(), textBoxBarrier.Text, textBoxBarrierCoupon.Text, textBoxBarrierCapital.Text);
 
             Market market = marketManager.CreateMarket();
 
@@ -120,6 +122,60 @@ namespace InterfaceProducts
             }
 
         }
+
+
+        private void radioButtonAuto_CheckedChanged(object sender, EventArgs e)
+        {
+            marketManager.UpdateMarket(radioButtonAutocall.Checked);
+        }
+
+        private void radioButtonManual_CheckedChanged(object sender, EventArgs e)
+        {
+            marketManager.UpdateMarket(radioButtonAutocall.Checked);
+        }
+        private void radioButtonVolSto_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonVolSto.Checked)
+            {
+                textBoxVolatility.Text = "";
+                textBoxVolatility.Enabled = false;
+            }
+            else
+            {
+                textBoxVolatility.Enabled = true;
+            }
+        }
+        private void radioButtonVolSVI_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButtonVolSVI.Checked)
+            {
+                textBoxVolatility.Text = "";
+                textBoxVolatility.Enabled = false;
+            }
+            else
+            {
+                textBoxVolatility.Enabled = true;
+            }
+        }
+        private void radioButtonAutocall_CheckedChanged(object sender, EventArgs e)
+        {
+            optionManager.UpdateProduct(price, buttonAutocall, textBoxSpot, comboBoxTicker, radioButtonAuto.Checked, radioButtonVolSto);
+        }
+
+        private void radioButtonDerive_CheckedChanged(object sender, EventArgs e)
+        {
+            optionManager.UpdateProduct(price, buttonAutocall, textBoxSpot, comboBoxTicker, radioButtonAuto.Checked, radioButtonVolSto);
+        }
+
+        private void comboBoxTicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxTicker.SelectedItem != null)
+            {
+                marketManager.UpdateSpot();
+            }
+        }
+
+
         public void GenerateGreeks(MonteCarloSimulator mc, double price)
         {
             Dictionary<string, double> greeks = mc.ComputeGreeks();
@@ -204,69 +260,7 @@ namespace InterfaceProducts
             // Assigner le modèle au PlotView
             plotView1.Model = plotModel;
         }
-        private void ConvergenceChart(double closePrice, double[] prices)
-        {
 
-            var plotModel = new PlotModel { Title = "Convergence" };
-
-            // Créer une série de lignes pour le payoff
-            var series = new LineSeries
-            {
-                Title = "Monte Carlo",
-                MarkerType = MarkerType.Circle,
-                Color = OxyColors.Blue
-            };
-
-            // Ajouter les points au graphique
-            for (int i = 0; i < prices.Length; i++)
-            {
-                series.Points.Add(new DataPoint(i, prices[i]));
-            }
-            plotModel.Series.Add(series);
-
-            // Ajouter une ligne horizontale en pointillés noirs à y = 0
-            var closePriceLine = new LineAnnotation
-            {
-                Type = LineAnnotationType.Horizontal,
-                Y = closePrice, // Position sur l'axe des ordonnées
-                Color = OxyColors.Red,
-                LineStyle = LineStyle.Dash // Style en pointillés
-            };
-            plotModel.Annotations.Add(closePriceLine);
-
-
-            // Configurer les axes
-            plotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Bottom, Title = "Nombre Simulations" });
-            plotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Left, Title = "Prix" });
-
-            // Assigner le modèle au PlotView
-            //plotViewConvergence.Model = plotModel;
-        }
-        private void radioButtonAuto_CheckedChanged(object sender, EventArgs e)
-        {
-            marketManager.UpdateMarket();
-        }
-        private void radioButtonVolSto_CheckedChanged(object sender, EventArgs e)
-        {
-            if (radioButtonVolSto.Checked)
-            {
-                textBoxVolatility.Text = "";
-                textBoxVolatility.Enabled = false;
-            }
-            else
-            {
-                textBoxVolatility.Enabled = true;
-            }
-        }
-
-        private void radioButtonAutocall_CheckedChanged_1(object sender, EventArgs e)
-        {
-            optionManager.UpdateProduct(price,buttonAutocall, textBoxSpot);
-        }
-
-        private void radioButtonDerive_CheckedChanged_1(object sender, EventArgs e)
-        {
-            optionManager.UpdateProduct(price, buttonAutocall, textBoxSpot);
-        }
+       
     }
 }

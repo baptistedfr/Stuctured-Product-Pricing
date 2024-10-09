@@ -56,6 +56,7 @@
             textBoxBarrierCapital = new TextBox();
             textBoxBarrierCoupon = new TextBox();
             panel3 = new Panel();
+            radioButtonAutocall = new RadioButton();
             radioButtonDerive = new RadioButton();
             buttonAutocall = new Button();
             labelBarrier = new Label();
@@ -67,6 +68,7 @@
             dataGridViewGrecs = new DataGridView();
             labelCF = new Label();
             groupBoxMarket = new GroupBox();
+            comboBoxTicker = new ComboBox();
             panel2 = new Panel();
             radioButtonVolSVI = new RadioButton();
             radioButtonVolSto = new RadioButton();
@@ -74,7 +76,6 @@
             panel1 = new Panel();
             radioButtonManual = new RadioButton();
             radioButtonAuto = new RadioButton();
-            radioButtonAutocall = new RadioButton();
             groupBoxProduit.SuspendLayout();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewGrecs).BeginInit();
@@ -400,6 +401,19 @@
             panel3.Size = new Size(150, 88);
             panel3.TabIndex = 26;
             // 
+            // radioButtonAutocall
+            // 
+            radioButtonAutocall.AutoSize = true;
+            radioButtonAutocall.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            radioButtonAutocall.Location = new Point(10, 18);
+            radioButtonAutocall.Name = "radioButtonAutocall";
+            radioButtonAutocall.Size = new Size(106, 32);
+            radioButtonAutocall.TabIndex = 15;
+            radioButtonAutocall.TabStop = true;
+            radioButtonAutocall.Text = "Autocall";
+            radioButtonAutocall.UseVisualStyleBackColor = true;
+            radioButtonAutocall.CheckedChanged += radioButtonAutocall_CheckedChanged;
+            // 
             // radioButtonDerive
             // 
             radioButtonDerive.AutoSize = true;
@@ -411,7 +425,7 @@
             radioButtonDerive.TabStop = true;
             radioButtonDerive.Text = "Derivative";
             radioButtonDerive.UseVisualStyleBackColor = true;
-            radioButtonDerive.CheckedChanged += radioButtonDerive_CheckedChanged_1;
+            radioButtonDerive.CheckedChanged += radioButtonDerive_CheckedChanged;
             // 
             // buttonAutocall
             // 
@@ -517,6 +531,7 @@
             // groupBoxMarket
             // 
             groupBoxMarket.BackColor = Color.AntiqueWhite;
+            groupBoxMarket.Controls.Add(comboBoxTicker);
             groupBoxMarket.Controls.Add(panel2);
             groupBoxMarket.Controls.Add(panel1);
             groupBoxMarket.Controls.Add(label1);
@@ -531,6 +546,21 @@
             groupBoxMarket.Size = new Size(570, 268);
             groupBoxMarket.TabIndex = 26;
             groupBoxMarket.TabStop = false;
+            // 
+            // comboBoxTicker
+            // 
+            comboBoxTicker.AccessibleRole = AccessibleRole.ScrollBar;
+            comboBoxTicker.AutoCompleteMode = AutoCompleteMode.Suggest;
+            comboBoxTicker.BackColor = Color.Moccasin;
+            comboBoxTicker.ForeColor = Color.Black;
+            comboBoxTicker.FormattingEnabled = true;
+            comboBoxTicker.Items.AddRange(new object[] { "AAPL", "GLE.PA", "TSLA" });
+            comboBoxTicker.Location = new Point(391, 37);
+            comboBoxTicker.Name = "comboBoxTicker";
+            comboBoxTicker.Size = new Size(152, 31);
+            comboBoxTicker.TabIndex = 35;
+            comboBoxTicker.Visible = false;
+            comboBoxTicker.SelectedIndexChanged += comboBoxTicker_SelectedIndexChanged;
             // 
             // panel2
             // 
@@ -552,6 +582,7 @@
             radioButtonVolSVI.TabStop = true;
             radioButtonVolSVI.Text = "Vol SVI";
             radioButtonVolSVI.UseVisualStyleBackColor = true;
+            radioButtonVolSVI.CheckedChanged += radioButtonVolSVI_CheckedChanged;
             // 
             // radioButtonVolSto
             // 
@@ -593,6 +624,7 @@
             radioButtonManual.TabIndex = 1;
             radioButtonManual.Text = "Marché sur mesure";
             radioButtonManual.UseVisualStyleBackColor = true;
+            radioButtonManual.CheckedChanged += radioButtonManual_CheckedChanged;
             // 
             // radioButtonAuto
             // 
@@ -604,18 +636,6 @@
             radioButtonAuto.Text = "Marché existant";
             radioButtonAuto.UseVisualStyleBackColor = true;
             radioButtonAuto.CheckedChanged += radioButtonAuto_CheckedChanged;
-            // 
-            // radioButtonAutocall
-            // 
-            radioButtonAutocall.AutoSize = true;
-            radioButtonAutocall.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            radioButtonAutocall.Location = new Point(10, 18);
-            radioButtonAutocall.Name = "radioButtonAutocall";
-            radioButtonAutocall.Size = new Size(106, 32);
-            radioButtonAutocall.TabIndex = 15;
-            radioButtonAutocall.TabStop = true;
-            radioButtonAutocall.Text = "Autocall";
-            radioButtonAutocall.UseVisualStyleBackColor = true;
             // 
             // Interface
             // 
@@ -696,5 +716,6 @@
         private Label labelFreqObservation;
         private ComboBox comboBoxFreqObservation;
         private RadioButton radioButtonAutocall;
+        private ComboBox comboBoxTicker;
     }
 }
