@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Pricing.Products.Strategies;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Pricing
 {
@@ -34,9 +35,15 @@ namespace Pricing
             Spot = spot;
             Ticker = ticker;
             VolType = volType;
-            //Spot = YahooFinance.GetLastSpot(Ticker);
+            GetLastSpot();
             CalibrateVol(CsteVol);
             CalibrateRate();
+        }
+
+        public async void GetLastSpot()
+        {
+            var data = await Task.Run(() => YahooFinance.Get(Ticker));
+            Spot = data.chart.result.First().indicators.adjclose.First().adjclose.Last();
         }
 
         /// <summary>
