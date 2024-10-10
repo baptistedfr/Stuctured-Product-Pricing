@@ -187,6 +187,10 @@ namespace Pricing.MonteCarlo
 
             return coupon; // Retourne le coupon qui donne un nominal de 100
         }
+
+        /// <summary>
+        /// Compute the confidence interval of Monte-Carlo simulations
+        /// </summary>
         public double ConfidenceInterval(double[] payoffs)
         {
             double meanPrice = payoffs.Average();

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Pricing.MonteCarlo;
+using Pricing;
+using Pricing.Products;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,6 +36,57 @@ namespace InterfaceExcel
             BarrierCapital = barcapital;
             BarrierCoupon = barcoupon;
             BarrierCall = barcall;
+        }
+
+        /// <summary>
+        /// Parse the information about observation frequency and type of product and returns the right type of Autocall product
+        /// </summary>
+        private Autocall ParseAutocall()
+        {
+            string selectedProduct = ProductType;
+            char freqObservationText = ObsFrequency;
+
+            Autocall autocall;
+            double freqObservation = 1;
+
+            switch (freqObservationText)
+            {
+                case 'A':
+                    freqObservation = 1;
+                    break;
+                case 'S':
+                    freqObservation = 2;
+                    break;
+                case 'T':
+                    freqObservation = 4;
+                    break;
+                case 'M':
+                    freqObservation = 12;
+                    break;
+            }
+            autocall = selectedProduct switch
+            {
+                "Phoenix" => new AutocallPhoenix(Maturity, freqObservation, BarrierCoupon, BarrierCall, BarrierCapital),
+                "Athena" => new AutocallAthena(Maturity, freqObservation, BarrierCoupon, BarrierCall, BarrierCapital),
+                _ => throw new ArgumentException("Option non reconnue")
+            };
+
+            return autocall;
+        }
+
+        /// <summary>
+        /// Calls the Pricer project with a market and a autocall object an price the job
+        /// </summary>
+        public void PriceJob()
+        {
+            Market market = new Market(5.0, 20.0, 100.0);   //Just for the example, need a reel market declaration
+            var autocall = ParseAutocall();
+            MonteCarloSimulator mc = new MonteCarloSimulator(autocall, market);
+
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            Price = mc.FindCouponAutocall();
+            watch.Stop();
+            PricingTime = Math.Round(watch.ElapsedMilliseconds / 1000.0, 3);
         }
     }
 }

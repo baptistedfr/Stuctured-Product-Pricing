@@ -54,21 +54,22 @@ namespace InterfaceExcel
         /// </summary>
         public void WriteOutput(List<PricingJob> pricingJobs, string excelPath)
         {
-            int currentRow = 1;
-            foreach (var job in pricingJobs)
+            int startRow = 2;
+            int currentRow = startRow;
+
+            while (InputSheet.Cells[currentRow, 1].Value != null)
             {
-                Type type = job.GetType();
-                foreach (PropertyInfo prop in type.GetProperties())
-                {
-                    OutputSheet.Cells[currentRow, 1].Value = prop.Name.ToString();
-                    OutputSheet.Cells[currentRow, 2].Value = prop.GetValue(job).ToString();
-                    currentRow++;
-                }
-                currentRow += 2;
+                InputSheet.Cells[currentRow, 8].Value = pricingJobs[currentRow - 2].Price;
+                InputSheet.Cells[currentRow, 9].Value = pricingJobs[currentRow - 2].PricingTime;
+                currentRow++;
             }
+
             CloseAndSave(excelPath);
         }
         
+        /// <summary>
+        /// Save the excel workbook and close the program
+        /// </summary>
         private void CloseAndSave(string oldPath)
         {
             try
