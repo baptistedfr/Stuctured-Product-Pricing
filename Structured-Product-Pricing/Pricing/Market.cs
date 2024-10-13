@@ -39,12 +39,17 @@ namespace Pricing
             CalibrateVol(CsteVol);
             CalibrateRate();
         }
-
-        public async void GetLastSpot()
+        /// <summary>
+        /// Market For autocall Products 
+        /// </summary>
+        public Market(VolatilityType volType, double CsteVol = 0, double spot = 100)
         {
-            var data = await Task.Run(() => YahooFinance.Get(Ticker));
-            Spot = data.chart.result.First().indicators.adjclose.First().adjclose.Last();
+            Spot = spot;
+            VolType = volType;
+            CalibrateVol(CsteVol);
+            CalibrateRate();
         }
+
 
         /// <summary>
         /// Case of custom Market
@@ -55,6 +60,11 @@ namespace Pricing
             VolType = VolatilityType.Cste;
             CalibrateVol(CsteVol); //On peut quand meme utiliser cette fonction
             Rate = rate;
+        }
+        public async void GetLastSpot()
+        {
+            var data = await Task.Run(() => YahooFinance.Get(Ticker));
+            Spot = data.chart.result.First().indicators.adjclose.First().adjclose.Last();
         }
 
         public string GetDataPath(string fileName)

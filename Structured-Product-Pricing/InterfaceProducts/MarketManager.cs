@@ -80,7 +80,16 @@ namespace InterfaceProducts
             double vol = volType == VolatilityType.Cste ? Convert.ToDouble(textBoxVol.Text) / 100 : 0;
             if (radioButtonAuto.Checked)
             {
-                return new Market("AAPL", volType, vol, spot);
+                if (comboBoxTicker.Visible)
+                {
+                    return new Market(comboBoxTicker.SelectedItem.ToString(), volType, vol, spot);
+                }
+                else
+                {
+                    // Cas des Autocall
+                    return new Market(volType, vol, spot);
+                }
+                
             }
             else
             {

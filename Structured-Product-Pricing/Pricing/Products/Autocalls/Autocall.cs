@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pricing.Products
+namespace Pricing.Products.Autocalls
 {
-    public abstract class Autocall:IProduct
+    public abstract class Autocall : IProduct
     {
         public double Maturity { get; private set; }
 
@@ -19,7 +19,9 @@ namespace Pricing.Products
 
         public double Nominal { get; private set; }
 
-
+        /// <summary>
+        /// Autocall Constructor
+        /// </summary>
         public Autocall(double maturity, double freqObservation, double barrierCoupon, double barrierRappel, double barrierCapital)
         {
             Maturity = maturity;
@@ -30,10 +32,15 @@ namespace Pricing.Products
             Nominal = 100;
         }
 
+        /// <summary>
+        /// Fonction that send back the maturity of the autocall
+        /// </summary>
+        /// <returns></returns>
         public double GetMaturity()
         {
             return Maturity;
         }
+
         public abstract double PayoffPath(double[] paths, double rf);
         public double CalculateVolSVI(Market market)
         {
