@@ -17,6 +17,9 @@ namespace Pricing.MonteCarlo
         public int NbSteps;
         public double Dt;
 
+        /// <summary>
+        /// Monte Carlo constructor for regular option strategies
+        /// </summary>
         public MonteCarloSimulator(IProduct derive, Market market, int nbSim = 100000)
         {
             Product = derive;
@@ -36,6 +39,9 @@ namespace Pricing.MonteCarlo
                 market.Rate = market.RateModel.GetRate(Maturity) / 100;
             }
         }
+        /// <summary>
+        /// Monte Carlo constructor for autocalls
+        /// </summary>
         public MonteCarloSimulator(Autocall autocall, Market market, int nbSim = 100000)
         {
             Product = autocall as IProduct;
@@ -55,7 +61,7 @@ namespace Pricing.MonteCarlo
         }
 
         /// <summary>
-        /// Monte-Carlo pricer for regular option strategies
+        /// Monte-Carlo pricer for regular option strategies adn autocalls
         /// </summary>
         /// <returns></returns>
         public (double price, double interval) Price(int? seed=null)
@@ -87,6 +93,10 @@ namespace Pricing.MonteCarlo
             double price = Math.Exp(-Market.Rate * Maturity) * payoffs.Average();
             return (price, confidenceInterval);
         }
+
+        /// <summary>
+        /// Generate and Calculate a derivative payoff for a certain path
+        /// </summary>
         public double GenerateDerivativePayoff(double simPrice, bool isBarrier, bool isHeston, int? seed = null)
         {
             BrownianGenerator brownianGenerator = new BrownianGenerator();
@@ -144,6 +154,9 @@ namespace Pricing.MonteCarlo
             return Product.Payoff(simPrice);
         }
 
+        /// <summary>
+        ///  Generate a spot path and calculate the payoff of an autocall for this path
+        /// </summary>
         public double GenerateAutocallPayoff(double simPrice, int? seed = null)
         {
             BrownianGenerator brownianGenerator = new BrownianGenerator();
@@ -160,6 +173,9 @@ namespace Pricing.MonteCarlo
             return autocall.PayoffPath(paths, Market.Rate);
         }
 
+        /// <summary>
+        /// Doichotomy Method to find the Autocall Coupon for a certain nominal
+        /// </summary>
         public double FindCouponAutocall(double tolerance = 0.0001)
         {
             Autocall? autocall = Product as Autocall;

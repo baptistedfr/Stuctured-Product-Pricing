@@ -40,6 +40,10 @@ namespace Pricing.MonteCarlo
 
             return (dW1, dW2);
         }
+
+        /// <summary>
+        /// Generate n independant draws from a normal distribution through a Box-Muller transform
+        /// </summary>
         public double[] GenerateNormal(int nb,int? seed=null)
         {
             double[] normalVariables = new double[nb];

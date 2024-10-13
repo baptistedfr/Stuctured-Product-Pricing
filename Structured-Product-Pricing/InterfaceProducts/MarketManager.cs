@@ -57,11 +57,11 @@ namespace InterfaceProducts
                     return false;
                 }
             }
-            //if (!double.TryParse(textBoxSpot.Text, out double value2) || value2 <= 0)
-            //{
-            //    MessageBox.Show($"Veuillez entrer une valeur positive valide pour le ticker.", "Valeur Invalide", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    return false;
-            //}
+            if (!double.TryParse(textBoxSpot.Text, out double value2) || value2 <= 0)
+            {
+                MessageBox.Show($"Veuillez entrer une valeur positive valide pour le ticker.", "Valeur Invalide", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
             return true;
         }
         public bool CheckTicker()
