@@ -11,7 +11,7 @@ namespace Pricing.MonteCarlo
         /// <summary>
         /// Generate two independant draws from a normal distribution through a Box-Muller transform
         /// </summary>
-        private (double, double) GenerateNormal()
+        private (double, double) GenerateTwoNormal()
         {
             Random random = new Random();
             double u1 = random.NextDouble();
@@ -33,7 +33,7 @@ namespace Pricing.MonteCarlo
 
             for (int i = 0; i < nbSteps; i += 1)
             {
-                var (dZ1, dZ2) = GenerateNormal();               
+                var (dZ1, dZ2) = GenerateTwoNormal();               
                 dW1[i] = dZ1;
                 dW2[i] = correlation * dZ1 + Math.Sqrt(1 - Math.Pow(correlation, 2)) * dZ2;
             }

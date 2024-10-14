@@ -31,11 +31,17 @@ namespace Pricing.Volatility.Models
             Sigma = sigma;
         }
 
+        /// <summary>
+        /// SVI formula of total variance for a given moneyness (log(S/K))
+        /// </summary>
         private double TotalVariance(double logMoneyness)
         {
             return Alpha + Beta * (Rho * (logMoneyness - M) + Math.Sqrt(Math.Pow(logMoneyness - M, 2) + Math.Pow(Sigma, 2)));
         }
 
+        /// <summary>
+        /// Function used to retrieve the volatility from the SVI model for a given Strike and Maturity
+        /// </summary>
         public override double GetVolatility(IVolatilityParams parameters)
         {
             var sviParams = parameters as SVIParams;
@@ -54,6 +60,11 @@ namespace Pricing.Volatility.Models
             Sigma = parameters[4];
         }
 
+
+        /// <summary>
+        /// Calibration of SVI model thanks to market data.
+        /// Minimization of square error between SVI vol and market vol thanks to Nelder Mead algorithm
+        /// </summary>
         public override void Calibrate(ICalibrationParams parameters)
         {
             var SVIParams = parameters as SVICalibrationParams;
