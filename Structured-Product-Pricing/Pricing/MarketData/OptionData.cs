@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Pricing.MarketData
 {
+    /// <summary>
+    /// Generic structure for Option Market Data
+    /// </summary>
     internal class OptionData
     {
         public double Strike { get; set; }

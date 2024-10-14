@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Pricing.MarketData
 {
+    /// <summary>
+    /// Generic structure for yield curve data
+    /// </summary>
     public class RateCurveData
     {
         public double Maturity { get; set; }

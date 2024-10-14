@@ -8,7 +8,10 @@ using System.Threading.Tasks;
 namespace Pricing.MarketData
 {
     internal class CsvReader
-    {
+    {   
+        /// <summary>
+        /// Reader for Option Data CSV to calibrate the volatility models
+        /// </summary>
         public List<OptionData> ReadOptionData(string filePath)
         {
             var optionDataList = new List<OptionData>();
@@ -35,6 +38,9 @@ namespace Pricing.MarketData
             return optionDataList;
         }
 
+        /// <summary>
+        /// CSV Reader for Yield Curve data to calibrate Nelson-Siegel model
+        /// </summary>
         public List<RateCurveData> ReadRateCurve(string filePath)
         {
             var rateCurve = new List<RateCurveData>();
