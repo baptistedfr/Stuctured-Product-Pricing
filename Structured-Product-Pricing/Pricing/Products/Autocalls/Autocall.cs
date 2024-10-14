@@ -41,7 +41,14 @@ namespace Pricing.Products.Autocalls
             return Maturity;
         }
 
+        /// <summary>
+        /// Calculate the payoff of the autocall for a specific path
+        /// </summary>
+        /// <param name="paths"> Ensemble des prix à chaque date d'observation</param>
+        /// <param name="rf"></param>
+        /// <returns></returns>
         public abstract double PayoffPath(double[] paths, double rf);
+
         public double CalculateVolSVI(Market market)
         {
             return market.VolModel.GetVolatility(new SVIParams(Nominal, Maturity, market.Spot));

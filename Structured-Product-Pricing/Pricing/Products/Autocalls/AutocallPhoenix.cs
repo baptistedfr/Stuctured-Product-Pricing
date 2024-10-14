@@ -19,7 +19,7 @@ namespace Pricing.Products.Autocalls
             for (int i = 0; i < path.Length; i++)
             {
                 double timeToMaturity = Maturity - i * dt; // Temps restant jusqu'à maturité double timeToMaturity = Maturity - i * dt; // Temps restant jusqu'à maturité
-                if (path[i] >= BarrierRappel)
+                if (path[i] >= BarrierRappel) // Le produit est rappelé
                 {
                     double reinvestedAmount = (totalCoupon + Coupon + Nominal) * Math.Exp(rf * timeToMaturity); // Réinvestissement au taux sans risque
                     return reinvestedAmount; // On retourne la valeur réinvestie jusqu'à maturité
@@ -33,11 +33,11 @@ namespace Pricing.Products.Autocalls
             double finalPrice = path[path.Length - 1];
 
             double payoff = 0;
-            if (finalPrice >= BarrierCapital)
+            if (finalPrice >= BarrierCapital) // Cas ou le produit est au dessus de la barrière en capital à maturité
             {
                 payoff = Nominal + totalCoupon;
             }
-            else
+            else // Cas où le produit finit en dessous de la barrière en capital à maturité
             {
                 payoff = totalCoupon + Nominal * (finalPrice / Nominal);
             }

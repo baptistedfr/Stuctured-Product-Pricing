@@ -36,6 +36,9 @@ namespace InterfaceProducts
             this.comboBoxTicker = comboBoxTicker;
         }
 
+        /// <summary>
+        /// Check if a volatility and a market is selected
+        /// </summary>
         public bool CheckRadioButton()
         {
             if ((!radioButtonAuto.Checked && !radioButtonManual.Checked) || (!radioButtonVolSto.Checked && !radioButtonVolCste.Checked && !radioButtonVolSVI.Checked))
@@ -45,6 +48,9 @@ namespace InterfaceProducts
             }
             return true;
         }
+        /// <summary>
+        /// Check if the spot, volatility and rate are well defined
+        /// </summary>
         public bool CheckMarket()
         {
             TextBox[] textBoxes = { textBoxSpot, textBoxVol, textBoxRf };
@@ -64,6 +70,9 @@ namespace InterfaceProducts
             }
             return true;
         }
+        /// <summary>
+        /// Check if a ticker is selected 
+        /// </summary>
         public bool CheckTicker()
         {
             if (comboBoxTicker.SelectedItem == null && comboBoxTicker.Visible == true)
