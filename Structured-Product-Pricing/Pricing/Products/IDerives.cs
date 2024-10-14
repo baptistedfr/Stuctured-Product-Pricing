@@ -8,8 +8,12 @@ namespace Pricing.Products
 {
     public interface IDerives : IProduct
     {
+
         string Afficher();
 
+        /// <summary>
+        /// Calculate the derivative price with a close formula
+        /// </summary>
         double CloseFormula(Market market);
 
         

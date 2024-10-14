@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Pricing.Products.Autocalls;
+using Pricing.Volatility;
 
 namespace InterfaceExcel
 {
@@ -80,7 +81,7 @@ namespace InterfaceExcel
         /// </summary>
         public void PriceJob()
         {
-            Market market = new Market(0.05, 0.20, 100.0);   //Just for the example, need a reel market declaration
+            Market market = new Market(VolatilityType.SVI, 0, 100);//Just for the example, need a reel market declaration
             var autocall = ParseAutocall();
             MonteCarloSimulator mc = new MonteCarloSimulator(autocall, market);
 

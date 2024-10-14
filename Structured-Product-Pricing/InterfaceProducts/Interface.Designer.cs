@@ -513,7 +513,7 @@
             dataGridViewGrecs.Location = new Point(887, 487);
             dataGridViewGrecs.Name = "dataGridViewGrecs";
             dataGridViewGrecs.RowHeadersWidth = 51;
-            dataGridViewGrecs.Size = new Size(200, 188);
+            dataGridViewGrecs.Size = new Size(310, 273);
             dataGridViewGrecs.TabIndex = 24;
             // 
             // labelCF

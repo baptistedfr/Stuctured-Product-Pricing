@@ -23,6 +23,9 @@ namespace Pricing.Products.Strategies
             protected set { options = value; }
         }
 
+        /// <summary>
+        /// Add vanilla or exotic options to create the option strategy
+        /// </summary>
         protected void AddOption(Option option, int quantity)
         {
             if (options.ContainsKey(option))
@@ -38,6 +41,10 @@ namespace Pricing.Products.Strategies
                 Options.Add(option, quantity);
             }
         }
+
+        /// <summary>
+        /// Calculate the payoff of the option strategy
+        /// </summary>
         public double Payoff(double spot)
         {
             double total = 0;
@@ -47,6 +54,10 @@ namespace Pricing.Products.Strategies
             }
             return total;
         }
+
+        /// <summary>
+        /// Close formula of the option strategy
+        /// </summary>
         public double CloseFormula(Market market)
         {
             double price = 0;
@@ -58,6 +69,9 @@ namespace Pricing.Products.Strategies
             }
             return price;
         }
+        /// <summary>
+        /// Calculate the SVI Vol for the option Strategy
+        /// </summary>
         public double CalculateVolSVI(Market market)
         {
             double vol = 0.0;
@@ -71,6 +85,10 @@ namespace Pricing.Products.Strategies
             }
             return vol/nb;
         }
+
+        /// <summary>
+        /// Return a descriptive of the option strategy
+        /// </summary>
         public string Afficher()
         {
             int callAchat = 0;

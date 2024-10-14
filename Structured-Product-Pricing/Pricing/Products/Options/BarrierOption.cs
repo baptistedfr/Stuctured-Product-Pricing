@@ -41,6 +41,10 @@ namespace Pricing.Products.Options
         {
             return $"Cette option à barrière a un strike de {Strike}, une maturité de {Maturity} et une barrière de {Barrier}";
         }
+
+        /// <summary>
+        /// Tells if the option is breached in case of Out Barrier Options
+        /// </summary>
         public abstract bool BarrierOut(double value);
     }
 }

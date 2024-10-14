@@ -71,7 +71,7 @@ namespace InterfaceProducts
             return true;
         }
         /// <summary>
-        /// Check if a ticker is selected 
+        /// Check if a ticker is selected
         /// </summary>
         public bool CheckTicker()
         {
@@ -82,6 +82,9 @@ namespace InterfaceProducts
             }
             return true;
         }
+        /// <summary>
+        /// Create a market with the options selected
+        /// </summary>
         public Market CreateMarket()
         {
             double spot = Convert.ToDouble(textBoxSpot.Text);
@@ -91,28 +94,36 @@ namespace InterfaceProducts
             {
                 if (comboBoxTicker.Visible)
                 {
+                    // Case of an automatic market for derivatives
                     return new Market(comboBoxTicker.SelectedItem.ToString(), volType, vol, spot);
                 }
                 else
                 {
-                    // Cas des Autocall
+                    // Case of an automatic market for an autocall
                     return new Market(volType, vol, spot);
                 }
                 
             }
             else
             {
-                // Cas ou on cree son marche
+                // Case of an user defined market
                 double rate = Convert.ToDouble(textBoxRf.Text) / 100;
                 return new Market(rate, vol, spot);
             }
         }
+
+        /// <summary>
+        ///  Determien the type of volatility chosen by the user
+        /// </summary>
         private VolatilityType DetermineVolatilityType()
         {
             if (radioButtonVolSVI.Checked) return VolatilityType.SVI;
             if (radioButtonVolSto.Checked) return VolatilityType.Heston;
             return VolatilityType.Cste;
         }
+        /// <summary>
+        ///  Actualise the market at the end to plot the rate and volatility for SVI and Nelson Siegel
+        /// </summary>
         public void ActualiseMarket(Market market)
         {
             textBoxSpot.Text = (Math.Round(market.Spot, 2).ToString());
@@ -122,7 +133,9 @@ namespace InterfaceProducts
                 textBoxVol.Text = (Math.Round(market.Volatility * 100, 2).ToString());
             } 
         }
-
+        /// <summary>
+        /// Update the visible parameteres depending of the type of market selected
+        /// </summary>
         public void UpdateMarket(bool isAutocall)
         {
             if (radioButtonManual.Checked)
