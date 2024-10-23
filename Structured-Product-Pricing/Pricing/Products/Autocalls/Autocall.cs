@@ -49,6 +49,9 @@ namespace Pricing.Products.Autocalls
         /// <returns></returns>
         public abstract double PayoffPath(double[] paths, double rf);
 
+        /// <summary>
+        /// Function that returns the SVI volatility of the autocall. We consider the nominal as the strike
+        /// </summary>
         public double CalculateVolSVI(Market market)
         {
             return market.VolModel.GetVolatility(new SVIParams(Nominal, Maturity, market.Spot));

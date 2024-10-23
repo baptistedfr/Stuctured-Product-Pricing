@@ -73,6 +73,9 @@ namespace Pricing
             string solutionRoot = Directory.GetParent(currentDir).Parent.Parent.Parent.Parent.FullName;
             return Path.Combine(solutionRoot, "CsvData", fileName);
         }
+        /// <summary>
+        /// Instantiate the calibration of the vol depending on the vol method
+        /// </summary>
         public void CalibrateVol(double CsteVol = 0)
         {
             if (VolType == VolatilityType.Cste)
@@ -98,7 +101,9 @@ namespace Pricing
                 VolModel = heston;
             }
         }
-
+        /// <summary>
+        /// Instantiate the calibration of the rate using Nelson Siegel
+        /// </summary>
         public void CalibrateRate()
         {
             var filePath = GetDataPath("yield_us.csv");

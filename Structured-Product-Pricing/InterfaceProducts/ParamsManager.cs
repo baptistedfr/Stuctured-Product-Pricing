@@ -35,7 +35,9 @@ namespace InterfaceProducts
             this.freqObservationComboBox = freqObservationComboBox;
             this.freqObservationLabel = freqObservationLabel;
         }
-
+        /// <summary>
+        /// On update la visibilité des paramètres des strikes selin le produit
+        /// </summary>
         public void UpdateStrikeVisibility(string selectedOption)
         {
             HideAllStrikes();
@@ -52,13 +54,17 @@ namespace InterfaceProducts
             };
             ShowStrikes(count);
         }
-
+        /// <summary>
+        /// On réinitialise la visibilité des strikes
+        /// </summary>
         private void HideAllStrikes()
         {
             foreach (var tb in strikeTextBoxes) tb.Visible = false;
             foreach (var label in strikeLabels) label.Visible = false;
         }
-
+        /// <summary>
+        /// Affichage des strikes selon le produit
+        /// </summary>
         private void ShowStrikes(int count)
         {
             for (int i = 0; i < count; i++)
@@ -67,6 +73,9 @@ namespace InterfaceProducts
                 strikeLabels[i].Visible = true;
             }
         }
+        /// <summary>
+        /// Affichage du coupon si une option binaire est sélectionner
+        /// </summary>
         public void UpdateBinary(string selectedOption)
         {
             bool isBinaryOption = selectedOption == "Binary Call" || selectedOption == "Binary Put";
@@ -88,14 +97,17 @@ namespace InterfaceProducts
                 couponTextBox.Visible = false;
                 binaryLabel.Visible = false;
             }
-            
         }
+        /// <summary>
+        /// On update la visibilité des barrières selon le produit
+        /// </summary>
         public void UpdateBarrier(string selectedOption, bool isAutocall)
         {
             bool isBarrierOption = (selectedOption.Contains("Up") || selectedOption.Contains("Down"));
             if (isBarrierOption)
             {
                 barrierLabel.Text = "Barriere";
+                barrierLabel.Location = new Point(371, 193); // On remet bien la position
                 barrierTextBox.Visible = isBarrierOption;
                 barrierLabel.Visible = isBarrierOption;
                 for (int i = 1; i < 3; i++)
@@ -103,11 +115,11 @@ namespace InterfaceProducts
                     autocallBarriersTextbox[i].Visible = isAutocall;
                     autocallBarriersLabel[i].Visible = isAutocall;
                 }
-             
             }
             else
             {
                 autocallBarriersLabel[0].Text = "Barrière Rappel";
+                barrierLabel.Location = new Point(343, 193); // On change la position 
                 for (int i = 0; i < 3; i++)
                 {
                     autocallBarriersTextbox[i].Visible = isAutocall;
@@ -115,9 +127,11 @@ namespace InterfaceProducts
                 }
                 freqObservationComboBox.Visible = isAutocall;
                 freqObservationLabel.Visible = isAutocall;
-            }
-            
+            } 
         }
+        /// <summary>
+        /// Récupération de la valeur des strikes lorsqu'ils sont visibles
+        /// </summary>
         public List<double> GetStrikeValues()
         {
             List<double> strikeValues = new List<double>();
@@ -130,7 +144,9 @@ namespace InterfaceProducts
             }
             return strikeValues;
         }
-
+        /// <summary>
+        /// Vérification si les strikes ont une valeur positive pour ceux devant être sélectionnés
+        /// </summary>
         public bool CheckVisibleStrikeValues()
         {
             foreach (var textBox in strikeTextBoxes.Where(tb => tb.Visible))
@@ -144,7 +160,9 @@ namespace InterfaceProducts
             }
             return true;
         }
-
+        /// <summary>
+        /// Vérification de la maturité
+        /// </summary>
         public bool CheckMaturityValues()
         {
             if (!double.TryParse(maturityTextBox.Text, out double value) || value <= 0)
@@ -154,6 +172,9 @@ namespace InterfaceProducts
             }
             return true;
         }
+        /// <summary>
+        /// Vérification de la sélection du coupon
+        /// </summary>
         public bool CheckBinary()
         {
             if (couponTextBox.Visible == true && (!double.TryParse(couponTextBox.Text, out double value) || value <= 0) && couponTextBox.Enabled)
@@ -163,6 +184,9 @@ namespace InterfaceProducts
             }
             return true;
         }
+        /// <summary>
+        /// Vérification de la sélection des barrières
+        /// </summary>
         public bool CheckBarrier()
         {
             foreach (var barrier in autocallBarriersTextbox.Where(tb => tb.Visible))
@@ -176,9 +200,11 @@ namespace InterfaceProducts
             }
             return true;
         }
+        /// <summary>
+        /// Vérification des paramètres de l'autocall
+        /// </summary>
         public bool CheckAutocall()
         {
-
             if (freqObservationComboBox.Visible)
             {
                 if (freqObservationComboBox.SelectedItem == null)
@@ -186,18 +212,15 @@ namespace InterfaceProducts
                     MessageBox.Show("Veuillez sélectionner une fréquence d'observation.", "Valeur Invalide", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
-
-                // Récupère la chaîne sélectionnée et la vérifie
                 string selectedFrequency = freqObservationComboBox.SelectedItem.ToString();
 
-                // Vérifie si la sélection est l'une des fréquences valides
                 if (selectedFrequency != "Annuelle" && selectedFrequency != "Semestrielle" && selectedFrequency != "Trimestrielle" && selectedFrequency != "Mensuelle")
                 {
                     MessageBox.Show($"Veuillez sélectionner une fréquence d'observation valide (Annuelle, Trimestrielle, ou Mensuelle).", "Valeur Invalide", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
             }
-            return true; // Tout est valide
+            return true; 
         }
     }
 }

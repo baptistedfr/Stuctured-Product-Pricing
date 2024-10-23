@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\InterfaceCsv\InterfaceExcel.csproj" />
     <ProjectReference Include="..\Pricing\Pricing.csproj" />
   </ItemGroup>
 

@@ -52,6 +52,10 @@ namespace InterfaceProducts
             this.radioButtonDerive = Derivative;
             this.comboBoxProduct = product;
         }
+
+        /// <summary>
+        /// Verification de la sélection d'un produit
+        /// </summary>
         public bool CheckOptionSelected()
         {
             if (comboBoxProduct.SelectedItem == null)
@@ -62,6 +66,9 @@ namespace InterfaceProducts
             return true;
         }
 
+        /// <summary>
+        /// Création  du dérivé
+        /// </summary>
         public IDerives CreateDerive(List<double> strikeValues, string maturityText, string binaryText, string barrierText)
         {
             string selectedProduct = comboBoxProduct.SelectedItem.ToString();
@@ -91,6 +98,10 @@ namespace InterfaceProducts
                 _ => throw new ArgumentException("Option non reconnue")
             };
         }
+
+        /// <summary>
+        /// Création de l'autocall
+        /// </summary>
         public Autocall CreateAutocall(string maturityText, string freqObservationText, string barrierRappel, string barrierCoupon, string barrierCapital)
         {
             string selectedProduct = comboBoxProduct.SelectedItem.ToString();
@@ -118,6 +129,9 @@ namespace InterfaceProducts
                 _ => throw new ArgumentException("Option non reconnue")
             };
         }
+        /// <summary>
+        /// Verification de la sélection d'un produit
+        /// </summary>
         public bool CheckProduct()
         {
             if ((!radioButtonAutocall.Checked && !radioButtonDerive.Checked))
@@ -128,13 +142,15 @@ namespace InterfaceProducts
             return true;
         }
 
+        /// <summary>
+        /// On update les visibilités des options
+        /// </summary>
         public void UpdateProduct(Button bouttonPrice, Button bouttonCoupon, TextBox textBoxSpot, ComboBox ticker, bool isAuto, RadioButton volSto)
         {
-            
-            comboBoxProduct.Items.Clear(); // On vide les éléments actuels de la ComboBox
-            if (radioButtonAutocall.Checked)
+            comboBoxProduct.Items.Clear(); 
+            if (radioButtonAutocall.Checked) // Cas de l'autocall sélectionner
             {   
-                comboBoxProduct.Items.AddRange(Autocalls.ToArray()); // Ajouter les nouveaux éléments  
+                comboBoxProduct.Items.AddRange(Autocalls.ToArray());  
                 bouttonPrice.Visible = false;
                 bouttonCoupon.Visible = true;
                 textBoxSpot.Text = "100";
@@ -143,10 +159,8 @@ namespace InterfaceProducts
                 volSto.Enabled = false;
                 volSto.Checked = false;
             }
-            else
+            else // Cas d'un dérivé ou d'une stratégie
             {
-                
-                
                 if (isAuto)
                 {
                     ticker.Visible = true;
@@ -159,11 +173,11 @@ namespace InterfaceProducts
                     ticker.Visible = false;
                     textBoxSpot.Enabled = true;
                 }
-                comboBoxProduct.Items.AddRange(Options.ToArray()); // Ajouter les nouveaux éléments
+                comboBoxProduct.Items.AddRange(Options.ToArray()); 
                 bouttonPrice.Visible = true;
                 bouttonCoupon.Visible = false; 
             }
-            comboBoxProduct.SelectedIndex = 0; // Sélectionner automatiquement le premier élément
+            comboBoxProduct.SelectedIndex = 0; 
         }
     }
 }

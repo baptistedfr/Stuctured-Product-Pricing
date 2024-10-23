@@ -14,7 +14,7 @@ namespace InterfaceExcel
     /// <summary>
     /// Generic architecture for structured product pricing job
     /// </summary>
-    internal class PricingJob
+    public class PricingJob
     {
         public Int16 JobNumber { get; set; }
 

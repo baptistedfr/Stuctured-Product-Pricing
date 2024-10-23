@@ -39,7 +39,7 @@ namespace InterfaceProducts
         }
 
         /// <summary>
-        /// Fonction qui reset les graphs
+        /// Fonction qui reset les paramètres de l'affichage
         /// </summary>
         private void ResetUI()
         {
@@ -87,7 +87,7 @@ namespace InterfaceProducts
             }
             IDerives derive = optionManager.CreateDerive(paramsManager.GetStrikeValues(), textBoxMaturity.Text, textBoxBinary.Text, textBoxBarrier.Text); // On crée le dérivé
             Market market = marketManager.CreateMarket(); // Création du marché
-            MonteCarloSimulator mc = new MonteCarloSimulator(derive, market, 100000); // On instancie la simulation de monte carlo
+            MonteCarloSimulator mc = new MonteCarloSimulator(derive, market, 1000000); // On instancie la simulation de monte carlo
             if (radioButtonAuto.Checked)
             {
                 marketManager.ActualiseMarket(market); // Actualisation des paramètres pour le marché automatique
@@ -120,7 +120,7 @@ namespace InterfaceProducts
             // Création de l'autocall
             Autocall autocall = optionManager.CreateAutocall(textBoxMaturity.Text, comboBoxFreqObservation.SelectedItem.ToString(), textBoxBarrier.Text, textBoxBarrierCoupon.Text, textBoxBarrierCapital.Text);
             Market market = marketManager.CreateMarket(); // Creation du marché
-            MonteCarloSimulator mc = new MonteCarloSimulator(autocall, market, 100000);
+            MonteCarloSimulator mc = new MonteCarloSimulator(autocall, market, 1000000);
             if (radioButtonAuto.Checked)
             {
                 marketManager.ActualiseMarket(market);
@@ -129,9 +129,12 @@ namespace InterfaceProducts
             textBoxBinary.Text = (coupon.ToString()); // On affiche le coupon
             GenerateGreeks(mc, 100);
         }
+        /// <summary>
+        /// Sélection d'un produit
+        /// </summary>
         private void comboBoxOptions_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxOptions.SelectedItem != null)
+            if (comboBoxOptions.SelectedItem != null) // Lorsque le produit sélectionner change, on update la visibilité des paramètres
             {
                 paramsManager.UpdateStrikeVisibility(comboBoxOptions.SelectedItem.ToString());
                 paramsManager.UpdateBinary(comboBoxOptions.SelectedItem.ToString());
@@ -139,17 +142,23 @@ namespace InterfaceProducts
             }
 
         }
-
-
+        /// <summary>
+        /// Changement de type de marché
+        /// </summary>
         private void radioButtonAuto_CheckedChanged(object sender, EventArgs e)
         {
             marketManager.UpdateMarket(radioButtonAutocall.Checked);
         }
-
+        /// <summary>
+        /// Changement de type de marché
+        /// </summary>
         private void radioButtonManual_CheckedChanged(object sender, EventArgs e)
         {
             marketManager.UpdateMarket(radioButtonAutocall.Checked);
         }
+        /// <summary>
+        /// Changement de type de vol
+        /// </summary>
         private void radioButtonVolSto_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButtonVolSto.Checked)
@@ -162,6 +171,9 @@ namespace InterfaceProducts
                 textBoxVolatility.Enabled = true;
             }
         }
+        /// <summary>
+        /// Changement de type de vol
+        /// </summary>
         private void radioButtonVolSVI_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButtonVolSVI.Checked)
@@ -174,16 +186,23 @@ namespace InterfaceProducts
                 textBoxVolatility.Enabled = true;
             }
         }
+        /// <summary>
+        /// Changement de type de produit (Autocall / Dérivé)
+        /// </summary>
         private void radioButtonAutocall_CheckedChanged(object sender, EventArgs e)
         {
             optionManager.UpdateProduct(price, buttonAutocall, textBoxSpot, comboBoxTicker, radioButtonAuto.Checked, radioButtonVolSto);
         }
-
+        /// <summary>
+        /// Changement de type de produit (Autocall / Dérivé)
+        /// </summary>
         private void radioButtonDerive_CheckedChanged(object sender, EventArgs e)
         {
             optionManager.UpdateProduct(price, buttonAutocall, textBoxSpot, comboBoxTicker, radioButtonAuto.Checked, radioButtonVolSto);
         }
-
+        /// <summary>
+        /// Changement de produit sélectionner
+        /// </summary>
         private void comboBoxTicker_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBoxTicker.SelectedItem != null)
@@ -191,8 +210,9 @@ namespace InterfaceProducts
                 marketManager.UpdateSpot();
             }
         }
-
-
+        /// <summary>
+        /// Génération des grecs et update du dataGrid
+        /// </summary>
         public void GenerateGreeks(MonteCarloSimulator mc, double price)
         {
             Dictionary<string, double> greeks = mc.ComputeGreeks();
@@ -213,13 +233,16 @@ namespace InterfaceProducts
             totalWidth += dataGridViewGrecs.RowHeadersWidth;
             dataGridViewGrecs.ClientSize = new Size(totalWidth, totalHeight);
         }
+        /// <summary>
+        /// Création de la visualisation du P&L
+        /// </summary>
         private void CreatePayoffChart(double spot, IDerives option, double price)
         {
-            double[] assetPrices = new double[Convert.ToInt32(spot)]; // Prix de l'actif sous-jacent
-            double[] payoffs = new double[Convert.ToInt32(spot)]; // Payoff
+            double[] assetPrices = new double[Convert.ToInt32(spot)]; 
+            double[] payoffs = new double[Convert.ToInt32(spot)]; 
             BarrierOption? barrierOption = option as BarrierOption;
 
-            for (int i = 0; i < assetPrices.Length; i++)
+            for (int i = 0; i < assetPrices.Length; i++) // Calcul du P&L pour chaque spot final
             {
                 if (barrierOption != null)
                 {
@@ -229,10 +252,9 @@ namespace InterfaceProducts
                 payoffs[i] = option.Payoff(assetPrices[i]) - price;
             }
 
-            // Créer le modèle de plot
             var plotModel = new PlotModel { Title = "Graphique du P&L en fonction du prix" };
 
-            // Créer une série de lignes pour le payoff
+            // Création d'une série pour le payoff
             var series = new LineSeries
             {
                 Title = "P&L",
@@ -240,20 +262,20 @@ namespace InterfaceProducts
                 Color = OxyColors.Red
             };
 
-            // Ajouter les points au graphique
+            // Ajout des points au graphique
             for (int i = 0; i < assetPrices.Length; i++)
             {
                 series.Points.Add(new DataPoint(assetPrices[i], payoffs[i]));
             }
             plotModel.Series.Add(series);
 
-            // Ajouter une ligne horizontale en pointillés noirs à y = 0
+            // Ajout d'une ligne horizontale en pointillés noirs à y = 0 représentant le P&L 0
             var zeroLine = new LineAnnotation
             {
                 Type = LineAnnotationType.Horizontal,
-                Y = 0, // Position sur l'axe des ordonnées
+                Y = 0, 
                 Color = OxyColors.Black,
-                LineStyle = LineStyle.Dash // Style en pointillés
+                LineStyle = LineStyle.Dash 
             };
             plotModel.Annotations.Add(zeroLine);
 
@@ -263,18 +285,14 @@ namespace InterfaceProducts
                 var barrierLine = new LineAnnotation
                 {
                     Type = LineAnnotationType.Vertical,
-                    X = barrierOption.Barrier, // Position sur l'axe des ordonnées
+                    X = barrierOption.Barrier, 
                     Color = OxyColors.Green,
-                    LineStyle = LineStyle.Dash // Style en pointillés
+                    LineStyle = LineStyle.Dash 
                 };
                 plotModel.Annotations.Add(barrierLine);
             }
-
-            // Configurer les axes
             plotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Bottom, Title = "S" });
             plotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Left, Title = "P&L" });
-
-            // Assigner le modèle au PlotView
             plotView1.Model = plotModel;
         }
 

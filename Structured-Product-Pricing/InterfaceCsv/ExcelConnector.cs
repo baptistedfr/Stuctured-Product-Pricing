@@ -5,7 +5,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace InterfaceExcel
 {
-    internal class ExcelConnector
+    public class ExcelConnector
     {   
         private Excel.Application Application;
         private Workbook Workbook { get; set; }
@@ -17,7 +17,6 @@ namespace InterfaceExcel
             Application = new Excel.Application();
             Workbook = Application.Workbooks.Open(excelFilePath);
             InputSheet = (Worksheet)Workbook.Sheets["Inputs"];
-            OutputSheet = (Worksheet)Workbook.Sheets["Outputs"];
             Application.Visible = true;
         }
 

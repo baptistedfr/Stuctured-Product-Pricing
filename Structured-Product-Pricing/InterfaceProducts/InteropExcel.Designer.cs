@@ -29,80 +29,116 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
-            checkBox2 = new CheckBox();
-            checkBox1 = new CheckBox();
-            button1 = new Button();
+            panel2 = new Panel();
+            radioButtonFile = new RadioButton();
+            labelFile = new Label();
+            radioButtonDefault = new RadioButton();
+            buttonPrice = new Button();
             label1 = new Label();
             browseFolder = new FolderBrowserDialog();
             panel1.SuspendLayout();
+            panel2.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
             // 
             panel1.BackColor = Color.Moccasin;
-            panel1.Controls.Add(checkBox2);
-            panel1.Controls.Add(checkBox1);
-            panel1.Controls.Add(button1);
+            panel1.Controls.Add(panel2);
+            panel1.Controls.Add(buttonPrice);
             panel1.Controls.Add(label1);
-            panel1.Location = new Point(144, 48);
+            panel1.Location = new Point(4, 1);
+            panel1.Margin = new Padding(2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1185, 568);
+            panel1.Size = new Size(784, 357);
             panel1.TabIndex = 0;
             // 
-            // checkBox2
+            // panel2
             // 
-            checkBox2.AutoSize = true;
-            checkBox2.Location = new Point(480, 305);
-            checkBox2.Name = "checkBox2";
-            checkBox2.Size = new Size(183, 41);
-            checkBox2.TabIndex = 3;
-            checkBox2.Text = "Select a file";
-            checkBox2.UseVisualStyleBackColor = true;
-            checkBox2.CheckedChanged += checkBox2_CheckedChanged;
+            panel2.Controls.Add(radioButtonFile);
+            panel2.Controls.Add(labelFile);
+            panel2.Controls.Add(radioButtonDefault);
+            panel2.Location = new Point(15, 93);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(755, 125);
+            panel2.TabIndex = 5;
             // 
-            // checkBox1
+            // radioButtonFile
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(337, 225);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(517, 41);
-            checkBox1.TabIndex = 2;
-            checkBox1.Text = "Use default file (Recommended for test)";
-            checkBox1.UseVisualStyleBackColor = true;
+            radioButtonFile.AutoSize = true;
+            radioButtonFile.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            radioButtonFile.Location = new Point(68, 59);
+            radioButtonFile.Name = "radioButtonFile";
+            radioButtonFile.Size = new Size(131, 32);
+            radioButtonFile.TabIndex = 1;
+            radioButtonFile.TabStop = true;
+            radioButtonFile.Text = "Select a file";
+            radioButtonFile.UseVisualStyleBackColor = true;
+            radioButtonFile.CheckedChanged += radioButtonFile_CheckedChanged;
             // 
-            // button1
+            // labelFile
             // 
-            button1.AllowDrop = true;
-            button1.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            button1.BackColor = Color.Gold;
-            button1.Font = new Font("Segoe UI", 15F);
-            button1.Location = new Point(392, 413);
-            button1.Name = "button1";
-            button1.Size = new Size(353, 85);
-            button1.TabIndex = 1;
-            button1.Text = "Price batch";
-            button1.UseVisualStyleBackColor = false;
+            labelFile.AutoSize = true;
+            labelFile.BackColor = SystemColors.ButtonHighlight;
+            labelFile.Enabled = false;
+            labelFile.Font = new Font("Segoe UI", 7.8F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            labelFile.Location = new Point(205, 68);
+            labelFile.Name = "labelFile";
+            labelFile.Size = new Size(26, 17);
+            labelFile.TabIndex = 4;
+            labelFile.Text = "File";
+            // 
+            // radioButtonDefault
+            // 
+            radioButtonDefault.AutoSize = true;
+            radioButtonDefault.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            radioButtonDefault.Location = new Point(68, 21);
+            radioButtonDefault.Name = "radioButtonDefault";
+            radioButtonDefault.Size = new Size(377, 32);
+            radioButtonDefault.TabIndex = 0;
+            radioButtonDefault.TabStop = true;
+            radioButtonDefault.Text = "Use default file (Recommended for test)";
+            radioButtonDefault.UseVisualStyleBackColor = true;
+            radioButtonDefault.CheckedChanged += radioButtonDefault_CheckedChanged;
+            // 
+            // buttonPrice
+            // 
+            buttonPrice.AllowDrop = true;
+            buttonPrice.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            buttonPrice.BackColor = Color.Gold;
+            buttonPrice.Font = new Font("Segoe UI", 15F);
+            buttonPrice.Location = new Point(272, 249);
+            buttonPrice.Margin = new Padding(2);
+            buttonPrice.Name = "buttonPrice";
+            buttonPrice.Size = new Size(188, 46);
+            buttonPrice.TabIndex = 1;
+            buttonPrice.Text = "Price batch";
+            buttonPrice.UseVisualStyleBackColor = false;
+            buttonPrice.Click += buttonPrice_Click;
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 24F, FontStyle.Bold);
-            label1.Location = new Point(337, 41);
+            label1.Location = new Point(248, 23);
+            label1.Margin = new Padding(2, 0, 2, 0);
             label1.Name = "label1";
-            label1.Size = new Size(537, 96);
+            label1.Size = new Size(298, 54);
             label1.TabIndex = 0;
             label1.Text = "Excel Interface";
             // 
             // InteropExcel
             // 
-            AutoScaleDimensions = new SizeF(15F, 37F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1474, 668);
+            ClientSize = new Size(786, 361);
             Controls.Add(panel1);
+            Margin = new Padding(2);
             Name = "InteropExcel";
             Text = "InteropExcel";
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -110,9 +146,11 @@
 
         private Panel panel1;
         private Label label1;
-        private CheckBox checkBox2;
-        private CheckBox checkBox1;
-        private Button button1;
+        private Button buttonPrice;
         private FolderBrowserDialog browseFolder;
+        private Label labelFile;
+        private Panel panel2;
+        private RadioButton radioButtonFile;
+        private RadioButton radioButtonDefault;
     }
 }

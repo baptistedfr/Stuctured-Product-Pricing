@@ -33,8 +33,6 @@
             label1 = new Label();
             textBoxVolatility = new TextBox();
             labelVol = new Label();
-            labelRf = new Label();
-            labelSpot = new Label();
             textBoxSpot = new TextBox();
             textBoxRf = new TextBox();
             textBoxStrike1 = new TextBox();
@@ -68,6 +66,8 @@
             dataGridViewGrecs = new DataGridView();
             labelCF = new Label();
             groupBoxMarket = new GroupBox();
+            labelSpot = new Label();
+            labelRf = new Label();
             comboBoxTicker = new ComboBox();
             panel2 = new Panel();
             radioButtonVolSVI = new RadioButton();
@@ -140,26 +140,6 @@
             labelVol.TabIndex = 5;
             labelVol.Text = "Volatilité (%)";
             labelVol.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // labelRf
-            // 
-            labelRf.AutoSize = true;
-            labelRf.Font = new Font("Segoe UI", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelRf.Location = new Point(352, 154);
-            labelRf.Name = "labelRf";
-            labelRf.Size = new Size(218, 31);
-            labelRf.TabIndex = 6;
-            labelRf.Text = "Taux sans risque (%)";
-            // 
-            // labelSpot
-            // 
-            labelSpot.AutoSize = true;
-            labelSpot.Font = new Font("Segoe UI", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            labelSpot.Location = new Point(45, 154);
-            labelSpot.Name = "labelSpot";
-            labelSpot.Size = new Size(61, 31);
-            labelSpot.TabIndex = 7;
-            labelSpot.Text = "Spot";
             // 
             // textBoxSpot
             // 
@@ -531,21 +511,43 @@
             // groupBoxMarket
             // 
             groupBoxMarket.BackColor = Color.AntiqueWhite;
+            groupBoxMarket.Controls.Add(labelSpot);
+            groupBoxMarket.Controls.Add(labelRf);
             groupBoxMarket.Controls.Add(comboBoxTicker);
             groupBoxMarket.Controls.Add(panel2);
             groupBoxMarket.Controls.Add(panel1);
             groupBoxMarket.Controls.Add(label1);
             groupBoxMarket.Controls.Add(textBoxSpot);
-            groupBoxMarket.Controls.Add(labelSpot);
             groupBoxMarket.Controls.Add(textBoxVolatility);
             groupBoxMarket.Controls.Add(labelVol);
-            groupBoxMarket.Controls.Add(labelRf);
             groupBoxMarket.Controls.Add(textBoxRf);
             groupBoxMarket.Location = new Point(21, 23);
             groupBoxMarket.Name = "groupBoxMarket";
             groupBoxMarket.Size = new Size(570, 268);
             groupBoxMarket.TabIndex = 26;
             groupBoxMarket.TabStop = false;
+            // 
+            // labelSpot
+            // 
+            labelSpot.AutoSize = true;
+            labelSpot.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            labelSpot.Location = new Point(51, 154);
+            labelSpot.Name = "labelSpot";
+            labelSpot.Size = new Size(54, 28);
+            labelSpot.TabIndex = 37;
+            labelSpot.Text = "Spot";
+            labelSpot.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // labelRf
+            // 
+            labelRf.AutoSize = true;
+            labelRf.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            labelRf.Location = new Point(352, 154);
+            labelRf.Name = "labelRf";
+            labelRf.Size = new Size(198, 28);
+            labelRf.TabIndex = 36;
+            labelRf.Text = "Taux sans risque (%)";
+            labelRf.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // comboBoxTicker
             // 
@@ -554,7 +556,7 @@
             comboBoxTicker.BackColor = Color.Moccasin;
             comboBoxTicker.ForeColor = Color.Black;
             comboBoxTicker.FormattingEnabled = true;
-            comboBoxTicker.Items.AddRange(new object[] { "AAPL", "GLE.PA", "TSLA" });
+            comboBoxTicker.Items.AddRange(new object[] { "AAPL", "TSLA" });
             comboBoxTicker.Location = new Point(391, 37);
             comboBoxTicker.Name = "comboBoxTicker";
             comboBoxTicker.Size = new Size(152, 31);
@@ -674,8 +676,6 @@
         private Label label1;
         private TextBox textBoxVolatility;
         private Label labelVol;
-        private Label labelRf;
-        private Label labelSpot;
         private TextBox textBoxSpot;
         private TextBox textBoxRf;
         private TextBox textBoxStrike1;
@@ -717,5 +717,7 @@
         private ComboBox comboBoxFreqObservation;
         private RadioButton radioButtonAutocall;
         private ComboBox comboBoxTicker;
+        private Label labelSpot;
+        private Label labelRf;
     }
 }

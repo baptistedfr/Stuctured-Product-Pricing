@@ -44,13 +44,13 @@ namespace Pricing.MonteCarlo
         /// <summary>
         /// Generate n independant draws from a normal distribution through a Box-Muller transform
         /// </summary>
-        public double[] GenerateNormal(int nb,int? seed=null)
+        public double[] GenerateNormal(int nb, Random aleatoire)
         {
             double[] normalVariables = new double[nb];
             double u1, u2;
 
             // Si une seed est fournie, on l'utilise, sinon on utilise le temps système
-            Random aleatoire = (seed.HasValue) ? new Random(seed.Value) : new Random();
+            //Random aleatoire = (seed.HasValue) ? new Random(seed.Value) : new Random();
 
             for (int i = 0; i < nb; i++)
             {

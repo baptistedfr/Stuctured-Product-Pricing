@@ -20,7 +20,7 @@ namespace Pricing.MonteCarlo
         /// <summary>
         /// Monte Carlo constructor for regular option strategies
         /// </summary>
-        public MonteCarloSimulator(IProduct derive, Market market, int nbSim = 100000)
+        public MonteCarloSimulator(IProduct derive, Market market, int nbSim = 1000000)
         {
             Product = derive;
             Market = market;
@@ -42,7 +42,7 @@ namespace Pricing.MonteCarlo
         /// <summary>
         /// Monte Carlo constructor for autocalls
         /// </summary>
-        public MonteCarloSimulator(Autocall autocall, Market market, int nbSim = 100000)
+        public MonteCarloSimulator(Autocall autocall, Market market, int nbSim = 1000000)
         {
             Product = autocall as IProduct;
             Market = market;
@@ -63,7 +63,7 @@ namespace Pricing.MonteCarlo
         /// <summary>
         /// Monte-Carlo pricer for regular option strategies adn autocalls
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Return the price and the confidence interval </returns>
         public (double price, double interval) Price(int? seed=null)
         {
             
@@ -72,20 +72,22 @@ namespace Pricing.MonteCarlo
             bool isBarrier = (Product as BarrierOption != null); // On regarde si c est une option barrière, dans ce cas il faudra discretiser
             bool isHeston = Market.VolType == VolatilityType.Heston; // On regarde si le calcul de la volatilité est stochastique
             bool isAutocall = (Product as Autocall != null);
+            // Utilisation de ThreadLocal pour avoir un générateur aléatoire par thread
+            ThreadLocal<Random> threadLocalRandom = new ThreadLocal<Random>(() => // Cas d'une seed pour avoir la même génération pour éviter le bruit dans le calcul des grecs
+            {
+                return (seed.HasValue) ? new Random(seed.Value + Thread.CurrentThread.ManagedThreadId) : new Random();
+            });
             Parallel.For(0, NbSimulation, i =>
             {
-                if (seed != null)
-                {
-                    seed += 1; // Si il y a une seed on la change a chaque iteration
-                }
+                Random aleatoire = threadLocalRandom.Value;
                 double simPrice = Market.Spot;
                 if (isAutocall)
                 {
-                    payoffs[i] = GenerateAutocallPayoff(simPrice, seed);
+                    payoffs[i] = GenerateAutocallPayoff(simPrice, aleatoire);
                 }
                 else
                 {
-                    payoffs[i] = GenerateDerivativePayoff(simPrice, isBarrier, isHeston, seed);
+                    payoffs[i] = GenerateDerivativePayoff(simPrice, isBarrier, isHeston, aleatoire);
                 }
                 
             });
@@ -97,7 +99,7 @@ namespace Pricing.MonteCarlo
         /// <summary>
         /// Generate and Calculate a derivative payoff for a certain path
         /// </summary>
-        public double GenerateDerivativePayoff(double simPrice, bool isBarrier, bool isHeston, int? seed = null)
+        public double GenerateDerivativePayoff(double simPrice, bool isBarrier, bool isHeston, Random aleatoire)
         {
             BrownianGenerator brownianGenerator = new BrownianGenerator();
             BarrierOption? barrierOption = Product as BarrierOption;
@@ -131,7 +133,7 @@ namespace Pricing.MonteCarlo
                 {
                     double drift = (Market.Rate - 0.5 * Math.Pow(Market.Volatility, 2)) * Dt;
                     double diffusion = Market.Volatility * Math.Sqrt(Dt);
-                    double[] dW1 = brownianGenerator.GenerateNormal(NbSteps, seed);
+                    double[] dW1 = brownianGenerator.GenerateNormal(NbSteps, aleatoire);
                     for (int j = 0; j < NbSteps; j++)
                     {
                         simPrice *= Math.Exp(drift + diffusion * dW1[j]);
@@ -146,24 +148,23 @@ namespace Pricing.MonteCarlo
                 {
                     double drift = (Market.Rate - 0.5 * Math.Pow(Market.Volatility, 2)) * Maturity;
                     double diffusion = Market.Volatility * Math.Sqrt(Maturity);
-                    double[] dW1 = brownianGenerator.GenerateNormal(1, seed);
+                    double[] dW1 = brownianGenerator.GenerateNormal(1, aleatoire);
                     simPrice *= Math.Exp(drift + diffusion * dW1[0]);
                 }
             }
-
             return Product.Payoff(simPrice);
         }
 
         /// <summary>
         ///  Generate a spot path and calculate the payoff of an autocall for this path
         /// </summary>
-        public double GenerateAutocallPayoff(double simPrice, int? seed = null)
+        public double GenerateAutocallPayoff(double simPrice, Random aleatoire)
         {
             BrownianGenerator brownianGenerator = new BrownianGenerator();
             Autocall? autocall = Product as Autocall;
             double drift = (Market.Rate - 0.5 * Math.Pow(Market.Volatility, 2)) * Dt;
             double diffusion = Market.Volatility * Math.Sqrt(Dt);
-            double[] dW1 = brownianGenerator.GenerateNormal(NbSteps, seed);
+            double[] dW1 = brownianGenerator.GenerateNormal(NbSteps, aleatoire);
             double[] paths = new double[NbSteps];
             for (int i = 0; i < NbSteps; i++)
             {
@@ -174,7 +175,7 @@ namespace Pricing.MonteCarlo
         }
 
         /// <summary>
-        /// Doichotomy Method to find the Autocall Coupon for a certain nominal
+        /// Dichotomy Method to find the Autocall Coupon for a certain nominal
         /// </summary>
         public double FindCouponAutocall(double tolerance = 0.0001)
         {
@@ -185,11 +186,8 @@ namespace Pricing.MonteCarlo
 
             while (upperBound - lowerBound > tolerance)
             {
-                coupon = (lowerBound + upperBound) / 2; // Point médian
+                coupon = (lowerBound + upperBound) / 2; 
                 autocall.Coupon = coupon;
-
-                // Simulez un chemin (path) pour obtenir le payoff avec ce coupon
-                
                 (double price, double _) = Price();
 
                 if (price < autocall.Nominal)
@@ -201,7 +199,6 @@ namespace Pricing.MonteCarlo
                     upperBound = coupon; 
                 }
             }
-
             return coupon; // Retourne le coupon qui donne un nominal de 100
         }
 
@@ -243,9 +240,9 @@ namespace Pricing.MonteCarlo
             greeks.Add("Delta", delta);
 
             // Calcul du Gamma
-            Market.Spot = originalSpot - deltaS;
+            Market.Spot = originalSpot - deltaS*10;
             double priceDeltaSpotNeg = Price(seedInitial).price;  
-            double gamma = (priceDeltaSpotPos - 2 * priceOption + priceDeltaSpotNeg) / (deltaS * deltaS);
+            double gamma = (priceDeltaSpotPos - 2 * priceOption + priceDeltaSpotNeg) / ((deltaS*10) * (deltaS*10));
             Market.Spot = originalSpot;  // Réinitialise le spot
             greeks.Add("Gamma", gamma);
 
