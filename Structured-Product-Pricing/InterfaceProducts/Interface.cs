@@ -13,6 +13,7 @@ using Pricing.Products.Options;
 using Microsoft.VisualBasic.Devices;
 using Pricing.Products.Autocalls;
 using System.Reflection.Emit;
+using Pricing.Volatility;
 namespace InterfaceProducts
 {
     public partial class Interface : Form
@@ -87,7 +88,12 @@ namespace InterfaceProducts
             }
             IDerives derive = optionManager.CreateDerive(paramsManager.GetStrikeValues(), textBoxMaturity.Text, textBoxBinary.Text, textBoxBarrier.Text); // On crée le dérivé
             Market market = marketManager.CreateMarket(); // Création du marché
-            MonteCarloSimulator mc = new MonteCarloSimulator(derive, market, 1000000); // On instancie la simulation de monte carlo
+            int nbSimulations = 1000000;
+            if((derive as BarrierOption != null) || (market.VolType == VolatilityType.Heston))
+            {
+                nbSimulations = 100000;
+            }
+            MonteCarloSimulator mc = new MonteCarloSimulator(derive, market, nbSimulations); // On instancie la simulation de monte carlo
             if (radioButtonAuto.Checked)
             {
                 marketManager.ActualiseMarket(market); // Actualisation des paramètres pour le marché automatique
